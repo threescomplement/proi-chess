@@ -6,8 +6,16 @@
 #define CHESS_FIELD_H
 
 
-class Field {
+#include <memory>
+#include "Piece.h"
+#include "Position.h"
 
+class Field {
+public:
+    bool isEmpty() const;
+private:
+    std::shared_ptr<Piece> piece;
+    Position position;
 };
 
 

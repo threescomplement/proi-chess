@@ -3,7 +3,12 @@
 
 
 class Position {
-
+public:
+    int getRow() const;
+    int getCol() const;
+private:
+    int column;
+    int row;
 };
 
 
