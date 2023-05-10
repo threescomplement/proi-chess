@@ -18,8 +18,8 @@ set(CHESS_LIBRARRY_SOURCES
         src/chess/Player.h
         src/chess/Move.h
         src/chess/Color.h
-        src/chess/pieces/Piece.h
         src/chess/Position.h
+        src/chess/pieces/Piece.h
         src/chess/pieces/Pawn.h
         src/chess/pieces/Rook.h
         src/chess/pieces/Knight.h
