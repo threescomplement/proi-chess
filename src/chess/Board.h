@@ -8,19 +8,16 @@
 #include "Move.h"
 
 class Board {
+private:
+    Field fields[BOARD_SIZE][BOARD_SIZE];
+    King *blackKing;
+    King *whiteKing;
+
 public:
     Board();
     void makeMove(Move move);
-    Board afterMove(Move move) const;
+    Board afterMove(Move move) const;  // Deep copy
     std::string toStandardNotation() const;
-
-private:
-    Field fields[BOARD_SIZE][BOARD_SIZE];
-    std::shared_ptr<King> blackKing;
-    std::shared_ptr<King> whiteKing;
-
-    bool isCheck() const;
-    bool isMate() const;
 };
 
 

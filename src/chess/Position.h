@@ -2,13 +2,18 @@
 #define CHESS_POSITION_H
 
 
+#include <string>
+
 class Position {
-public:
-    int getRow() const;
-    int getCol() const;
 private:
     int column;
     int row;
+
+public:
+    Position();
+    int getRow() const;
+    int getCol() const;
+    std::string toString() const;
 };
 
 

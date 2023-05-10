@@ -6,7 +6,7 @@
 #define CHESS_PAWN_H
 
 
-#include "../Piece.h"
+#include "Piece.h"
 
 class Pawn : public Piece {
 

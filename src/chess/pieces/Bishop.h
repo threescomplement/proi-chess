@@ -2,7 +2,7 @@
 #define CHESS_BISHOP_H
 
 
-#include "../Piece.h"
+#include "Piece.h"
 
 class Bishop : public Piece {
 

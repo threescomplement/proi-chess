@@ -2,7 +2,7 @@
 #define CHESS_KING_H
 
 
-#include "../Piece.h"
+#include "Piece.h"
 
 class King : public Piece {
 

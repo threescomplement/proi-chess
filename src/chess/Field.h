@@ -7,15 +7,24 @@
 
 
 #include <memory>
-#include "Piece.h"
+#include "pieces/Piece.h"
 #include "Position.h"
 
 class Field {
+private:
+    Piece *piece;
+    Position position;
+
 public:
     bool isEmpty() const;
-private:
-    std::shared_ptr<Piece> piece;
-    Position position;
+
+    Piece *getPiece() const {
+        return piece;
+    }
+
+    const Position &getPosition() const {
+        return position;
+    }
 };
 
 

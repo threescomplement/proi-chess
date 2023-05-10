@@ -3,17 +3,18 @@
 
 
 #include <vector>
-#include "Piece.h"
+#include "pieces/Piece.h"
 
 class Player {
+private:
+    std::string name;
+    std::vector<Piece *> pieces;
+    bool isChecked;
 public:
     Player();
     ~Player();
-    bool isBot() const;
-    std::vector<std::shared_ptr<Piece>>& getPieces();
-private:
-    std::vector<std::shared_ptr<Piece>> pieces;
-    bool isPlayerBot;
+    std::vector<Piece *> &getPieces() const;
+
 };
 
 
