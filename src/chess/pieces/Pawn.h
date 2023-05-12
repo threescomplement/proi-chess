@@ -15,6 +15,8 @@ private:
     Player *player;
 
 public:
+    Pawn(Color color, Field *field, Player *owner);
+
     ~Pawn() override;
 
     std::vector<Move> getMoves() const override;

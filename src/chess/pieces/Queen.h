@@ -11,6 +11,8 @@ private:
     Player *player;
 
 public:
+    Queen(Color color, Field *field, Player *owner);
+
     ~Queen() override;
 
     std::vector<Move> getMoves() const override;

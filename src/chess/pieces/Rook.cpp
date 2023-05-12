@@ -5,6 +5,12 @@
 #include "../Board.h"
 #include "Rook.h"
 
+Rook::Rook(Color color, Field *field, Player *owner) {
+    this->color = color;
+    this->parentField = field;
+    this->player = owner;
+}
+
 Rook::~Rook() = default;
 
 std::vector <Move> Rook::getMoves() const {

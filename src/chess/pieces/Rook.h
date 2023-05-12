@@ -11,6 +11,8 @@ private:
     Player *player;
 
 public:
+    Rook(Color color, Field *field, Player *owner);
+
     ~Rook() override;
 
     std::vector<Move> getMoves() const override;

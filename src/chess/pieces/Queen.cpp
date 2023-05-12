@@ -4,6 +4,12 @@
 #include "../Board.h"
 #include "Queen.h"
 
+Queen::Queen(Color color, Field *field, Player *owner) {
+    this->color = color;
+    this->parentField = field;
+    this->player = owner;
+}
+
 Queen::~Queen() = default;
 
 std::vector <Move> Queen::getMoves() const {

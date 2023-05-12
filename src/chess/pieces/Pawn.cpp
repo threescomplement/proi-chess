@@ -4,6 +4,11 @@
 #include "../Board.h"
 #include "Pawn.h"
 
+Pawn::Pawn(Color color, Field *field, Player *owner) {
+    this->color = color;
+    this->parentField = field;
+    this->player = owner;
+}
 
 Pawn::~Pawn() = default;
 
