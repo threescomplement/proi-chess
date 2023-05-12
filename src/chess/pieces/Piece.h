@@ -9,6 +9,8 @@
 #include "../Board.h"
 #include "../Player.h"
 
+class Move;
+
 class Piece {
 public:
     virtual ~Piece() = 0;
@@ -18,6 +20,8 @@ public:
     virtual Board *getBoard() const = 0;
     virtual Field *getField() const = 0;
     virtual Player *getPlayer() const = 0;
+    virtual char getCharacter() const = 0;
+    virtual std::string getUnicodeSymbol() const = 0;
 };
 
 

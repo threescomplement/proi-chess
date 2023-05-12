@@ -2,31 +2,29 @@
 #define CHESS_MOVE_H
 
 
+#include <sstream>
 #include "pieces/Piece.h"
 
 class Move {
 private:
-    const Position from;
-    const Position to;
+    Position from;
+    Position to;
     Piece *piece;
-    const bool isAttack;
+    bool isCapture;
 
 public:
-    const Position &getFrom() const {
-        return from;
-    }
+    Move(Position from, Position to, Piece *piece, bool isCaputre) :
+            from(from), to(to), piece(piece), isCapture(isCaputre) {};
 
-    const Position &getTo() const {
-        return to;
-    }
+    const Position &getFrom() const;
 
-    Piece *getPiece() const {
-        return piece;
-    }
+    const Position &getTo() const;
 
-    const bool getIsAttack() const {
-        return isAttack;
-    }
+    Piece *getPiece() const;
+
+    bool getIsCapture() const;
+
+    std::string toString() const;
 };
 
 

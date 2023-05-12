@@ -10,7 +10,7 @@ private:
     int row;
 
 public:
-    Position();
+    Position(int row, int col);
     int getRow() const;
     int getCol() const;
     std::string toString() const;

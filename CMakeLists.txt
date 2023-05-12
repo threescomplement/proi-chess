@@ -29,7 +29,8 @@ set(CHESS_LIBRARRY_SOURCES
         )
 
 set(CHESS_UNIT_TEST_SOURCES
-        ./tests/chess/test.cpp
+        tests/chess/MoveUnitTest.cpp
+        tests/chess/PositionUnitTest.cpp
         )
 
 set(BOT_UNIT_TEST_SOURCES

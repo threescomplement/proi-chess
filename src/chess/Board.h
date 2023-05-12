@@ -1,11 +1,11 @@
 #ifndef CHESS_BOARD_H
 #define CHESS_BOARD_H
-#define BOARD_SIZE 8
 
 #include <memory>
 #include "Field.h"
 #include "pieces/King.h"
 #include "Move.h"
+#include "constants.h"
 
 class Board {
 private:
