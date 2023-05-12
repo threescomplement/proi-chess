@@ -3,7 +3,11 @@
 
 
 #include <sstream>
+#include "Position.h"
 #include "pieces/Piece.h"
+
+class Position;
+class Piece;
 
 class Move {
 private:

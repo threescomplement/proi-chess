@@ -1,7 +1,3 @@
-//
-// Created by mGarbowski on 27.04.2023.
-//
-
 #ifndef CHESS_FIELD_H
 #define CHESS_FIELD_H
 
@@ -11,24 +7,30 @@
 #include "Position.h"
 #include "Board.h"
 
+class Board;
+class Piece;
+
 class Field {
 private:
     Piece *piece;
     Position position;
-    Board *parentBoard
+    Board *parentBoard;
 
 public:
-    bool isEmpty() const;
+    explicit Field(Position position): piece(nullptr), position(position), parentBoard(nullptr) {};
 
-    Piece *getPiece() const {
-        return piece;
-    }
+    Field(Piece *piece, Position position, Board *parentBorad) :
+            piece(piece), position(position), parentBoard(parentBorad) {};
 
-    const Position &getPosition() const {
-        return position;
-    }
+    ~Field() = default;
+
+    const Position &getPosition() const;
+
+    Piece *getPiece() const;
 
     Board *getBoard() const;
+
+    bool isEmpty() const;
 };
 
 

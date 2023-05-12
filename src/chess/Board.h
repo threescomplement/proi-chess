@@ -8,6 +8,7 @@
 #include "pieces/Piece.h"
 class Piece;
 class Move;
+class Field;
 
 class Board {
 private:
