@@ -27,3 +27,11 @@ std::string Position::toString() const {
     return ss.str();
 }
 
+bool Position::operator==(const Position &rhs) const {
+    return column == rhs.column && row == rhs.row;
+}
+
+bool Position::operator!=(const Position &rhs) const {
+    return !(rhs == *this);
+}
+

@@ -11,9 +11,16 @@ private:
 
 public:
     Position(int row, int col);
+
     int getRow() const;
+
     int getCol() const;
+
     std::string toString() const;
+
+    bool operator==(const Position &rhs) const;
+
+    bool operator!=(const Position &rhs) const;
 };
 
 
