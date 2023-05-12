@@ -12,15 +12,16 @@ private:
     Board board;
     Player whitePlayer;
     Player blackPlayer;
+    Player &currentPlayer;
     std::vector<Move> moveHistory;
     std::vector<Piece*> allPieces;
 
 public:
     Game();
 
-    void initializeMatch();
+    ~Game();
 
-    Board &getBoard() const;
+    Board &getBoard();
 
     Player &getCurrentPlayer() const;
 

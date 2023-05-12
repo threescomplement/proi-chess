@@ -9,6 +9,7 @@ Game::Game() {
     this->board = Board::emptyBoard();
     this->whitePlayer = Player("White Player");
     this->blackPlayer = Player("Black Player");
+    this->currentPlayer = whitePlayer;
     this->moveHistory = {};
     this->allPieces = {};
 
@@ -58,4 +59,18 @@ Game::Game() {
     board.setBlackKing(board.getField(Position(8, 5))->getPiece());
     board.setWhiteKing(board.getField(Position(1, 5))->getPiece());
 
+}
+
+Game::~Game() {
+    for (Piece *piece: allPieces) {
+        delete piece;
+    }
+}
+
+Board &Game::getBoard() {
+    return board;
+}
+
+Player &Game::getCurrentPlayer() const {
+    return currentPlayer;
 }
