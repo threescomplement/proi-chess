@@ -25,6 +25,8 @@ public:
 
     Player &getCurrentPlayer() const;
 
+    std::vector<Move> &getMoveHistory();
+
     void makeMove(Move move);
 
     Game afterMove(Move move) const;

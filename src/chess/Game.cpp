@@ -74,3 +74,7 @@ Board &Game::getBoard() {
 Player &Game::getCurrentPlayer() const {
     return currentPlayer;
 }
+
+std::vector<Move> &Game::getMoveHistory() {
+    return moveHistory;
+}
