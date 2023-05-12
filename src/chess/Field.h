@@ -9,11 +9,13 @@
 #include <memory>
 #include "pieces/Piece.h"
 #include "Position.h"
+#include "Board.h"
 
 class Field {
 private:
     Piece *piece;
     Position position;
+    Board *parentBoard
 
 public:
     bool isEmpty() const;
@@ -25,6 +27,8 @@ public:
     const Position &getPosition() const {
         return position;
     }
+
+    Board *getBoard() const;
 };
 
 

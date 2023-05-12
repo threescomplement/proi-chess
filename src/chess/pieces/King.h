@@ -6,6 +6,7 @@
 
 class King : public Piece {
 
+
 };
 
 

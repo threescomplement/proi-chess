@@ -17,15 +17,23 @@ set(CHESS_LIBRARRY_SOURCES
         src/chess/Field.h
         src/chess/Player.h
         src/chess/Move.h
+        src/chess/Move.cpp
         src/chess/Color.h
         src/chess/Position.h
+        src/chess/Position.cpp
         src/chess/pieces/Piece.h
         src/chess/pieces/Pawn.h
+        src/chess/pieces/Pawn.cpp
         src/chess/pieces/Rook.h
+        src/chess/pieces/Rook.cpp
         src/chess/pieces/Knight.h
+        src/chess/pieces/Knight.cpp
         src/chess/pieces/King.h
+        src/chess/pieces/King.cpp
         src/chess/pieces/Queen.h
+        src/chess/pieces/Queen.cpp
         src/chess/pieces/Bishop.h
+        src/chess/pieces/Bishop.cpp
         )
 
 set(CHESS_UNIT_TEST_SOURCES
