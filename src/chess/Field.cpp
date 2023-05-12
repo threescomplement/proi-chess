@@ -16,3 +16,6 @@ Board *Field::getBoard() const {
     return parentBoard;
 }
 
+void Field::setPiece(Piece *newPiece) {
+    this->piece = newPiece;
+}

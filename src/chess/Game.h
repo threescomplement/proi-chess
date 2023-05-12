@@ -13,17 +13,27 @@ private:
     Player whitePlayer;
     Player blackPlayer;
     std::vector<Move> moveHistory;
+    std::vector<Piece*> allPieces;
 
 public:
     Game();
+
     void initializeMatch();
+
     Board &getBoard() const;
+
     Player &getCurrentPlayer() const;
+
     void makeMove(Move move);
+
     Game afterMove(Move move) const;
+
     std::vector<Move> getMovesFrom(Position position) const;
+
     std::vector<Move> getAllPlayerMoves(Player &player) const;
+
     bool isMate() const;
+
     bool isCheck() const;
 };
 

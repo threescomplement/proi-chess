@@ -6,21 +6,34 @@
 #include "Move.h"
 #include "constants.h"
 #include "pieces/Piece.h"
+
 class Piece;
+
 class Move;
+
 class Field;
 
 class Board {
 private:
-    Field fields[BOARD_SIZE][BOARD_SIZE];
+    std::array<std::array<Field *, BOARD_SIZE>, BOARD_SIZE> fields;
     Piece *blackKing;
     Piece *whiteKing;
 
 public:
     Board();
+
     void makeMove(Move move);
+
     Board afterMove(Move move) const;  // Deep copy
     std::string toStandardNotation() const;
+
+    Field *getField(Position position) const;
+
+    void setBlackKing(Piece *blackKing);
+
+    void setWhiteKing(Piece *whiteKing);
+
+    static Board emptyBoard();
 };
 
 

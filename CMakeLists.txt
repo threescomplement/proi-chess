@@ -13,9 +13,13 @@ FetchContent_MakeAvailable(googletest)
 
 set(CHESS_LIBRARRY_SOURCES
         src/chess/Game.h
+        src/chess/Game.cpp
         src/chess/Board.h
+        src/chess/Board.cpp
         src/chess/Field.h
+        src/chess/Field.cpp
         src/chess/Player.h
+        src/chess/Player.cpp
         src/chess/Move.h
         src/chess/Move.cpp
         src/chess/Color.h

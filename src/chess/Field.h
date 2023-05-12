@@ -28,6 +28,8 @@ public:
 
     Piece *getPiece() const;
 
+    void setPiece(Piece *newPiece);
+
     Board *getBoard() const;
 
     bool isEmpty() const;

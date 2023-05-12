@@ -11,7 +11,7 @@ private:
     std::vector<Piece *> pieces;
     bool isChecked;
 public:
-    Player();
+    explicit Player(std::string name);
     ~Player();
     std::vector<Piece *> &getPieces() const;
 
