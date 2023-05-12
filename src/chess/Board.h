@@ -3,15 +3,17 @@
 
 #include <memory>
 #include "Field.h"
-#include "pieces/King.h"
 #include "Move.h"
 #include "constants.h"
+#include "pieces/Piece.h"
+class Piece;
+class Move;
 
 class Board {
 private:
     Field fields[BOARD_SIZE][BOARD_SIZE];
-    King *blackKing;
-    King *whiteKing;
+    Piece *blackKing;
+    Piece *whiteKing;
 
 public:
     Board();
