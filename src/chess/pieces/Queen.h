@@ -2,7 +2,7 @@
 #define CHESS_QUEEN_H
 
 
-#include "Piece.h"
+class Piece;
 
 class Queen : public Piece {
 private:

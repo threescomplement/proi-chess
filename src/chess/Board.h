@@ -33,7 +33,9 @@ public:
 
     void setWhiteKing(Piece *whiteKing);
 
-    static Board emptyBoard();
+    static Board* emptyBoard();
+
+    std::string toString() const;
 };
 
 

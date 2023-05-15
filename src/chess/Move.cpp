@@ -1,5 +1,5 @@
 #include "Move.h"
-
+#include "pieces/PieceType.h"
 
 const Position &Move::getFrom() const {
     return from;

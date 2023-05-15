@@ -1,4 +1,10 @@
 #include "Bishop.h"
+#include "PieceType.h"
+#include "../Color.h"
+#include "../Field.h"
+#include <vector>
+
+
 
 Bishop::Bishop(Color color, Field *field, Player *owner) {
     this->color = color;
@@ -7,7 +13,7 @@ Bishop::Bishop(Color color, Field *field, Player *owner) {
 }
 
 std::vector<Move> Bishop::getMoves() const {
-    return std::vector<Move>();
+    return {};
 }
 
 PieceType Bishop::getType() const {

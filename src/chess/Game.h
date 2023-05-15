@@ -3,16 +3,25 @@
 
 
 #include <vector>
-#include "Board.h"
-#include "Move.h"
-#include "Player.h"
+//#include "Board.h"
+//#include "Move.h"
+//#include "Player.h"
+
+class Board;
+class Move;
+class Player;
+class Piece;
+class Position;
+class King;
 
 class Game {
 private:
-    Board board;
-    Player whitePlayer;
-    Player blackPlayer;
-    Player &currentPlayer;
+    Board  *board;
+    Player *whitePlayer;
+    Player *blackPlayer;
+    Player *currentPlayer;
+    King *whiteKing;
+    King *blackKing;
     std::vector<Move> moveHistory;
     std::vector<Piece*> allPieces;
 
@@ -21,9 +30,9 @@ public:
 
     ~Game();
 
-    Board &getBoard();
+    Board *getBoard();
 
-    Player &getCurrentPlayer() const;
+    Player *getCurrentPlayer();
 
     std::vector<Move> &getMoveHistory();
 
@@ -38,6 +47,8 @@ public:
     bool isMate() const;
 
     bool isCheck() const;
+
+
 };
 
 

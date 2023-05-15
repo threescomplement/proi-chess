@@ -1,4 +1,10 @@
 #include "King.h"
+#include "PieceType.h"
+#include "../Color.h"
+#include "../Field.h"
+#include <vector>
+
+
 
 King::King(Color color, Field *field, Player *owner) {
     this->color = color;
@@ -7,7 +13,7 @@ King::King(Color color, Field *field, Player *owner) {
 }
 
 std::vector<Move> King::getMoves() const {
-    return std::vector<Move>();
+    return {};
 }
 
 PieceType King::getType() const {

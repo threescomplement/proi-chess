@@ -1,4 +1,9 @@
 #include "Knight.h"
+#include "PieceType.h"
+#include "../Color.h"
+#include "../Field.h"
+#include <vector>
+
 
 Knight::Knight(Color color, Field *field, Player *owner) {
     this->color = color;
@@ -7,7 +12,7 @@ Knight::Knight(Color color, Field *field, Player *owner) {
 }
 
 std::vector<Move> Knight::getMoves() const {
-    return std::vector<Move>();
+    return {};
 }
 
 PieceType Knight::getType() const {

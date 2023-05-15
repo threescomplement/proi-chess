@@ -1,9 +1,11 @@
 #ifndef CHESS_PLAYER_H
 #define CHESS_PLAYER_H
 
-
+#include <string>
 #include <vector>
-#include "pieces/Piece.h"
+//#include "pieces/Piece.h"
+
+class Piece;
 
 class Player {
 private:
@@ -11,9 +13,13 @@ private:
     std::vector<Piece *> pieces;
     bool isChecked;
 public:
-    explicit Player(std::string name);
+    Player(std::string name);
+
+    Player();
+
     ~Player();
-    std::vector<Piece *> &getPieces() const;
+
+    std::vector<Piece *> &getPieces();
 
 };
 

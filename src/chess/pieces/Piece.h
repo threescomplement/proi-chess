@@ -3,17 +3,27 @@
 
 
 #include <vector>
-#include "PieceType.h"
-#include "../Color.h"
-#include "../Move.h"
-#include "../Board.h"
-#include "../Player.h"
+//#include "PieceType.h"
+//#include "../Color.h"
+//#include "../Move.h"
+//#include "../Board.h"
+//#include "../Player.h"
+
+#include <string>
+
+enum class Color;
+class Move;
+class Board;
+class Player;
+class Field;
+enum class PieceType;
+
 
 class Move;
 
 class Piece {
 public:
-    virtual ~Piece() = 0;
+    virtual ~Piece() = default;
 
     virtual std::vector<Move> getMoves() const = 0;
 

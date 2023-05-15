@@ -5,8 +5,8 @@
 #ifndef CHESS_PAWN_H
 #define CHESS_PAWN_H
 
-
 #include "Piece.h"
+
 
 class Pawn : public Piece {
 private:
@@ -17,7 +17,7 @@ private:
 public:
     Pawn(Color color, Field *field, Player *owner);
 
-    ~Pawn() override;
+    ~Pawn() override=default;
 
     std::vector<Move> getMoves() const override;
 

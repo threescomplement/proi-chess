@@ -6,6 +6,7 @@
 #include "../../src/chess/pieces/Knight.h"
 #include "../../src/chess/pieces/Pawn.h"
 #include "../../src/chess/pieces/Queen.h"
+#include "../../src/chess/Color.h"
 
 namespace MoveUnitTest {
     TEST(Move, constructor) {

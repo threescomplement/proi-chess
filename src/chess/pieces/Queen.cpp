@@ -13,7 +13,7 @@ Queen::Queen(Color color, Field *field, Player *owner) {
 Queen::~Queen() = default;
 
 std::vector <Move> Queen::getMoves() const {
-    return std::vector<Move>();
+    return {};
 }
 
 PieceType Queen::getType() const {

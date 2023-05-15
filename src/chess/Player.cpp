@@ -6,3 +6,8 @@ Player::Player(std::string name) {
     this->isChecked = false;
 }
 
+std::vector<Piece *> &Player::getPieces() {
+    return pieces;
+}
+
+Player::Player()=default;

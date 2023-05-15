@@ -10,10 +10,8 @@ Pawn::Pawn(Color color, Field *field, Player *owner) {
     this->player = owner;
 }
 
-Pawn::~Pawn() = default;
-
 std::vector <Move> Pawn::getMoves() const {
-    return std::vector<Move>();
+    return {};
 }
 
 PieceType Pawn::getType() const {

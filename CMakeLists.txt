@@ -11,7 +11,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-set(CHESS_LIBRARRY_SOURCES
+set(CHESS_LIBRARY_SOURCES
         src/chess/Game.h
         src/chess/Game.cpp
         src/chess/Board.h
