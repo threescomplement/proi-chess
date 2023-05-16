@@ -35,3 +35,7 @@ bool Position::operator!=(const Position &rhs) const {
     return !(rhs == *this);
 }
 
+Position Position::positionWithOffset(int rowOffset, int colOffset) const {
+    return {getRow() + rowOffset, getCol() + colOffset};
+}
+

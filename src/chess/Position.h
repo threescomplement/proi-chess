@@ -21,6 +21,8 @@ public:
     bool operator==(const Position &rhs) const;
 
     bool operator!=(const Position &rhs) const;
+
+    Position positionWithOffset(int rowOffset, int colOffset) const;
 };
 
 
