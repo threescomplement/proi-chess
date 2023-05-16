@@ -14,14 +14,12 @@ Pawn::Pawn(Color color, Field *field, Player *owner) {
 std::vector<Move> Pawn::getMoves() const {
     std::vector<Move> moves = {};
 
-    // TODO: 1. pins, checks
+    // TODO: pins, checks
+    std::vector<Move> captures = attackingMoves();
+    std::vector<Move> basicMoves = nonAttackingMoves();
 
-    // 2. if hasn't moved yet, can move one or two ranks up
-
-    // 3. taking - is there a piece on the controlled field? if yes, what about the field behind it?
-
-
-    // basic forward move - if no piece standing on the square
+    moves.insert(moves.end(), attackingMoves().begin(), attackingMoves().end());
+    moves.insert(basicMoves.end(), captures.begin(), captures.end());
 
     return moves;
 }
@@ -66,7 +64,7 @@ bool Pawn::canMakeDoubleMove() const {
     return true;
 }
 
-std::vector<Move> Pawn::nonAttackingMoves() {
+std::vector<Move> Pawn::nonAttackingMoves() const {
     /**
      * Returns a vector of possible non-attacking moves (max. two moves - single and double push).
      * Validates the board situation except checks and pins.
@@ -76,24 +74,64 @@ std::vector<Move> Pawn::nonAttackingMoves() {
     bool possibleForwardMove = getBoard()->getField(singleMoveToPosition)->isEmpty();
 
     // Single forward push
-    if (!possibleForwardMove) {return moves;}
-    moves.push_back(Move(parentField->getPosition(), singleMoveToPosition, this, false));
+    if (!possibleForwardMove) { return moves; }
+    moves.push_back(Move(parentField->getPosition(), singleMoveToPosition, (Piece *) this, false));
 
     // Double forward push
     if (canMakeDoubleMove()) {
-        auto doubleMoveToPosition = parentField->getPosition().positionWithOffset(moveDirection, 0);
+        auto doubleMoveToPosition = parentField->getPosition().positionWithOffset(2 * moveDirection, 0);
         if (getBoard()->getField(doubleMoveToPosition)->isEmpty()) {
-            moves.push_back(Move(parentField->getPosition(), doubleMoveToPosition, this, false));
+            moves.push_back(Move(parentField->getPosition(), doubleMoveToPosition, (Piece *) this, false));
         }
     }
     return moves;
 }
 
-std::vector<Move> Pawn::attackingMoves() {
+std::vector<Move> Pawn::attackingMoves() const {
+    /**
+     * Returns vector of possible attacking moves. Validates the board situation except checks and pins.
+     * */
     std::vector<Move> moves;
-    bool canMoveWithNegativeColumnOffset;
-    bool canMoveWithPositiveColumnOffset;
-    return {};
+
+    // attack with a positive column offset
+    if (possibleAttackInGivenDirection(true)) {
+        auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, 2);
+        moves.push_back(Move(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true));
+    }
+
+    if (possibleAttackInGivenDirection(false)) {
+        auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, -2);
+        moves.push_back(Move(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true));
+    }
+    return moves;
 }
 
+bool Pawn::possibleAttackInGivenDirection(bool positiveColumnOffset) const {
+    /**
+     * Boolean indicating whether an attacking a controlled field is possible
+     *
+     * @param positiveColumnOffset - indicates in which horizontal direction to look for an attack in
+     * */
+    int horizontalMoveDirection = (positiveColumnOffset) ? 1 : -1;
+
+    try {
+        auto negativeColumnOffsetToPos = parentField->getPosition().positionWithOffset(2 * moveDirection,
+                                                                                       2 * horizontalMoveDirection);
+        auto attackedPosition = parentField->getPosition().positionWithOffset(moveDirection, horizontalMoveDirection);
+
+        if (getBoard()->getField(attackedPosition)->isEmpty()) {
+            // nothing to attack
+            return false;
+        }
+        if (!(getBoard()->getField(negativeColumnOffsetToPos)->isEmpty())) {
+            // field behind the attacked square not empty
+            return false;
+        }
+        return true;
+    }
+
+    catch (std::invalid_argument &) {
+        return false;
+    }
+}
 

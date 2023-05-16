@@ -11,8 +11,9 @@ private:
     Field *parentField;
     Player *player;
     bool canMakeDoubleMove() const;
-    std::vector<Move> nonAttackingMoves();
-    std::vector<Move> attackingMoves();
+    bool possibleAttackInGivenDirection(bool positiveColumnOffset) const;
+    std::vector<Move> nonAttackingMoves() const;
+    std::vector<Move> attackingMoves() const;
     int moveDirection;
 
 
