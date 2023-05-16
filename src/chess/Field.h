@@ -19,8 +19,8 @@ private:
 public:
     explicit Field(Position position): piece(nullptr), position(position), parentBoard(nullptr) {};
 
-    Field(Piece *piece, Position position, Board *parentBorad) :
-            piece(piece), position(position), parentBoard(parentBorad) {};
+    Field(Piece *piece, Position position, Board *parentBoard) :
+            piece(piece), position(position), parentBoard(parentBoard) {};
 
     ~Field() = default;
 

@@ -3,12 +3,6 @@
 
 
 #include <vector>
-//#include "PieceType.h"
-//#include "../Color.h"
-//#include "../Move.h"
-//#include "../Board.h"
-//#include "../Player.h"
-
 #include <string>
 
 enum class Color;
@@ -17,7 +11,7 @@ class Board;
 class Player;
 class Field;
 enum class PieceType;
-
+class Position;
 
 class Move;
 

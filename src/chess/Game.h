@@ -3,9 +3,6 @@
 
 
 #include <vector>
-//#include "Board.h"
-//#include "Move.h"
-//#include "Player.h"
 
 class Board;
 class Move;

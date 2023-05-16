@@ -1,4 +1,5 @@
 #include "Board.h"
+
 //
 //Board Board::emptyBoard() {
 //    std::array<std::array<Field *, 8>, 8> fields = {};
@@ -42,7 +43,7 @@ Board *Board::emptyBoard() {
     std::array<std::array<Field *, 8>, 8> fields = {};
     for (int row = 0; row < BOARD_SIZE; ++row) {
         for (int col = 0; col < BOARD_SIZE; ++col) {
-            fields[row][col] = new Field(nullptr, Position(row+1, col+1), nullptr);
+            fields[row][col] = new Field(nullptr, Position(row + 1, col + 1), nullptr);
         }
     }
 
@@ -54,7 +55,7 @@ Board *Board::emptyBoard() {
 }
 
 Field *Board::getField(Position position) const {
-    return fields[position.getRow()-1][position.getCol()-1];
+    return fields[position.getRow() - 1][position.getCol() - 1];
 }
 
 void Board::setBlackKing(Piece *blackKing) {

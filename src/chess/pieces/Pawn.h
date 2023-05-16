@@ -1,6 +1,3 @@
-//
-// Created by mGarbowski on 27.04.2023.
-//
 
 #ifndef CHESS_PAWN_H
 #define CHESS_PAWN_H
@@ -13,6 +10,11 @@ private:
     Color color;
     Field *parentField;
     Player *player;
+    bool canMakeDoubleMove() const;
+    std::vector<Move> nonAttackingMoves();
+    std::vector<Move> attackingMoves();
+    int moveDirection;
+
 
 public:
     Pawn(Color color, Field *field, Player *owner);
