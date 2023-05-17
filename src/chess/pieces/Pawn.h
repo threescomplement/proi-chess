@@ -10,7 +10,7 @@ private:
     Color color;
     Field *parentField;
     Player *player;
-
+    int moveDirection;
 
     /**
      * Returns the bool equal to !(has pawn moved yet) - whether it can perform a double move
@@ -34,8 +34,6 @@ private:
      * Returns vector of possible attacking moves. Validates the board situation except checks and pins.
      */
     std::vector<Move> attackingMoves() const;
-
-    int moveDirection;
 
 
 public:
