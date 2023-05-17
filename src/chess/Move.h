@@ -28,6 +28,10 @@ public:
 
     bool getIsCapture() const;
 
+    bool operator==(const Move& rhs) const;
+
+    bool operator!=(const Move& rhs) const;
+
     std::string toString() const;
 };
 

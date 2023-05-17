@@ -34,3 +34,16 @@ std::string Move::toString() const {
     return ss.str();
 }
 
+bool Move::operator==(const Move &rhs) const {
+    return (
+            from == rhs.from &&
+            to == rhs.to &&
+            piece == rhs.piece &&
+            isCapture == rhs.isCapture
+    );
+}
+
+bool Move::operator!=(const Move &rhs) const {
+    return !((*this) == rhs);
+}
+

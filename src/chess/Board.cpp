@@ -49,14 +49,13 @@ std::string Board::toString() const {
 }
 
 Board *Board::emptyBoard() {
+    auto board = new Board();
     std::array<std::array<Field *, 8>, 8> fields = {};
     for (int row = 0; row < BOARD_SIZE; ++row) {
         for (int col = 0; col < BOARD_SIZE; ++col) {
-            fields[row][col] = new Field(nullptr, Position(row + 1, col + 1), nullptr);
+            fields[row][col] = new Field(nullptr, Position(row + 1, col + 1), board);
         }
     }
-
-    auto board = new Board();
     board->fields = fields;
     board->whiteKing = nullptr;
     board->blackKing = nullptr;

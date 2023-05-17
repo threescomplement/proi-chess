@@ -3,6 +3,7 @@
 #include "../Color.h"
 #include "../Board.h"
 #include "Pawn.h"
+// TODO: Promotion mechanics, en passant
 
 Pawn::Pawn(Color color, Field *field, Player *owner) {
     this->color = color;
@@ -14,7 +15,7 @@ Pawn::Pawn(Color color, Field *field, Player *owner) {
 std::vector<Move> Pawn::getMoves() const {
     std::vector<Move> moves = {};
 
-    // TODO: pins, checks, en passant
+    // TODO: pins, checks?
     std::vector<Move> captures = attackingMoves();
     std::vector<Move> basicMoves = nonAttackingMoves();
 

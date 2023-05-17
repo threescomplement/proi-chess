@@ -1,6 +1,5 @@
 
 #include "../../src/chess/Board.h"
-#include "../../src/chess/pieces/Piece.h"
 #include "../../src/chess/pieces/Pawn.h"
 #include "../../src/chess/pieces/Rook.h"
 #include "../../src/chess/pieces/Knight.h"
