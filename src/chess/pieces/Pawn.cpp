@@ -56,9 +56,6 @@ std::string Pawn::getUnicodeSymbol() const {
 }
 
 bool Pawn::canMakeDoubleMove() const {
-    /**
-     * Returns the bool equal to !(has pawn moved yet) - whether it can perform a double move
-     * */
     if ((this->parentField->getPosition().getRow() == 2 && this->color == Color::WHITE) ||
         (this->parentField->getPosition().getRow() == 7 && this->color == Color::BLACK))
         return false;
@@ -66,10 +63,6 @@ bool Pawn::canMakeDoubleMove() const {
 }
 
 std::vector<Move> Pawn::nonAttackingMoves() const {
-    /**
-     * Returns a vector of possible non-attacking moves (max. two moves - single and double push).
-     * Validates the board situation except checks and pins.
-     * */
     std::vector<Move> moves;
     auto singleMoveToPosition = parentField->getPosition().positionWithOffset(moveDirection, 0);
     bool possibleForwardMove = getBoard()->getField(singleMoveToPosition)->isEmpty();
@@ -89,9 +82,7 @@ std::vector<Move> Pawn::nonAttackingMoves() const {
 }
 
 std::vector<Move> Pawn::attackingMoves() const {
-    /**
-     * Returns vector of possible attacking moves. Validates the board situation except checks and pins.
-     * */
+
     std::vector<Move> moves;
 
     // attack with a positive column offset
@@ -108,11 +99,7 @@ std::vector<Move> Pawn::attackingMoves() const {
 }
 
 bool Pawn::possibleAttackInGivenDirection(bool positiveColumnOffset) const {
-    /**
-     * Boolean indicating whether an attacking a controlled field is possible
-     *
-     * @param positiveColumnOffset - indicates in which horizontal direction to look for an attack in
-     * */
+
     int horizontalMoveDirection = (positiveColumnOffset) ? 1 : -1;
 
     try {

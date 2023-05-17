@@ -10,17 +10,38 @@ private:
     Color color;
     Field *parentField;
     Player *player;
+
+
+    /**
+     * Returns the bool equal to !(has pawn moved yet) - whether it can perform a double move
+     */
     bool canMakeDoubleMove() const;
+
+    /**
+     * Boolean indicating whether an attacking a controlled field is possible
+     *
+     * @param positiveColumnOffset - indicates in which horizontal direction to look for an attack in
+     */
     bool possibleAttackInGivenDirection(bool positiveColumnOffset) const;
+
+    /**
+     * Returns a vector of possible non-attacking moves (max. two moves - single and double push).
+     * Validates the board situation except checks and pins.
+     */
     std::vector<Move> nonAttackingMoves() const;
+
+    /**
+     * Returns vector of possible attacking moves. Validates the board situation except checks and pins.
+     */
     std::vector<Move> attackingMoves() const;
+
     int moveDirection;
 
 
 public:
     Pawn(Color color, Field *field, Player *owner);
 
-    ~Pawn() override=default;
+    ~Pawn() override = default;
 
     std::vector<Move> getMoves() const override;
 

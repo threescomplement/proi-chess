@@ -9,22 +9,6 @@
 #include "pieces/Queen.h"
 #include "pieces/King.h"
 
-//
-//Board Board::emptyBoard() {
-//    std::array<std::array<Field *, 8>, 8> fields = {};
-//    for (int row = 0; row < BOARD_SIZE; ++row) {
-//        for (int col = 0; col < BOARD_SIZE; ++col) {
-//            fields[row][col] = new Field(nullptr, Position(row, col), nullptr);
-//        }
-//    }
-//
-//    auto board = Board();
-//    board.fields = fields;
-//    board.whiteKing = nullptr;
-//    board.blackKing = nullptr;
-//    return board;
-//}
-//
 Board::Board() = default;
 
 std::string Board::toString() const {
@@ -103,10 +87,6 @@ std::string Board::toFEN() const {
 }
 
 Board *Board::fromFEN(const std::string &FENDescription) {
-    /**
-     * Creates a board object based on the given the FEN board description (without additional info, like castling
-     * rights)
-     * */
     auto whitePlayer = new Player("White");
     auto blackPlayer = new Player("Black");
     auto board = Board::emptyBoard();

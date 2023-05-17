@@ -33,13 +33,17 @@ public:
 
     void setWhiteKing(Piece *whiteKing);
 
-    static Board* emptyBoard();
+    static Board *emptyBoard();
 
     std::string toString() const;
 
     std::string toFEN() const;
 
-    static Board* fromFEN(const std::string& FENDescription);
+    /**
+     * Creates a board object based on the given the FEN board description (without additional info, like castling
+     * rights)
+     */
+    static Board *fromFEN(const std::string &FENDescription);
 };
 
 
