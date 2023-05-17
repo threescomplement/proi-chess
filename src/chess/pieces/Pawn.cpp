@@ -88,12 +88,12 @@ std::vector<Move> Pawn::attackingMoves() const {
 
     // attack with a positive column offset
     if (possibleAttackInGivenDirection(true)) {
-        auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, 2);
+        auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, 1);
         moves.push_back(Move(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true));
     }
 
     if (possibleAttackInGivenDirection(false)) {
-        auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, -2);
+        auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, -1);
         moves.push_back(Move(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true));
     }
     return moves;
