@@ -36,6 +36,10 @@ public:
     static Board* emptyBoard();
 
     std::string toString() const;
+
+    std::string toFEN() const;
+
+    static Board fromFEN(std::string FENDescription);
 };
 
 

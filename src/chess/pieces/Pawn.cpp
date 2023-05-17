@@ -14,7 +14,7 @@ Pawn::Pawn(Color color, Field *field, Player *owner) {
 std::vector<Move> Pawn::getMoves() const {
     std::vector<Move> moves = {};
 
-    // TODO: pins, checks
+    // TODO: pins, checks, en passant
     std::vector<Move> captures = attackingMoves();
     std::vector<Move> basicMoves = nonAttackingMoves();
 
