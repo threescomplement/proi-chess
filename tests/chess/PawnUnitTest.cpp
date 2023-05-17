@@ -16,9 +16,9 @@ namespace PawnUnitTest {
         auto movesForPawn = testedPawn->getMoves();
         ASSERT_EQ(movesForPawn.size(), 2);
         Move expectedMove1 = {Position(2, 5), Position(3, 5), testedPawn, false};
-        Move expectedMove2 = {Position(2, 5), Position(3, 5), testedPawn, false};
+        Move expectedMove2 = {Position(2, 5), Position(4, 5), testedPawn, false};
         ASSERT_TRUE(in(movesForPawn, expectedMove1));
-        ASSERT_TRUE(in(movesForPawn, expectedMove1));
+        ASSERT_TRUE(in(movesForPawn, expectedMove2));
     }
 
 
