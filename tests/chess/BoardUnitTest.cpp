@@ -15,7 +15,7 @@
 
 
 namespace BoardUnitTest {
-    TEST(FENTests, emptyBoard) {
+    TEST(Board, FEN_emptyBoard) {
         auto testBoard = Board::emptyBoard();
         std::string expected = "8/8/8/8/8/8/8/8";
         ASSERT_EQ(expected, testBoard->toFEN());
@@ -23,7 +23,7 @@ namespace BoardUnitTest {
         ASSERT_EQ(expected, copyFromFen->toFEN());
     }
 
-    TEST(FENTests, initialBoardState) {
+    TEST(Board, FEN_initialBoardState) {
         auto testBoard = Board::emptyBoard();
         std::vector<Piece *> allPieces = {};
         auto whitePlayer = new Player(std::string("White Player"));
@@ -77,7 +77,7 @@ namespace BoardUnitTest {
         ASSERT_EQ(expected, copyFromFen->toFEN());
     }
 
-    TEST(FENTests, goofyItalian) {
+    TEST(Board, FEN_goofyItalian) {
         auto testBoard = Board::emptyBoard();
         std::vector<Piece *> allPieces = {};
         auto whitePlayer = new Player(std::string("White Player"));

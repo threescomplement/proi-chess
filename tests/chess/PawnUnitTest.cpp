@@ -10,7 +10,7 @@ namespace PawnUnitTest {
         return std::find(vec.begin(), vec.end(), val) != vec.end();
     }
 
-    TEST(getMoves, basePositionTwoMoves) {
+    TEST(Pawn, getMoves_basePositionTwoMoves) {
         auto testBoard = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         auto testedPawn = testBoard->getField(Position(2, 5))->getPiece();
         auto movesForPawn = testedPawn->getMoves();
@@ -22,19 +22,19 @@ namespace PawnUnitTest {
     }
 
 
-    TEST(getMoves, twoAttacksPossible) {
+    TEST(Pawn, getMoves_twoAttacksPossible) {
 
     }
 
-    TEST(getMoves, oneAttackPossible) {
+    TEST(Pawn, getMoves_oneAttackPossible) {
 
     }
 
-    TEST(getMoves, attackOutOfBounds) {
+    TEST(Pawn, getMoves_attackOutOfBounds) {
 
     }
 
-    TEST(getMoves, fieldBehindAttackedProtected)
+    TEST(Pawn, getMoves_fieldBehindAttackedProtected)
     {
 
     }
