@@ -37,7 +37,7 @@ Player *Queen::getPlayer() const {
 }
 
 char Queen::getCharacter() const {
-    return 'Q';
+    return (color == Color::BLACK) ? 'q' : 'Q';
 }
 
 std::string Queen::getUnicodeSymbol() const {

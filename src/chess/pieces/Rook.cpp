@@ -38,7 +38,7 @@ Player *Rook::getPlayer() const {
 }
 
 char Rook::getCharacter() const {
-    return 'R';
+    return (color == Color::BLACK) ? 'r' : 'R';
 }
 
 std::string Rook::getUnicodeSymbol() const {

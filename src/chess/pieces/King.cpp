@@ -37,7 +37,7 @@ Player *King::getPlayer() const {
 }
 
 char King::getCharacter() const {
-    return 'K';
+    return (color == Color::BLACK) ? 'k' : 'K';
 }
 
 std::string King::getUnicodeSymbol() const {

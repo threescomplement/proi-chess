@@ -36,7 +36,7 @@ Player *Knight::getPlayer() const {
 }
 
 char Knight::getCharacter() const {
-    return 'N';
+    return (color == Color::BLACK) ? 'n' : 'N';
 }
 
 std::string Knight::getUnicodeSymbol() const {

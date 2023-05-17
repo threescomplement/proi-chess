@@ -47,7 +47,7 @@ Player *Pawn::getPlayer() const {
 }
 
 char Pawn::getCharacter() const {
-    return 'P';
+    return (color == Color::BLACK) ? 'p' : 'P';
 }
 
 std::string Pawn::getUnicodeSymbol() const {

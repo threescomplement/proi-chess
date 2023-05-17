@@ -37,7 +37,7 @@ Player *Bishop::getPlayer() const {
 }
 
 char Bishop::getCharacter() const {
-    return 'B';
+    return (color == Color::BLACK) ? 'b' : 'B';
 }
 
 std::string Bishop::getUnicodeSymbol() const {
