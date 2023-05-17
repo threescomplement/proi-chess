@@ -41,11 +41,14 @@ set(CHESS_LIBRARY_SOURCES
         )
 
 set(CHESS_UNIT_TEST_SOURCES
+        tests/chess/common.h
         tests/chess/MoveUnitTest.cpp
         tests/chess/PositionUnitTest.cpp
         tests/chess/FieldUnitTest.cpp
         tests/chess/GameTest.cpp
-        tests/chess/PawnUnitTest.cpp tests/chess/BoardUnitTest.cpp)
+        tests/chess/PawnUnitTest.cpp
+        tests/chess/BoardUnitTest.cpp
+        )
 
 set(BOT_UNIT_TEST_SOURCES
         ./tests/bot/test.cpp

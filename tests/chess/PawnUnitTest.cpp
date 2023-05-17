@@ -1,26 +1,12 @@
-
+#include "common.h"
 #include "../../src/chess/pieces/Pawn.h"
 #include "../../src/chess/Board.h"
 #include "gtest/gtest.h"
 #include <algorithm>
 
+using namespace ChessUnitTestCommon;
+
 namespace PawnUnitTest {
-
-    bool in(const std::vector<Move> &vec, const Move &val) {
-        return std::find(vec.begin(), vec.end(), val) != vec.end();
-    }
-
-    bool containsAll(std::vector<Move> const &container, std::vector<Move> const &contained) {
-        if (container.size() != contained.size()) {
-            return false;
-        }
-
-        return std::all_of(
-                contained.begin(),
-                contained.end(),
-                [container](Move const &move) { return in(container, move); }
-        );
-    }
 
     TEST(Pawn, getMoves_basePositionTwoMoves) {
         auto testBoard = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
