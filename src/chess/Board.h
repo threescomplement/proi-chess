@@ -39,7 +39,7 @@ public:
 
     std::string toFEN() const;
 
-    static Board fromFEN(std::string FENDescription);
+    static Board* fromFEN(const std::string& FENDescription);
 };
 
 

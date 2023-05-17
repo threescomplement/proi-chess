@@ -16,14 +16,17 @@
 
 
 namespace BoardUnitTest {
-    TEST(toPgnTests, emptyBoard) {
+    TEST(FENTests, emptyBoard) {
         auto testBoard = Board::emptyBoard();
         std::string expected = "8/8/8/8/8/8/8/8";
         ASSERT_EQ(expected, testBoard->toFEN());
+        Board *copyFromFen = Board::fromFEN(testBoard->toFEN());
+        ASSERT_EQ(expected, copyFromFen->toFEN());
     }
-    TEST(toPgnTests, initialBoardState) {
+
+    TEST(FENTests, initialBoardState) {
         auto testBoard = Board::emptyBoard();
-        std::vector<Piece*> allPieces = {};
+        std::vector<Piece *> allPieces = {};
         auto whitePlayer = new Player(std::string("White Player"));
         auto blackPlayer = new Player(std::string("Black Player"));
 
@@ -71,11 +74,13 @@ namespace BoardUnitTest {
 
         std::string expected = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         ASSERT_EQ(expected, testBoard->toFEN());
+        Board *copyFromFen = Board::fromFEN(testBoard->toFEN());
+        ASSERT_EQ(expected, copyFromFen->toFEN());
     }
 
-    TEST(toPgnTests, goofyItalian) {
+    TEST(FENTests, goofyItalian) {
         auto testBoard = Board::emptyBoard();
-        std::vector<Piece*> allPieces = {};
+        std::vector<Piece *> allPieces = {};
         auto whitePlayer = new Player(std::string("White Player"));
         auto blackPlayer = new Player(std::string("Black Player"));
 
@@ -124,6 +129,8 @@ namespace BoardUnitTest {
         std::string expected = "r1bqkbnr/1pp1pppp/p1n5/3p4/2B1P3/5N2/PPPP1PPP/RNBQK2R";
         ASSERT_EQ(expected, testBoard->toFEN());
 
+        Board *copyFromFen = Board::fromFEN(testBoard->toFEN());
+        ASSERT_EQ(expected, copyFromFen->toFEN());
     }
 }
 

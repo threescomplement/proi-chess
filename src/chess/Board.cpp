@@ -1,6 +1,13 @@
 #include <sstream>
 #include "Board.h"
 #include "Color.h"
+#include "Player.h"
+#include "pieces/Rook.h"
+#include "pieces/Knight.h"
+#include "pieces/Pawn.h"
+#include "pieces/Bishop.h"
+#include "pieces/Queen.h"
+#include "pieces/King.h"
 
 //
 //Board Board::emptyBoard() {
@@ -81,8 +88,8 @@ std::string Board::toFEN() const {
                 tempCol++;
             }
             if (empties == 0) {
-              auto currPieceChar = fields[row][col]->getPiece()->getCharacter();
-              ss << currPieceChar;
+                auto currPieceChar = fields[row][col]->getPiece()->getCharacter();
+                ss << currPieceChar;
             } else {
                 ss << empties;
                 col = col + empties - 1;
@@ -92,7 +99,90 @@ std::string Board::toFEN() const {
     }
 
     std::string result = ss.str();
-    result = result.substr(0, result.size()-1);
+    result = result.substr(0, result.size() - 1);
     return result;
+}
+
+Board *Board::fromFEN(const std::string &FENDescription) {
+    /**
+     * Creates a board object based on the given the FEN board description (without additional info, like castling
+     * rights)
+     * */
+    auto whitePlayer = new Player("White");
+    auto blackPlayer = new Player("Black");
+    auto board = Board::emptyBoard();
+
+    int row = 7;
+    int col = 0;
+
+    for (auto character: FENDescription) {
+        if (isdigit(character)) {
+            // empties
+            std::string stringOfEmpties = {character};
+            col += std::stoi(stringOfEmpties);
+
+        } else if (character == '/') {
+            // next row
+            row -= 1;
+            col = 0;
+        } else {
+            Piece *piece = nullptr;
+            switch (character) {
+                case 'p': {
+                    piece = new Pawn(Color::BLACK, board->fields[row][col], blackPlayer);
+                    break;
+                }
+                case 'P': {
+                    piece = new Pawn(Color::WHITE, board->fields[row][col], whitePlayer);
+                    break;
+                }
+                case 'r': {
+                    piece = new Rook(Color::BLACK, board->fields[row][col], blackPlayer);
+                    break;
+                }
+                case 'R': {
+                    piece = new Rook(Color::WHITE, board->fields[row][col], whitePlayer);
+                    break;
+                }
+                case 'n': {
+                    piece = new Knight(Color::BLACK, board->fields[row][col], blackPlayer);
+                    break;
+                }
+                case 'N': {
+                    piece = new Knight(Color::WHITE, board->fields[row][col], whitePlayer);
+                    break;
+                }
+                case 'b': {
+                    piece = new Bishop(Color::BLACK, board->fields[row][col], blackPlayer);
+                    break;
+                }
+                case 'B': {
+                    piece = new Bishop(Color::WHITE, board->fields[row][col], whitePlayer);
+                    break;
+                }
+                case 'q': {
+                    piece = new Queen(Color::BLACK, board->fields[row][col], blackPlayer);
+                    break;
+                }
+                case 'Q': {
+                    piece = new Queen(Color::WHITE, board->fields[row][col], whitePlayer);
+                    break;
+                }
+                case 'k': {
+                    piece = new King(Color::BLACK, board->fields[row][col], blackPlayer);
+                    break;
+                }
+                case 'K': {
+                    piece = new King(Color::WHITE, board->fields[row][col], whitePlayer);
+                    break;
+                }
+                default:
+                    throw std::invalid_argument("Invalid FEN literal in string.");
+            }
+            board->fields[row][col]->setPiece(piece);
+            col += 1;
+        }
+    }
+    return board;
 }
 
