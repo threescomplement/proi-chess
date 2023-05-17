@@ -76,7 +76,7 @@ std::string Board::toFEN() const {
         for (int col = 0; col < BOARD_SIZE; col++) {
             int empties = 0;
             auto tempCol = col;
-            while (fields[row][tempCol]->isEmpty() && tempCol < BOARD_SIZE) {
+            while (tempCol < BOARD_SIZE && fields[row][tempCol]->isEmpty()) {
                 empties++;
                 tempCol++;
             }
