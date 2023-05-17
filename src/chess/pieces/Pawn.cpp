@@ -19,8 +19,8 @@ std::vector<Move> Pawn::getMoves() const {
     std::vector<Move> captures = attackingMoves();
     std::vector<Move> basicMoves = nonAttackingMoves();
 
-    moves.insert(moves.end(), attackingMoves().begin(), attackingMoves().end());
-    moves.insert(basicMoves.end(), captures.begin(), captures.end());
+    moves.insert(moves.end(), captures.begin(), captures.end());
+    moves.insert(moves.end(), basicMoves.begin(), basicMoves.end());
 
     return moves;
 }
@@ -57,9 +57,10 @@ std::string Pawn::getUnicodeSymbol() const {
 
 bool Pawn::canMakeDoubleMove() const {
     if ((this->parentField->getPosition().getRow() == 2 && this->color == Color::WHITE) ||
-        (this->parentField->getPosition().getRow() == 7 && this->color == Color::BLACK))
-        return false;
-    return true;
+        (this->parentField->getPosition().getRow() == 7 && this->color == Color::BLACK)) {
+        return true;
+    }
+    return false;
 }
 
 std::vector<Move> Pawn::nonAttackingMoves() const {
