@@ -47,3 +47,15 @@ Position Position::fromString(const std::string &pgn) {
     return {row, col};
 }
 
+Position Position::fromString(std::string positionString) {
+    if (positionString.size() != 2) {
+        throw std::invalid_argument("Invalid representation of a position");
+    }
+
+    auto col = positionString[0];
+    auto row = positionString[1];
+    auto colNumeric = col - 'a' + 1;
+    auto rowNumeric = row - '0';
+    return {rowNumeric, colNumeric};
+}
+

@@ -24,8 +24,13 @@ public:
 
     Position positionWithOffset(int rowOffset, int colOffset) const;
 
-    static Position fromString(const std::string &pgn);
-
+    /**
+     * Utility for constructing Position from standard notation eg. "e4" -> Position(4, 5)
+     *
+     * @param positionString standard notation of position - string of 1 character 1-h and 1 digit 1-8
+     * @return equivalent position
+     */
+    static Position fromString(std::string positionString);
 };
 
 

@@ -22,8 +22,17 @@ namespace PositionUnitTest {
     }
 
     TEST(Position, fromString) {
-        ASSERT_EQ(Position::fromString("h5"), Position(5, 8));
-        ASSERT_EQ(Position::fromString("a1"), Position(1, 1));
-        ASSERT_EQ(Position::fromString("e4"), Position(4, 5));
+        ASSERT_EQ(Position(5, 8), Position::fromString("h5"));
+        ASSERT_EQ(Position(1, 1), Position::fromString("a1"));
+        ASSERT_EQ(Position(4, 5), Position::fromString("e4"));
+    }
+
+    TEST(Position, fromStringInvalidRepresentation) {
+        ASSERT_THROW(Position::fromString("abc"), std::invalid_argument);
+        ASSERT_THROW(Position::fromString("a11"), std::invalid_argument);
+        ASSERT_THROW(Position::fromString("4e"), std::invalid_argument);
+        ASSERT_THROW(Position::fromString("a9"), std::invalid_argument);
+        ASSERT_THROW(Position::fromString("j3"), std::invalid_argument);
+        ASSERT_THROW(Position::fromString("a0"), std::invalid_argument);
     }
 }
