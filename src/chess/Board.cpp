@@ -164,6 +164,7 @@ Board *Board::fromFEN(const std::string &FENDescription) {
                 default:
                     throw std::invalid_argument("Invalid FEN literal in string.");
             }
+            board->allPieces.push_back(piece);
             board->fields[row][col]->setPiece(piece);
             col += 1;
         }
