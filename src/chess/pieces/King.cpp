@@ -5,7 +5,6 @@
 #include <vector>
 
 
-
 King::King(Color color, Field *field, Player *owner) {
     this->color = color;
     this->parentField = field;
@@ -13,7 +12,17 @@ King::King(Color color, Field *field, Player *owner) {
 }
 
 std::vector<Move> King::getMoves() const {
-    return {};
+    auto toPositions = getPossibleMovePositions();
+    std::vector<Move> moves;
+
+    for (auto toPos: toPositions) {
+        if (getBoard()->getField(toPos)->isEmpty()) {
+            moves.push_back(Move(getPosition(), toPos, (Piece *) this, false));
+        } else if (getBoard()->getField(toPos)->getPiece()->getColor() != color) {
+            moves.push_back(Move(getPosition(), toPos, (Piece *) this, true));
+        }
+    }
+    return moves;
 }
 
 PieceType King::getType() const {
@@ -42,4 +51,18 @@ char King::getCharacter() const {
 
 std::string King::getUnicodeSymbol() const {
     return (color == Color::BLACK) ? "♚" : "♔";
+}
+
+std::vector<Position> King::getPossibleMovePositions() const {
+    std::vector<std::pair<int, int>> offsets = {
+            {-1, -1},
+            {-1, 0},
+            {-1, 1},
+            {0,  -1},
+            {0,  1},
+            {1,  -1},
+            {1,  0},
+            {1,  1}
+    };
+    return getAllowedPositionsFromOffsets(offsets);
 }
