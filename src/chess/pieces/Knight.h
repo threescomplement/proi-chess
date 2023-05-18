@@ -10,6 +10,11 @@ private:
     Field *parentField;
     Player *player;
 
+    /**
+     * Get all reachable positions on the board
+     */
+    std::vector<Position> getTargetPositions() const;
+
 public:
     Knight(Color color, Field *field, Player *owner);
 
