@@ -80,17 +80,5 @@ std::vector<Position> Knight::getTargetPositions() const {
             {-2, 1}
     };
 
-    for (auto offset: offsets) {
-        try {
-            targetPositions.push_back(
-                    this->getField()
-                            ->getPosition()
-                            .positionWithOffset(offset.first, offset.second)
-            );
-        } catch (std::exception &e) {
-            continue;  // Skip if position with offset is out of bounds
-        }
-    }
-
-    return targetPositions;
+    return getAllowedPositionsFromOffsets(offsets);
 }

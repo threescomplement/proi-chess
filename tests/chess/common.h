@@ -3,11 +3,16 @@
 
 #include <vector>
 #include <algorithm>
-#include "../../src/chess/Move.h"
+#include <string>
+
+class Move;
+class Position;
 
 namespace ChessUnitTestCommon {
     bool in(const std::vector<Move> &vec, const Move &val);
 
-    bool containsAll(std::vector<Move> const &container, std::vector<Move> const &contained);
+    bool isPermutation(const std::vector<Move> &container, const std::vector<Move> &contained);
+
+    Position pos(const std::string &textRepr);
 }
 #endif //CHESS_COMMON_H
