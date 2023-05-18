@@ -31,7 +31,7 @@ namespace PawnUnitTest {
                 Move({4, 5}, {5, 6}, pawn, true)
         };
         ASSERT_EQ(3, pawnMoves.size());
-        ASSERT_TRUE(containsAll(pawnMoves, expected));
+        ASSERT_TRUE(isPermutation(pawnMoves, expected));
     }
 
 
@@ -41,7 +41,7 @@ namespace PawnUnitTest {
         auto moves = pawn->getMoves();
 
         auto expected = {Move(Position(4,5), Position(5, 5), pawn, false)};
-        ASSERT_TRUE(containsAll(moves, expected));
+        ASSERT_TRUE(isPermutation(moves, expected));
     }
 
     TEST(Pawn, getMoves_oneAttackPossible) {
@@ -53,7 +53,7 @@ namespace PawnUnitTest {
                 Move(Position(4, 5), Position(5, 5), pawn, false),
                 Move(Position(4, 5), Position(5, 6), pawn, true),
         };
-        ASSERT_TRUE(containsAll(moves, expected));
+        ASSERT_TRUE(isPermutation(moves, expected));
     }
 
     TEST(Pawn, getMoves_attackOutOfBounds) {

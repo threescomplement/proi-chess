@@ -22,8 +22,8 @@ namespace KnightUnitTests {
         };
 
 
-        ASSERT_TRUE(containsAll(whiteMoves, whiteExpected));
-        ASSERT_TRUE(containsAll(blackMoves, blackExpected));
+        ASSERT_TRUE(isPermutation(whiteMoves, whiteExpected));
+        ASSERT_TRUE(isPermutation(blackMoves, blackExpected));
     }
 
     TEST(Knight, getMovesMultiplePossibleNoCapture) {
@@ -38,7 +38,7 @@ namespace KnightUnitTests {
                 Move(Position::fromString("f3"), Position::fromString("g5"), knight, false),
                 Move(Position::fromString("f3"), Position::fromString("h4"), knight, false),
         };
-        ASSERT_TRUE(containsAll(moves, expected));
+        ASSERT_TRUE(isPermutation(moves, expected));
     }
 
     TEST(Knight, getMovesMultipleCaptures) {
@@ -56,6 +56,6 @@ namespace KnightUnitTests {
                 Move(Position::fromString("e5"), Position::fromString("c6"), knight, false),
                 Move(Position::fromString("e5"), Position::fromString("c4"), knight, false),
         };
-        ASSERT_TRUE(containsAll(moves, expected));
+        ASSERT_TRUE(isPermutation(moves, expected));
     }
 }
