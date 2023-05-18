@@ -58,16 +58,11 @@ std::vector<Move> Piece::getMovesInDirections(std::vector<std::pair<int, int>> c
 
 std::vector<Position> Piece::getAllowedPositionsFromOffsets(const std::vector<std::pair<int, int>> &offsets) const {
     std::vector<Position> targetPositions;
+    auto sourcePosition = this->getPosition();
 
     for (auto offset: offsets) {
-        try {
-            targetPositions.push_back(
-                    this->getField()
-                            ->getPosition()
-                            .positionWithOffset(offset.first, offset.second)
-            );
-        } catch (std::exception &e) {
-            continue;  // Skip if position with offset is out of bounds
+        if (sourcePosition.offsetWithinBounds(offset.first, offset.second)) {
+            targetPositions.push_back(sourcePosition.positionWithOffset(offset.first, offset.second));
         }
     }
     return targetPositions;
