@@ -20,12 +20,12 @@ bool Move::getIsCapture() const {
 std::string Move::toString() const {
     std::stringstream ss;
 
-    char pieceChar = piece->getCharacter();
-    if (piece->getType() == PieceType::PAWN && isCapture) {
-        pieceChar = 'a' + from.getCol() - 1;
-    }
+    char pieceChar;
+    if (piece->getType() == PieceType::PAWN) {
+        pieceChar = (isCapture) ? 'a' + from.getCol() - 1 : '\0';
+    } else { pieceChar = piece->getCharacter(); }
 
-    ss << pieceChar;
+    if (pieceChar) { ss << pieceChar; }
     if (isCapture) {
         ss << 'x';
     }

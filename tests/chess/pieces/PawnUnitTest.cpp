@@ -40,7 +40,7 @@ namespace PawnUnitTest {
         auto pawn = board->getField(Position(4, 5))->getPiece();
         auto moves = pawn->getMoves();
 
-        auto expected = {Move(Position(4,5), Position(5, 5), pawn, false)};
+        auto expected = {Move(Position(4, 5), Position(5, 5), pawn, false)};
         ASSERT_TRUE(containsAll(moves, expected));
     }
 
@@ -55,13 +55,4 @@ namespace PawnUnitTest {
         };
         ASSERT_TRUE(containsAll(moves, expected));
     }
-
-    TEST(Pawn, getMoves_attackOutOfBounds) {
-
-    }
-
-    TEST(Pawn, getMoves_fieldBehindAttackedProtected) {
-
-    }
-
-};
+}
