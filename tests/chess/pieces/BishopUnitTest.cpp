@@ -94,10 +94,13 @@ namespace BishopUnitTest {
         auto whiteBishop = testBoard->getField(pos("e3"))->getPiece();
         auto whiteBishopMoves = whiteBishop->getMoves();
         std::vector<Move> expectedWhiteMoves = {
-                Move(pos("e3"), pos("f2"), whiteBishop, false),
                 Move(pos("e3"), pos("g1"), whiteBishop, false),
-                Move(pos("e3"), pos("d4"), whiteBishop, true),
-                Move(pos("e3"), pos("f5"), whiteBishop, true),
+                Move(pos("e3"), pos("f2"), whiteBishop, false),
+                Move(pos("e3"), pos("d4"), whiteBishop, false),
+                Move(pos("e3"), pos("c5"), whiteBishop, false),
+                Move(pos("e3"), pos("b6"), whiteBishop, false),
+                Move(pos("e3"), pos("a7"), whiteBishop, false),
+                Move(pos("e3"), pos("f4"), whiteBishop, true),
         };
         ASSERT_TRUE(isPermutation(whiteBishopMoves, expectedWhiteMoves));
     }

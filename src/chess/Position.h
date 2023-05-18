@@ -35,6 +35,8 @@ public:
      * @return equivalent position
      */
     static Position fromString(std::string positionString);
+
+    static bool withinBounds(int row, int col);
 };
 
 

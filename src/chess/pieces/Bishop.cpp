@@ -5,7 +5,6 @@
 #include <vector>
 
 
-
 Bishop::Bishop(Color color, Field *field, Player *owner) {
     this->color = color;
     this->parentField = field;
@@ -13,7 +12,10 @@ Bishop::Bishop(Color color, Field *field, Player *owner) {
 }
 
 std::vector<Move> Bishop::getMoves() const {
-    return {};
+    return this->getMovesInDirections({{1,  1},
+                                       {1,  -1},
+                                       {-1, 1},
+                                       {-1, -1}});
 }
 
 PieceType Bishop::getType() const {
