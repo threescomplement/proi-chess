@@ -37,7 +37,10 @@ bool Position::operator!=(const Position &rhs) const {
 
 Position Position::positionWithOffset(int rowOffset, int colOffset) const {
     return {getRow() + rowOffset, getCol() + colOffset};
+
+
 }
+
 
 Position Position::fromString(std::string positionString) {
     if (positionString.size() != 2) {
