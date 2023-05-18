@@ -24,18 +24,18 @@ namespace QueenUnitTest {
         auto moves = queen->getMoves();
 
         auto expected = {
-                Move(pos("b2"), pos("c2"), queen, false),
-                Move(pos("b2"), pos("d1"), queen, false),
-                Move(pos("b2"), pos("a3"), queen, false),
-                Move(pos("b2"), pos("a4"), queen, false),
-                Move(pos("b2"), pos("b4"), queen, false),
-                Move(pos("b2"), pos("b5"), queen, false),
-                Move(pos("b2"), pos("b6"), queen, false),
-                Move(pos("b2"), pos("b7"), queen, true),
-                Move(pos("b2"), pos("c4"), queen, false),
-                Move(pos("b2"), pos("d5"), queen, false),
-                Move(pos("b2"), pos("e6"), queen, false),
-                Move(pos("b2"), pos("f7"), queen, true),
+                Move(pos("b3"), pos("c2"), queen, false),
+                Move(pos("b3"), pos("d1"), queen, false),
+                Move(pos("b3"), pos("a3"), queen, false),
+                Move(pos("b3"), pos("a4"), queen, false),
+                Move(pos("b3"), pos("b4"), queen, false),
+                Move(pos("b3"), pos("b5"), queen, false),
+                Move(pos("b3"), pos("b6"), queen, false),
+                Move(pos("b3"), pos("b7"), queen, true),
+                Move(pos("b3"), pos("c4"), queen, false),
+                Move(pos("b3"), pos("d5"), queen, false),
+                Move(pos("b3"), pos("e6"), queen, false),
+                Move(pos("b3"), pos("f7"), queen, true),
         };
 
         ASSERT_TRUE(isPermutation(moves, expected));
