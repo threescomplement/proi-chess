@@ -50,7 +50,7 @@ set(CHESS_UNIT_TEST_SOURCES
         tests/chess/GameTest.cpp
         tests/chess/BoardUnitTest.cpp
         tests/chess/pieces/PawnUnitTest.cpp
-        tests/chess/pieces/KnightUnitTests.cpp )
+        tests/chess/pieces/KnightUnitTests.cpp tests/chess/pieces/QueenUnitTest.cpp tests/chess/pieces/BishopUnitTest.cpp tests/chess/pieces/RookUnitTest.cpp)
 
 set(BOT_UNIT_TEST_SOURCES
         ./tests/bot/test.cpp
