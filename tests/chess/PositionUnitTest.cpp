@@ -20,4 +20,10 @@ namespace PositionUnitTest {
         ASSERT_EQ("a1", Position(1, 1).toString());
         ASSERT_EQ("e4", Position(4, 5).toString());
     }
+
+    TEST(Position, fromString) {
+        ASSERT_EQ(Position::fromString("h5"), Position(5, 8));
+        ASSERT_EQ(Position::fromString("a1"), Position(1, 1));
+        ASSERT_EQ(Position::fromString("e4"), Position(4, 5));
+    }
 }

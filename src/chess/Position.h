@@ -23,6 +23,9 @@ public:
     bool operator!=(const Position &rhs) const;
 
     Position positionWithOffset(int rowOffset, int colOffset) const;
+
+    static Position fromString(const std::string &pgn);
+
 };
 
 

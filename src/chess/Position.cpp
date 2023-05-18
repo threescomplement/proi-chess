@@ -37,5 +37,13 @@ bool Position::operator!=(const Position &rhs) const {
 
 Position Position::positionWithOffset(int rowOffset, int colOffset) const {
     return {getRow() + rowOffset, getCol() + colOffset};
+
+
+}
+
+Position Position::fromString(const std::string &pgn) {
+    int row = std::stoi(std::string(1, pgn[1]));
+    int col = pgn[0] - 'a' + 1;
+    return {row, col};
 }
 
