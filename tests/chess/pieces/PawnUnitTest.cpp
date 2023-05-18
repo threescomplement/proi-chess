@@ -1,6 +1,6 @@
-#include "common.h"
-#include "../../src/chess/pieces/Pawn.h"
-#include "../../src/chess/Board.h"
+#include "../common.h"
+#include "../../../src/chess/pieces/Pawn.h"
+#include "../../../src/chess/Board.h"
 #include "gtest/gtest.h"
 #include <algorithm>
 
