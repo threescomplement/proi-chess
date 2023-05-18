@@ -26,6 +26,7 @@ set(CHESS_LIBRARY_SOURCES
         src/chess/Position.h
         src/chess/Position.cpp
         src/chess/pieces/Piece.h
+        src/chess/pieces/Piece.cpp
         src/chess/pieces/Pawn.h
         src/chess/pieces/Pawn.cpp
         src/chess/pieces/Rook.h
