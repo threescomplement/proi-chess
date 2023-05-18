@@ -22,6 +22,10 @@ public:
 
     bool operator!=(const Position &rhs) const;
 
+    /**
+     * Create a position with an offset relative to this
+     * @throw std::invalid_argument if outside board boundary
+     */
     Position positionWithOffset(int rowOffset, int colOffset) const;
 
     /**
