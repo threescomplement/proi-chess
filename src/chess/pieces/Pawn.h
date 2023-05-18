@@ -3,13 +3,11 @@
 #define CHESS_PAWN_H
 
 #include "Piece.h"
+#include "BasePiece.h"
 
 
-class Pawn : public Piece {
+class Pawn : public BasePiece {
 private:
-    Color color;
-    Field *parentField;
-    Player *player;
     int moveDirection;
 
     /**
@@ -37,7 +35,7 @@ private:
 
 
 public:
-    Pawn(Color color, Field *field, Player *owner);
+    Pawn(Color color, Field *field);
 
     ~Pawn() override = default;
 
@@ -45,13 +43,7 @@ public:
 
     PieceType getType() const override;
 
-    Color getColor() const override;
-
     Board *getBoard() const override;
-
-    Field *getField() const override;
-
-    Player *getPlayer() const override;
 
     char getCharacter() const override;
 

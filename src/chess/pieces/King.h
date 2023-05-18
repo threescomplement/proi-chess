@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Piece.h"
+#include "BasePiece.h"
 
 enum class Color;
 class Player;
@@ -14,15 +15,12 @@ class Board;
 
 
 
-class King : public Piece {
+class King : public BasePiece {
 private:
-    Color color;
-    Field *parentField;
-    Player *player;
     std::vector<Position> getPossibleMovePositions() const;
 
 public:
-    King(Color color, Field *field, Player *owner);
+    using BasePiece::BasePiece;
 
     ~King() override = default;
 
@@ -30,13 +28,7 @@ public:
 
     PieceType getType() const override;
 
-    Color getColor() const override;
-
     Board *getBoard() const override;
-
-    Field *getField() const override;
-
-    Player *getPlayer() const override;
 
     char getCharacter() const override;
 

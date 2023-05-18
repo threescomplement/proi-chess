@@ -2,6 +2,7 @@
 #define CHESS_BOARD_H
 
 #include <memory>
+#include <utility>
 #include "Field.h"
 #include "Move.h"
 #include "constants.h"
@@ -48,6 +49,17 @@ public:
      * rights)
      */
     static Board *fromFEN(const std::string &FENDescription);
+};
+
+class IllegalMoveException : public std::exception {
+private:
+    std::string message;
+public:
+    explicit IllegalMoveException(std::string msg) : message(std::move(msg)) {}
+
+    std::string what() {
+        return message;
+    }
 };
 
 

@@ -2,16 +2,15 @@
 #define CHESS_QUEEN_H
 
 
+#include "BasePiece.h"
+
 class Piece;
 
-class Queen : public Piece {
+class Queen : public BasePiece {
 private:
-    Color color;
-    Field *parentField;
-    Player *player;
 
 public:
-    Queen(Color color, Field *field, Player *owner);
+    using BasePiece::BasePiece;
 
     ~Queen() override;
 
@@ -19,13 +18,7 @@ public:
 
     PieceType getType() const override;
 
-    Color getColor() const override;
-
     Board *getBoard() const override;
-
-    Field *getField() const override;
-
-    Player *getPlayer() const override;
 
     char getCharacter() const override;
 

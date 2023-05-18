@@ -5,10 +5,7 @@
 #include "Pawn.h"
 // TODO: Promotion mechanics, en passant
 
-Pawn::Pawn(Color color, Field *field, Player *owner) {
-    this->color = color;
-    this->parentField = field;
-    this->player = owner;
+Pawn::Pawn(Color color, Field *field): BasePiece(color, field) {
     this->moveDirection = (color == Color::WHITE) ? 1 : -1;
 }
 
@@ -30,22 +27,10 @@ PieceType Pawn::getType() const {
     return PieceType::PAWN;
 }
 
-
-Color Pawn::getColor() const {
-    return color;
-}
-
 Board *Pawn::getBoard() const {
     return parentField->getBoard();
 }
 
-Field *Pawn::getField() const {
-    return parentField;
-}
-
-Player *Pawn::getPlayer() const {
-    return player;
-}
 
 char Pawn::getCharacter() const {
     return (color == Color::BLACK) ? 'p' : 'P';

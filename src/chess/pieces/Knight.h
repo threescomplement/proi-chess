@@ -3,12 +3,10 @@
 
 
 #include "Piece.h"
+#include "BasePiece.h"
 
-class Knight : public Piece {
+class Knight : public BasePiece {
 private:
-    Color color;
-    Field *parentField;
-    Player *player;
 
     /**
      * Get all reachable positions on the board
@@ -16,7 +14,7 @@ private:
     std::vector<Position> getTargetPositions() const;
 
 public:
-    Knight(Color color, Field *field, Player *owner);
+    using BasePiece::BasePiece;
 
     ~Knight() override = default;
 
@@ -24,13 +22,7 @@ public:
 
     PieceType getType() const override;
 
-    Color getColor() const override;
-
     Board *getBoard() const override;
-
-    Field *getField() const override;
-
-    Player *getPlayer() const override;
 
     char getCharacter() const override;
 

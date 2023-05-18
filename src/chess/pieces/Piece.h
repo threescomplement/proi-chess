@@ -57,13 +57,13 @@ public:
 
     virtual Field *getField() const = 0;
 
-    virtual Player *getPlayer() const = 0;
-
     virtual char getCharacter() const = 0;
 
     virtual Position getPosition() const;
 
     virtual std::string getUnicodeSymbol() const = 0;
+
+    virtual void takeOffField() = 0;
 
     virtual std::vector<Position> getAllowedPositionsFromOffsets(const std::vector<std::pair<int, int>> &offsets) const;
 };

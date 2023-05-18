@@ -3,15 +3,13 @@
 
 
 #include "Piece.h"
+#include "BasePiece.h"
 
-class Bishop : public Piece {
+class Bishop : public BasePiece {
 private:
-    Color color;
-    Field *parentField;
-    Player *player;
 
 public:
-    Bishop(Color color, Field *field, Player *owner);
+    using BasePiece::BasePiece;
 
     ~Bishop() override = default;
 
@@ -19,13 +17,7 @@ public:
 
     PieceType getType() const override;
 
-    Color getColor() const override;
-
     Board *getBoard() const override;
-
-    Field *getField() const override;
-
-    Player *getPlayer() const override;
 
     char getCharacter() const override;
 
