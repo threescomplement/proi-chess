@@ -41,11 +41,6 @@ Position Position::positionWithOffset(int rowOffset, int colOffset) const {
 
 }
 
-Position Position::fromString(const std::string &pgn) {
-    int row = std::stoi(std::string(1, pgn[1]));
-    int col = pgn[0] - 'a' + 1;
-    return {row, col};
-}
 
 Position Position::fromString(std::string positionString) {
     if (positionString.size() != 2) {
