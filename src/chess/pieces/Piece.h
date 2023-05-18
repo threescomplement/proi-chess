@@ -36,6 +36,8 @@ public:
     virtual Position getPosition() const;
 
     virtual std::string getUnicodeSymbol() const = 0;
+
+    virtual std::vector<Position> getAllowedPositionsFromOffsets(const std::vector<std::pair<int, int>> &offsets) const;
 };
 
 

@@ -19,6 +19,7 @@ private:
     Color color;
     Field *parentField;
     Player *player;
+    std::vector<Position> getPossibleMovePositions() const;
 
 public:
     King(Color color, Field *field, Player *owner);

@@ -104,16 +104,10 @@ bool Pawn::possibleAttackInGivenDirection(bool positiveColumnOffset) const {
     int horizontalMoveDirection = (positiveColumnOffset) ? 1 : -1;
 
     try {
-        auto negativeColumnOffsetToPos = parentField->getPosition().positionWithOffset(2 * moveDirection,
-                                                                                       2 * horizontalMoveDirection);
         auto attackedPosition = parentField->getPosition().positionWithOffset(moveDirection, horizontalMoveDirection);
 
         if (getBoard()->getField(attackedPosition)->isEmpty()) {
             // nothing to attack
-            return false;
-        }
-        if (!(getBoard()->getField(negativeColumnOffsetToPos)->isEmpty())) {
-            // field behind the attacked square not empty
             return false;
         }
         return true;
