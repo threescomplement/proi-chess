@@ -63,13 +63,6 @@ Field *Board::getField(Position position) const {
     return fields[position.getRow() - 1][position.getCol() - 1];
 }
 
-void Board::setBlackKing(Piece *blackKing) {
-    this->blackKing = blackKing;
-}
-
-void Board::setWhiteKing(Piece *whiteKing) {
-    this->whiteKing = whiteKing;
-}
 
 std::string Board::toFEN() const {
     // TODO: discuss the other fen parameters - castling and so on
