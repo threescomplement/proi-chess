@@ -20,6 +20,11 @@ namespace BoardUnitTest {
         ASSERT_EQ("8/8/8/8/8/8/8/8", board.toFEN());
     }
 
+    TEST(Board, startingBoard) {
+        auto board = Board::startingBoard();
+        ASSERT_EQ("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", board->toFEN());
+    }
+
     TEST(Board, FEN_emptyBoard) {
         auto testBoard = Board::emptyBoard();
         std::string expected = "8/8/8/8/8/8/8/8";

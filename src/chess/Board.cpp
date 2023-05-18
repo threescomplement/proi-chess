@@ -64,6 +64,48 @@ Field *Board::getField(Position position) const {
 }
 
 
+Board *Board::startingBoard() {
+    auto board = Board::emptyBoard();
+
+    for (int col = 1; col <= BOARD_SIZE; col++) {
+        board->allPieces.push_back(new Pawn(Color::WHITE, board->getField(Position(2, col)), nullptr));
+    }
+
+    for (int col = 1; col <= BOARD_SIZE; col++) {
+        board->allPieces.push_back(new Pawn(Color::BLACK, board->getField(Position(7, col)), nullptr));
+    }
+
+    board->allPieces.push_back(new Rook(Color::WHITE, board->getField(Position::fromString("a1")), nullptr));
+    board->allPieces.push_back(new Knight(Color::WHITE, board->getField(Position::fromString("b1")), nullptr));
+    board->allPieces.push_back(new Bishop(Color::WHITE, board->getField(Position::fromString("c1")), nullptr));
+    board->allPieces.push_back(new Queen(Color::WHITE, board->getField(Position::fromString("d1")), nullptr));
+    board->allPieces.push_back(new Bishop(Color::WHITE, board->getField(Position::fromString("f1")), nullptr));
+    board->allPieces.push_back(new Knight(Color::WHITE, board->getField(Position::fromString("g1")), nullptr));
+    board->allPieces.push_back(new Rook(Color::WHITE, board->getField(Position::fromString("h1")), nullptr));
+
+    board->allPieces.push_back(new Rook(Color::BLACK, board->getField(Position::fromString("a8")), nullptr));
+    board->allPieces.push_back(new Knight(Color::BLACK, board->getField(Position::fromString("b8")), nullptr));
+    board->allPieces.push_back(new Bishop(Color::BLACK, board->getField(Position::fromString("c8")), nullptr));
+    board->allPieces.push_back(new Queen(Color::BLACK, board->getField(Position::fromString("d8")), nullptr));
+    board->allPieces.push_back(new Bishop(Color::BLACK, board->getField(Position::fromString("f8")), nullptr));
+    board->allPieces.push_back(new Knight(Color::BLACK, board->getField(Position::fromString("g8")), nullptr));
+    board->allPieces.push_back(new Rook(Color::BLACK, board->getField(Position::fromString("h8")), nullptr));
+
+    auto whiteKing = new King(Color::WHITE, board->getField(Position::fromString("e1")), nullptr);
+    auto blackKing = new King(Color::BLACK, board->getField(Position::fromString("e8")), nullptr);
+    board->whiteKing = whiteKing;
+    board->blackKing = blackKing;
+    board->allPieces.push_back(whiteKing);
+    board->allPieces.push_back(blackKing);
+
+    // Set pointers in both ways
+    for (auto piece: board->allPieces) {
+        piece->getField()->setPiece(piece);
+    }
+
+    return board;
+}
+
 std::string Board::toFEN() const {
     // TODO: discuss the other fen parameters - castling and so on
     std::stringstream ss;

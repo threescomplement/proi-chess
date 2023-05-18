@@ -8,7 +8,9 @@
 #include "pieces/Piece.h"
 
 class Piece;
+
 class Move;
+
 class Field;
 
 class Board {
@@ -30,11 +32,12 @@ public:
 
     Field *getField(Position position) const;
 
-    void setBlackKing(Piece *blackKing);
-
-    void setWhiteKing(Piece *whiteKing);
-
     static Board *emptyBoard();
+
+    /**
+     * Create new board with all pieces set in their initial positions
+     */
+    static Board *startingBoard();
 
     std::string toString() const;
 
