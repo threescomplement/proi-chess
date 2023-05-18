@@ -1,0 +1,43 @@
+#include "gtest/gtest.h"
+#include "../common.h"
+#include "../../../src/chess/Board.h"
+
+using namespace ChessUnitTestCommon;
+namespace KnightUnitTests {
+    TEST(Knight, getMovesStartingPosition) {
+        auto board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+
+        auto whiteKnight = board->getField(Position::fromString("g1"))->getPiece();
+        auto whiteMoves = whiteKnight->getMoves();
+        auto whiteExpected = {
+                Move(Position::fromString("g1"), Position::fromString("f3"), whiteKnight, false),
+                Move(Position::fromString("g1"), Position::fromString("h3"), whiteKnight, false),
+        };
+
+        auto blackKnight = board->getField(Position::fromString("b8"))->getPiece();
+        auto blackMoves = blackKnight->getMoves();
+        auto blackExpected = {
+                Move(Position::fromString("b8"), Position::fromString("a6"), blackKnight, false),
+                Move(Position::fromString("b8"), Position::fromString("c6"), blackKnight, false),
+        };
+
+
+        ASSERT_TRUE(containsAll(whiteMoves, whiteExpected));
+        ASSERT_TRUE(containsAll(blackMoves, blackExpected));
+    }
+
+    TEST(Knight, getMovesMultiplePossibleNoCapture) {
+        auto board = Board::fromFEN("rnbqkbnr/1ppppppp/p7/8/8/5N2/PPPPPPPP/RNBQKB1R");
+        auto knight = board->getField(Position::fromString("f3"))->getPiece();
+        auto moves = knight->getMoves();
+
+        auto expected = {
+                Move(Position::fromString("f3"), Position::fromString("g1"), knight, false),
+                Move(Position::fromString("f3"), Position::fromString("d4"), knight, false),
+                Move(Position::fromString("f3"), Position::fromString("e5"), knight, false),
+                Move(Position::fromString("f3"), Position::fromString("g5"), knight, false),
+                Move(Position::fromString("f3"), Position::fromString("h4"), knight, false),
+        };
+        ASSERT_TRUE(containsAll(moves, expected));
+    }
+}
