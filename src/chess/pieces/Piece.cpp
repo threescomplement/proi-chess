@@ -21,7 +21,7 @@ std::vector<Move> Piece::getMovesInDirection(int rowDirection, int colDirection)
     auto rowOffset = rowDirection;
     auto colOffset = colDirection;
 
-    while (Position::withinBounds(sourcePosition.getRow() + rowOffset, sourcePosition.getCol() + colOffset)) {
+    while (sourcePosition.offsetWithinBounds(rowOffset, colOffset)) {
         auto targetPosition = sourcePosition.positionWithOffset(rowOffset, colOffset);
         auto targetField = this->getBoard()->getField(targetPosition);
 
