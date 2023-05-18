@@ -40,4 +40,22 @@ namespace KnightUnitTests {
         };
         ASSERT_TRUE(containsAll(moves, expected));
     }
+
+    TEST(Knight, getMovesMultipleCaptures) {
+        auto board = Board::fromFEN("rnbqkbnr/1ppppp1p/p5p1/4N3/8/8/PPPPPPPP/RNBQKB1R");
+        auto knight = board->getField(Position::fromString("e5"))->getPiece();
+        auto moves = knight->getMoves();
+
+        auto expected = {
+                Move(Position::fromString("e5"), Position::fromString("d3"), knight, false),
+                Move(Position::fromString("e5"), Position::fromString("f3"), knight, false),
+                Move(Position::fromString("e5"), Position::fromString("g4"), knight, false),
+                Move(Position::fromString("e5"), Position::fromString("g6"), knight, true),
+                Move(Position::fromString("e5"), Position::fromString("f7"), knight, true),
+                Move(Position::fromString("e5"), Position::fromString("d7"), knight, true),
+                Move(Position::fromString("e5"), Position::fromString("c6"), knight, false),
+                Move(Position::fromString("e5"), Position::fromString("c4"), knight, false),
+        };
+        ASSERT_TRUE(containsAll(moves, expected));
+    }
 }
