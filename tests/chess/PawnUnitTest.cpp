@@ -34,8 +34,26 @@ namespace PawnUnitTest {
         ASSERT_TRUE(containsAll(pawnMoves, expected));
     }
 
-    TEST(Pawn, getMoves_oneAttackPossible) {
 
+    TEST(Pawn, getMoves_singleMovePossible) {
+        auto board = Board::fromFEN("rnbqkbnr/1ppppppp/8/p7/4P3/8/PPPP1PPP/RNBQKBNR");
+        auto pawn = board->getField(Position(4, 5))->getPiece();
+        auto moves = pawn->getMoves();
+
+        auto expected = {Move(Position(4,5), Position(5, 5), pawn, false)};
+        ASSERT_TRUE(containsAll(moves, expected));
+    }
+
+    TEST(Pawn, getMoves_oneAttackPossible) {
+        auto board = Board::fromFEN("rnbqkbnr/ppppp1pp/8/5p2/4P3/8/PPPP1PPP/RNBQKBNR");
+        auto pawn = board->getField(Position(4, 5))->getPiece();
+        auto moves = pawn->getMoves();
+
+        auto expected = {
+                Move(Position(4, 5), Position(5, 5), pawn, false),
+                Move(Position(4, 5), Position(5, 6), pawn, true),
+        };
+        ASSERT_TRUE(containsAll(moves, expected));
     }
 
     TEST(Pawn, getMoves_attackOutOfBounds) {
