@@ -40,4 +40,32 @@ namespace QueenUnitTest {
 
         ASSERT_TRUE(isPermutation(moves, expected));
     }
+
+    TEST(Queen, getMovesOnBoardEdge) {
+        auto board = Board::fromFEN("rnbqk1nr/pppp2pp/3b1p2/4p3/Q7/2P5/PP1PPPPP/RNB1KBNR");
+        auto queen = board->getField(pos("a4"))->getPiece();
+        auto moves = queen->getMoves();
+
+        auto expected = {
+                Move(pos("a4"), pos("a3"), queen, false),
+                Move(pos("a4"), pos("b3"), queen, false),
+                Move(pos("a4"), pos("c2"), queen, false),
+                Move(pos("a4"), pos("d1"), queen, false),
+                Move(pos("a4"), pos("b4"), queen, false),
+                Move(pos("a4"), pos("c4"), queen, false),
+                Move(pos("a4"), pos("d4"), queen, false),
+                Move(pos("a4"), pos("e4"), queen, false),
+                Move(pos("a4"), pos("f4"), queen, false),
+                Move(pos("a4"), pos("g4"), queen, false),
+                Move(pos("a4"), pos("h4"), queen, false),
+                Move(pos("a4"), pos("b5"), queen, false),
+                Move(pos("a4"), pos("c6"), queen, false),
+                Move(pos("a4"), pos("d7"), queen, true),
+                Move(pos("a4"), pos("a5"), queen, false),
+                Move(pos("a4"), pos("a6"), queen, false),
+                Move(pos("a4"), pos("a7"), queen, true),
+        };
+
+        ASSERT_TRUE(isPermutation(moves, expected));
+    }
 }
