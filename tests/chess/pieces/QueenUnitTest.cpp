@@ -1,11 +1,10 @@
 #include <vector>
 #include "gtest/gtest.h"
 #include "../../../src/chess/Move.h"
-#include "../../../src/chess/Position.h"
 #include "../../../src/chess/Board.h"
 #include "../common.h"
 
-#include "../../../src/chess/pieces/Queen.h"
+
 using namespace ChessUnitTestCommon;
 
 namespace QueenUnitTest {
@@ -17,5 +16,28 @@ namespace QueenUnitTest {
         auto blackQueenMoves = blackQueen->getMoves();
         ASSERT_EQ(whiteQueenMoves.size(), blackQueenMoves.size());
         ASSERT_EQ(whiteQueenMoves.size(), 0);
+    }
+
+    TEST(Queen, getMovesMultipleDirectionsBlockedAndCaptures) {
+        auto board = Board::fromFEN("rnbqk1nr/pppp1ppp/3b4/4p3/8/1QP5/PP1PPPPP/RNB1KBNR");
+        auto queen = board->getField(pos("b3"))->getPiece();
+        auto moves = queen->getMoves();
+
+        auto expected = {
+                Move(pos("b2"), pos("c2"), queen, false),
+                Move(pos("b2"), pos("d1"), queen, false),
+                Move(pos("b2"), pos("a3"), queen, false),
+                Move(pos("b2"), pos("a4"), queen, false),
+                Move(pos("b2"), pos("b4"), queen, false),
+                Move(pos("b2"), pos("b5"), queen, false),
+                Move(pos("b2"), pos("b6"), queen, false),
+                Move(pos("b2"), pos("b7"), queen, true),
+                Move(pos("b2"), pos("c4"), queen, false),
+                Move(pos("b2"), pos("d5"), queen, false),
+                Move(pos("b2"), pos("e6"), queen, false),
+                Move(pos("b2"), pos("f7"), queen, true),
+        };
+
+        ASSERT_TRUE(isPermutation(moves, expected));
     }
 }

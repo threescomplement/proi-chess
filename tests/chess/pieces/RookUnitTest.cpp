@@ -1,11 +1,10 @@
 #include <vector>
 #include "gtest/gtest.h"
 #include "../../../src/chess/Move.h"
-#include "../../../src/chess/Position.h"
 #include "../../../src/chess/Board.h"
 #include "../common.h"
 
-#include "../../../src/chess/pieces/Rook.h"
+
 using namespace ChessUnitTestCommon;
 
 namespace RookUnitTest {
@@ -17,6 +16,27 @@ namespace RookUnitTest {
         auto blackRookMoves = blackRook->getMoves();
         ASSERT_EQ(whiteRookMoves.size(), blackRookMoves.size());
         ASSERT_EQ(whiteRookMoves.size(), 0);
+    }
+
+    TEST(Rook, getMovesMultipleDirectionsBlockedCapturesAndBoardBoundary) {
+        auto board = Board::fromFEN("rnbqkbnr/1pppp3/p4ppp/8/P2R4/8/1PPPPPPP/1NBQKBNR");
+        auto rook = board->getField(pos("d4"))->getPiece();
+        auto moves = rook->getMoves();
+
+        auto expected = {
+                Move(pos("d4"), pos("d3"), rook, false),
+                Move(pos("d4"), pos("b4"), rook, false),
+                Move(pos("d4"), pos("c4"), rook, false),
+                Move(pos("d4"), pos("e4"), rook, false),
+                Move(pos("d4"), pos("f4"), rook, false),
+                Move(pos("d4"), pos("g4"), rook, false),
+                Move(pos("d4"), pos("h4"), rook, false),
+                Move(pos("d4"), pos("d5"), rook, false),
+                Move(pos("d4"), pos("d6"), rook, false),
+                Move(pos("d4"), pos("d7"), rook, true),
+        };
+
+        ASSERT_TRUE(isPermutation(moves, expected));
     }
 
 }
