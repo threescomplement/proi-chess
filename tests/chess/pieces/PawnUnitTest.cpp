@@ -67,6 +67,4 @@ namespace PawnUnitTest {
         };
         ASSERT_TRUE(isPermutation(moves, expected));
     }
-
-
 };
