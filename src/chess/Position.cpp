@@ -3,7 +3,7 @@
 #include "constants.h"
 
 Position::Position(int row, int col) {
-    if (row < 1 || row > BOARD_SIZE || col < 1 || col > BOARD_SIZE) {
+    if (!Position::withinBounds(row, col)) {
         throw std::invalid_argument("Invalid coordinates");
     }
 
@@ -52,5 +52,13 @@ Position Position::fromString(std::string positionString) {
     auto colNumeric = col - 'a' + 1;
     auto rowNumeric = row - '0';
     return {rowNumeric, colNumeric};
+}
+
+bool Position::withinBounds(int row, int col) {
+    if (row < 1 || row > BOARD_SIZE || col < 1 || col > BOARD_SIZE) {
+        return false;
+    }
+
+    return true;
 }
 

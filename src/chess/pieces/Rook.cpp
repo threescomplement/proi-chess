@@ -13,8 +13,11 @@ Rook::Rook(Color color, Field *field, Player *owner) {
 
 Rook::~Rook() = default;
 
-std::vector <Move> Rook::getMoves() const {
-    return {};
+std::vector<Move> Rook::getMoves() const {
+    return this->getMovesInDirections({{1,  0},
+                                       {-1, 0},
+                                       {0,  1},
+                                       {0,  -1}});
 }
 
 PieceType Rook::getType() const {
