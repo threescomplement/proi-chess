@@ -8,19 +8,20 @@
 #include "pieces/Piece.h"
 
 class Piece;
-
 class Move;
-
 class Field;
 
 class Board {
 private:
-    std::array<std::array<Field *, BOARD_SIZE>, BOARD_SIZE> fields;
+    std::array<std::array<Field *, BOARD_SIZE>, BOARD_SIZE> fields{};
+    std::vector<Piece *> allPieces;
     Piece *blackKing;
     Piece *whiteKing;
 
 public:
     Board();
+
+    ~Board();
 
     void makeMove(Move move);
 

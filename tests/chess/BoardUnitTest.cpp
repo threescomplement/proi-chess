@@ -15,6 +15,11 @@
 
 
 namespace BoardUnitTest {
+    TEST(Board, constructorInitializesEmptyBoard) {
+        auto board = Board();
+        ASSERT_EQ("8/8/8/8/8/8/8/8", board.toFEN());
+    }
+
     TEST(Board, FEN_emptyBoard) {
         auto testBoard = Board::emptyBoard();
         std::string expected = "8/8/8/8/8/8/8/8";

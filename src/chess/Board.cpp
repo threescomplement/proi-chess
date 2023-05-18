@@ -9,7 +9,30 @@
 #include "pieces/Queen.h"
 #include "pieces/King.h"
 
-Board::Board() = default;
+Board::Board() {
+    this->allPieces = {};
+    this->blackKing = nullptr;
+    this->whiteKing = nullptr;
+
+    for (int row = 0; row < BOARD_SIZE; ++row) {
+        for (int col = 0; col < BOARD_SIZE; ++col) {
+            this->fields[row][col] = new Field(nullptr, Position(row + 1, col + 1), this);
+        }
+    }
+};
+
+Board::~Board() {
+    for (auto piecePtr: allPieces) {
+        delete piecePtr;
+    }
+
+    for (int row = 0; row < BOARD_SIZE; ++row) {
+        for (int col = 0; col < BOARD_SIZE; ++col) {
+            delete this->fields[row][col];
+        }
+    }
+
+}
 
 std::string Board::toString() const {
     std::stringstream ss;
@@ -33,17 +56,7 @@ std::string Board::toString() const {
 }
 
 Board *Board::emptyBoard() {
-    auto board = new Board();
-    std::array<std::array<Field *, 8>, 8> fields = {};
-    for (int row = 0; row < BOARD_SIZE; ++row) {
-        for (int col = 0; col < BOARD_SIZE; ++col) {
-            fields[row][col] = new Field(nullptr, Position(row + 1, col + 1), board);
-        }
-    }
-    board->fields = fields;
-    board->whiteKing = nullptr;
-    board->blackKing = nullptr;
-    return board;
+    return new Board();
 }
 
 Field *Board::getField(Position position) const {
