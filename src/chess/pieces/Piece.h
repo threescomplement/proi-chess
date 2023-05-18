@@ -33,6 +33,8 @@ public:
 
     virtual char getCharacter() const = 0;
 
+    virtual Position getPosition() const;
+
     virtual std::string getUnicodeSymbol() const = 0;
 };
 
