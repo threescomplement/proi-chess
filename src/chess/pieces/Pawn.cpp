@@ -100,21 +100,18 @@ std::vector<Move> Pawn::attackingMoves() const {
 }
 
 bool Pawn::possibleAttackInGivenDirection(bool positiveColumnOffset) const {
-
     int horizontalMoveDirection = (positiveColumnOffset) ? 1 : -1;
+    auto position = this->getPosition();
 
-    try {
-        auto attackedPosition = parentField->getPosition().positionWithOffset(moveDirection, horizontalMoveDirection);
-
-        if (getBoard()->getField(attackedPosition)->isEmpty()) {
-            // nothing to attack
-            return false;
-        }
-        return true;
-    }
-
-    catch (std::invalid_argument &) {
+    if (!position.offsetWithinBounds(moveDirection, horizontalMoveDirection)) {
         return false;
     }
+
+    auto attackedPosition = position.positionWithOffset(moveDirection, horizontalMoveDirection);
+    if (this->getBoard()->getField(attackedPosition)->isEmpty()) {
+        return false;  // nothing to attack
+    }
+
+    return true;
 }
 
