@@ -40,7 +40,7 @@ namespace PawnUnitTest {
         auto pawn = board->getField(Position(4, 5))->getPiece();
         auto moves = pawn->getMoves();
 
-        auto expected = {Move(Position(4,5), Position(5, 5), pawn, false)};
+        auto expected = {Move(Position(4, 5), Position(5, 5), pawn, false)};
         ASSERT_TRUE(isPermutation(moves, expected));
     }
 
@@ -56,12 +56,17 @@ namespace PawnUnitTest {
         ASSERT_TRUE(isPermutation(moves, expected));
     }
 
-    TEST(Pawn, getMoves_attackOutOfBounds) {
+    TEST(Pawn, getmoves_fieldBehindAttackedProtected) {
+        auto board = Board::fromFEN("rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPP2PPP/RNBQKBNR");
+        auto pawn = board->getField(pos("e4"))->getPiece();
+        auto moves = pawn->getMoves();
 
+        auto expected = {
+                Move(pos("e4"), pos("e5"), pawn, false),
+                Move(pos("e4"), pos("d5"), pawn, true)
+        };
+        ASSERT_TRUE(isPermutation(moves, expected));
     }
 
-    TEST(Pawn, getMoves_fieldBehindAttackedProtected) {
-
-    }
 
 };
