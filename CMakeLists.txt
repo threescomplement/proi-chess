@@ -44,6 +44,7 @@ target_link_libraries(cli chess)
 
 
 add_subdirectory(src/chess)
+add_subdirectory(tests/chess)
 
 add_executable(gui ${GUI_SOURCES})
 target_link_libraries(gui
