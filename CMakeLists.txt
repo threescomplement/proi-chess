@@ -12,6 +12,9 @@ set(CMAKE_AUTOUIC ON)
 # Or you can add Qt installation directory do PATH environment variable on your machine
 # execute this in bash
 # export PATH="~/Qt/6.5.0/gcc_64/:$PATH"
+#
+# Or add to CMake options in CLion
+# -DQt6_DIR:PATH=~/Qt/6.5.0/gcc_64/lib/cmake/Qt6
 
 find_package(Qt6 COMPONENTS
         Core
