@@ -14,7 +14,7 @@ Piece *Move::getPiece() const {
 }
 
 bool Move::isCapture() const {
-    return (capturedPiece == nullptr);
+    return (capturedPiece != nullptr);
 }
 
 std::string Move::toString() const {

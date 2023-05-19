@@ -26,8 +26,9 @@ std::vector<Move> Piece::getMovesInDirection(int rowDirection, int colDirection)
         auto targetField = this->getBoard()->getField(targetPosition);
 
         if (!targetField->isEmpty()) {
-            if (targetField->getPiece()->getColor() != this->getColor()) {  // Is capture
-                moves.emplace_back(sourcePosition, targetPosition, (Piece *) this, true);
+            auto otherPiece = targetField->getPiece();
+            if (otherPiece->getColor() != this->getColor()) {  // Is capture
+                moves.emplace_back(sourcePosition, targetPosition, (Piece *) this, otherPiece);
             }
             break;  // Reached either capture or friendly movedPiece
         }
@@ -35,8 +36,7 @@ std::vector<Move> Piece::getMovesInDirection(int rowDirection, int colDirection)
         moves.emplace_back(
                 sourcePosition,
                 targetPosition,
-                (Piece *) this,
-                false
+                (Piece *) this
         );
 
         rowOffset += rowDirection;

@@ -11,9 +11,9 @@ std::vector<Move> King::getMoves() const {
 
     for (auto toPos: toPositions) {
         if (getBoard()->getField(toPos)->isEmpty()) {
-            moves.emplace_back(getPosition(), toPos, (Piece *) this, false);
+            moves.emplace_back(getPosition(), toPos, (Piece *) this);
         } else if (getBoard()->getField(toPos)->getPiece()->getColor() != color) {
-            moves.emplace_back(getPosition(), toPos, (Piece *) this, true);
+            moves.emplace_back(getPosition(), toPos, (Piece *) this, getBoard()->getField(toPos)->getPiece());
         }
     }
     return moves;

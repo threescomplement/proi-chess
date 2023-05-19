@@ -51,13 +51,13 @@ std::vector<Move> Pawn::nonAttackingMoves() const {
 
     // Single forward push
     if (!possibleForwardMove) { return moves; }
-    moves.emplace_back(parentField->getPosition(), singleMoveToPosition, (Piece *) this, false);
+    moves.emplace_back(parentField->getPosition(), singleMoveToPosition, (Piece *) this);
 
     // Double forward push
     if (canMakeDoubleMove()) {
         auto doubleMoveToPosition = parentField->getPosition().positionWithOffset(2 * moveDirection, 0);
         if (getBoard()->getField(doubleMoveToPosition)->isEmpty()) {
-            moves.emplace_back(parentField->getPosition(), doubleMoveToPosition, (Piece *) this, false);
+            moves.emplace_back(parentField->getPosition(), doubleMoveToPosition, (Piece *) this);
         }
     }
     return moves;
@@ -70,12 +70,14 @@ std::vector<Move> Pawn::attackingMoves() const {
     // attack with a positive column offset
     if (possibleAttackInGivenDirection(true)) {
         auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, 1);
-        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true);
+        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this,
+                           this->getBoard()->getField(toPosAfterAttack)->getPiece());
     }
 
     if (possibleAttackInGivenDirection(false)) {
         auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, -1);
-        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true);
+        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this,
+                           this->getBoard()->getField(toPosAfterAttack)->getPiece());
     }
     return moves;
 }

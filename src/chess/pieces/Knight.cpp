@@ -11,22 +11,22 @@ std::vector<Move> Knight::getMoves() const {
 
     for (auto targetPosition: targetPositions) {
         auto targetField = this->getBoard()->getField(targetPosition);
-        auto isCapture = false;
+        Piece *capturedPiece = nullptr;
 
         if (!targetField->isEmpty()) {
-            auto targetPieceColor = targetField->getPiece()->getColor();
-            if (targetPieceColor == this->getColor()) {
+            auto targetPiece = targetField->getPiece();
+            if (targetPiece->getColor() == this->getColor()) {
                 continue;
             }
 
-            isCapture = true;
+            capturedPiece = targetPiece;
         }
 
         moves.emplace_back(
                 this->getField()->getPosition(),
                 targetPosition,
                 (Piece *) this,
-                isCapture
+                capturedPiece
         );
     }
 
