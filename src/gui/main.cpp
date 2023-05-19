@@ -1,6 +1,6 @@
 #include <QApplication>
 #include <QPushButton>
-#include "../chess/Board.h"
+#include <Board.h>
 
 int main(int argc, char *argv[]) {
     auto board = Board::emptyBoard();
