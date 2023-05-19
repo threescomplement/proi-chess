@@ -16,27 +16,14 @@ class Board;
 
 class King : public Piece {
 private:
-    Color color;
-    Field *parentField;
-    Player *player;
     std::vector<Position> getPossibleMovePositions() const;
 
 public:
-    King(Color color, Field *field, Player *owner);
-
-    ~King() override = default;
+    using Piece::Piece;
 
     std::vector<Move> getMoves() const override;
 
     PieceType getType() const override;
-
-    Color getColor() const override;
-
-    Board *getBoard() const override;
-
-    Field *getField() const override;
-
-    Player *getPlayer() const override;
 
     char getCharacter() const override;
 

@@ -6,9 +6,6 @@
 
 class Knight : public Piece {
 private:
-    Color color;
-    Field *parentField;
-    Player *player;
 
     /**
      * Get all reachable positions on the board
@@ -16,21 +13,11 @@ private:
     std::vector<Position> getTargetPositions() const;
 
 public:
-    Knight(Color color, Field *field, Player *owner);
-
-    ~Knight() override = default;
+    using Piece::Piece;
 
     std::vector<Move> getMoves() const override;
 
     PieceType getType() const override;
-
-    Color getColor() const override;
-
-    Board *getBoard() const override;
-
-    Field *getField() const override;
-
-    Player *getPlayer() const override;
 
     char getCharacter() const override;
 

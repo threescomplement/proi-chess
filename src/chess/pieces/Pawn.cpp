@@ -5,10 +5,7 @@
 #include "Pawn.h"
 // TODO: Promotion mechanics, en passant
 
-Pawn::Pawn(Color color, Field *field, Player *owner) {
-    this->color = color;
-    this->parentField = field;
-    this->player = owner;
+Pawn::Pawn(Color color, Field *field) : Piece(color, field) {
     this->moveDirection = (color == Color::WHITE) ? 1 : -1;
 }
 
@@ -30,22 +27,6 @@ PieceType Pawn::getType() const {
     return PieceType::PAWN;
 }
 
-
-Color Pawn::getColor() const {
-    return color;
-}
-
-Board *Pawn::getBoard() const {
-    return parentField->getBoard();
-}
-
-Field *Pawn::getField() const {
-    return parentField;
-}
-
-Player *Pawn::getPlayer() const {
-    return player;
-}
 
 char Pawn::getCharacter() const {
     return (color == Color::BLACK) ? 'p' : 'P';
@@ -70,13 +51,13 @@ std::vector<Move> Pawn::nonAttackingMoves() const {
 
     // Single forward push
     if (!possibleForwardMove) { return moves; }
-    moves.emplace_back(parentField->getPosition(), singleMoveToPosition, (Piece *) this, false);
+    moves.emplace_back(parentField->getPosition(), singleMoveToPosition, (Piece *) this);
 
     // Double forward push
     if (canMakeDoubleMove()) {
         auto doubleMoveToPosition = parentField->getPosition().positionWithOffset(2 * moveDirection, 0);
         if (getBoard()->getField(doubleMoveToPosition)->isEmpty()) {
-            moves.emplace_back(parentField->getPosition(), doubleMoveToPosition, (Piece *) this, false);
+            moves.emplace_back(parentField->getPosition(), doubleMoveToPosition, (Piece *) this);
         }
     }
     return moves;
@@ -89,12 +70,14 @@ std::vector<Move> Pawn::attackingMoves() const {
     // attack with a positive column offset
     if (possibleAttackInGivenDirection(true)) {
         auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, 1);
-        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true);
+        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this,
+                           this->getBoard()->getField(toPosAfterAttack)->getPiece());
     }
 
     if (possibleAttackInGivenDirection(false)) {
         auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, -1);
-        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true);
+        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this,
+                           this->getBoard()->getField(toPosAfterAttack)->getPiece());
     }
     return moves;
 }

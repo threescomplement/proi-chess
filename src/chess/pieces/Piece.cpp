@@ -1,7 +1,13 @@
 #include "Piece.h"
 #include "../Field.h"
+#include "../exceptions/PieceNotOnBoardException.h"
 
 Position Piece::getPosition() const {
+    if (this->getField() == nullptr) {
+        throw PieceNotOnBoardException(
+                "Cannot access position as piece is not currently bound to any field on the board"
+        );
+    }
     return this->getField()->getPosition();
 }
 
@@ -26,8 +32,9 @@ std::vector<Move> Piece::getMovesInDirection(int rowDirection, int colDirection)
         auto targetField = this->getBoard()->getField(targetPosition);
 
         if (!targetField->isEmpty()) {
-            if (targetField->getPiece()->getColor() != this->getColor()) {  // Is capture
-                moves.emplace_back(sourcePosition, targetPosition, (Piece *) this, true);
+            auto otherPiece = targetField->getPiece();
+            if (otherPiece->getColor() != this->getColor()) {  // Is capture
+                moves.emplace_back(sourcePosition, targetPosition, (Piece *) this, otherPiece);
             }
             break;  // Reached either capture or friendly piece
         }
@@ -35,8 +42,7 @@ std::vector<Move> Piece::getMovesInDirection(int rowDirection, int colDirection)
         moves.emplace_back(
                 sourcePosition,
                 targetPosition,
-                (Piece *) this,
-                false
+                (Piece *) this
         );
 
         rowOffset += rowDirection;
@@ -66,4 +72,30 @@ std::vector<Position> Piece::getAllowedPositionsFromOffsets(const std::vector<st
         }
     }
     return targetPositions;
+}
+
+
+Color Piece::getColor() const {
+    return color;
+}
+
+Field *Piece::getField() const {
+    return parentField;
+}
+
+void Piece::takeOffField() {
+    this->parentField = nullptr;
+}
+
+Piece::Piece(Color color, Field *field) {
+    this->color = color;
+    this->parentField = field;
+}
+
+Board *Piece::getBoard() const {
+    return this->parentField->getBoard();
+}
+
+void Piece::setField(Field *newField) {
+    this->parentField = newField;
 }
