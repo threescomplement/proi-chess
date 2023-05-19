@@ -5,16 +5,15 @@
 #include <vector>
 
 
-
 std::vector<Move> King::getMoves() const {
     auto toPositions = getPossibleMovePositions();
     std::vector<Move> moves;
 
     for (auto toPos: toPositions) {
         if (getBoard()->getField(toPos)->isEmpty()) {
-            moves.push_back(Move(getPosition(), toPos, (Piece *) this, false));
+            moves.emplace_back(getPosition(), toPos, (Piece *) this, false);
         } else if (getBoard()->getField(toPos)->getPiece()->getColor() != color) {
-            moves.push_back(Move(getPosition(), toPos, (Piece *) this, true));
+            moves.emplace_back(getPosition(), toPos, (Piece *) this, true);
         }
     }
     return moves;
@@ -24,9 +23,6 @@ PieceType King::getType() const {
     return PieceType::KING;
 }
 
-Board *King::getBoard() const {
-    return parentField->getBoard();
-}
 
 char King::getCharacter() const {
     return (color == Color::BLACK) ? 'k' : 'K';

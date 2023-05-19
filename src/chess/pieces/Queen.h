@@ -11,13 +11,9 @@ private:
 public:
     using Piece::Piece;
 
-    ~Queen() override;
-
     std::vector<Move> getMoves() const override;
 
     PieceType getType() const override;
-
-    Board *getBoard() const override;
 
     char getCharacter() const override;
 

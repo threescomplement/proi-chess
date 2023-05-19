@@ -36,13 +36,9 @@ private:
 public:
     Pawn(Color color, Field *field);
 
-    ~Pawn() override = default;
-
     std::vector<Move> getMoves() const override;
 
     PieceType getType() const override;
-
-    Board *getBoard() const override;
 
     char getCharacter() const override;
 

@@ -37,9 +37,6 @@ PieceType Knight::getType() const {
     return PieceType::KNIGHT;
 }
 
-Board *Knight::getBoard() const {
-    return parentField->getBoard();
-}
 
 char Knight::getCharacter() const {
     return (color == Color::BLACK) ? 'n' : 'N';

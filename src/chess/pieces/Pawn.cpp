@@ -5,7 +5,7 @@
 #include "Pawn.h"
 // TODO: Promotion mechanics, en passant
 
-Pawn::Pawn(Color color, Field *field): Piece(color, field) {
+Pawn::Pawn(Color color, Field *field) : Piece(color, field) {
     this->moveDirection = (color == Color::WHITE) ? 1 : -1;
 }
 
@@ -25,10 +25,6 @@ std::vector<Move> Pawn::getMoves() const {
 
 PieceType Pawn::getType() const {
     return PieceType::PAWN;
-}
-
-Board *Pawn::getBoard() const {
-    return parentField->getBoard();
 }
 
 

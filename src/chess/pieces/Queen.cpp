@@ -5,8 +5,6 @@
 #include "Queen.h"
 
 
-Queen::~Queen() = default;
-
 std::vector<Move> Queen::getMoves() const {
     return this->getMovesInDirections({{1,  0},
                                        {-1, 0},
@@ -22,9 +20,6 @@ PieceType Queen::getType() const {
     return PieceType::QUEEN;
 }
 
-Board *Queen::getBoard() const {
-    return parentField->getBoard();
-}
 
 char Queen::getCharacter() const {
     return (color == Color::BLACK) ? 'q' : 'Q';
