@@ -93,7 +93,7 @@ target_link_libraries(all-unit-tests PUBLIC gtest_main)
 
 
 
-add_executable(gui ${GUI_SOURCES})
+add_executable(gui ${GUI_SOURCES} ${CHESS_LIBRARY_SOURCES})
 target_link_libraries(gui
         Qt::Core
         Qt::Gui
