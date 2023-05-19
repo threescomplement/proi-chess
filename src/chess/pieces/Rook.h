@@ -3,13 +3,12 @@
 
 
 #include "Piece.h"
-#include "BasePiece.h"
 
-class Rook : public BasePiece {
+class Rook : public Piece {
 private:
 
 public:
-    using BasePiece::BasePiece;
+    using Piece::Piece;
 
     ~Rook() override;
 

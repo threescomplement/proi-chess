@@ -67,3 +67,25 @@ std::vector<Position> Piece::getAllowedPositionsFromOffsets(const std::vector<st
     }
     return targetPositions;
 }
+
+
+Color Piece::getColor() const {
+    return color;
+}
+
+Field *Piece::getField() const {
+    return parentField;
+}
+
+void Piece::takeOffField() {
+    this->parentField = nullptr;
+}
+
+Piece::Piece(Color color, Field *field) {
+    this->color = color;
+    this->parentField = field;
+}
+
+Board *Piece::getBoard() const {
+    return this->parentField->getBoard();
+}

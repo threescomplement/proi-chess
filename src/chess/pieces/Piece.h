@@ -33,6 +33,8 @@ private:
 
 protected:
 
+    Color color;
+    Field *parentField;
     /**
      * Return moves in straight lines, stopping at board boundary, friendly piece or a capture
      * in all of the given directions.
@@ -44,6 +46,7 @@ protected:
     virtual std::vector<Move> getMovesInDirections(std::vector<std::pair<int, int>> const &directions) const;
 
 public:
+    Piece(Color color, Field *field);
 
     virtual ~Piece() = default;
 
@@ -51,11 +54,11 @@ public:
 
     virtual PieceType getType() const = 0;
 
-    virtual Color getColor() const = 0;
+    virtual Color getColor() const;
 
-    virtual Board *getBoard() const = 0;
+    virtual Board *getBoard() const;
 
-    virtual Field *getField() const = 0;
+    virtual Field *getField() const;
 
     virtual char getCharacter() const = 0;
 
@@ -63,7 +66,7 @@ public:
 
     virtual std::string getUnicodeSymbol() const = 0;
 
-    virtual void takeOffField() = 0;
+    virtual void takeOffField();
 
     virtual std::vector<Position> getAllowedPositionsFromOffsets(const std::vector<std::pair<int, int>> &offsets) const;
 };

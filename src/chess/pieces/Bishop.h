@@ -3,13 +3,12 @@
 
 
 #include "Piece.h"
-#include "BasePiece.h"
 
-class Bishop : public BasePiece {
+class Bishop : public Piece {
 private:
 
 public:
-    using BasePiece::BasePiece;
+    using Piece::Piece;
 
     ~Bishop() override = default;
 

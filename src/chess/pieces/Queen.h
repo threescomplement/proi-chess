@@ -1,16 +1,15 @@
 #ifndef CHESS_QUEEN_H
 #define CHESS_QUEEN_H
 
-
-#include "BasePiece.h"
+#include "Piece.h"
 
 class Piece;
 
-class Queen : public BasePiece {
+class Queen : public Piece {
 private:
 
 public:
-    using BasePiece::BasePiece;
+    using Piece::Piece;
 
     ~Queen() override;
 

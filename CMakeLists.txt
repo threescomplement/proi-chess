@@ -39,7 +39,7 @@ set(CHESS_LIBRARY_SOURCES
         src/chess/pieces/Queen.cpp
         src/chess/pieces/Bishop.h
         src/chess/pieces/Bishop.cpp
-        src/chess/pieces/BasePiece.cpp src/chess/pieces/BasePiece.h)
+        )
 
 set(CHESS_UNIT_TEST_SOURCES
         tests/chess/common.h

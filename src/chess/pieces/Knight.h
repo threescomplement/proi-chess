@@ -3,9 +3,8 @@
 
 
 #include "Piece.h"
-#include "BasePiece.h"
 
-class Knight : public BasePiece {
+class Knight : public Piece {
 private:
 
     /**
@@ -14,7 +13,7 @@ private:
     std::vector<Position> getTargetPositions() const;
 
 public:
-    using BasePiece::BasePiece;
+    using Piece::Piece;
 
     ~Knight() override = default;
 

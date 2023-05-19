@@ -3,10 +3,9 @@
 #define CHESS_PAWN_H
 
 #include "Piece.h"
-#include "BasePiece.h"
 
 
-class Pawn : public BasePiece {
+class Pawn : public Piece {
 private:
     int moveDirection;
 

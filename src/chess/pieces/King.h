@@ -4,7 +4,6 @@
 #include <string>
 
 #include "Piece.h"
-#include "BasePiece.h"
 
 enum class Color;
 class Player;
@@ -15,12 +14,12 @@ class Board;
 
 
 
-class King : public BasePiece {
+class King : public Piece {
 private:
     std::vector<Position> getPossibleMovePositions() const;
 
 public:
-    using BasePiece::BasePiece;
+    using Piece::Piece;
 
     ~King() override = default;
 
