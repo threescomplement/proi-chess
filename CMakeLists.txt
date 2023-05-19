@@ -7,7 +7,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 # This can be either set manually (terrible solution)
-# set(CMAKE_PREFIX_PATH "/home/mgarbowski/Qt/6.5.0/gcc_64")
+# set(CMAKE_PREFIX_PATH "~/Qt/6.5.0/gcc_64")
 #
 # Or you can add Qt installation directory do PATH environment variable on your machine
 # execute this in bash
@@ -31,27 +31,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 
-
-set(BOT_UNIT_TEST_SOURCES
-        ./tests/bot/test.cpp
-        )
-
-set(GUI_SOURCES src/gui/main.cpp)
-
-add_executable(cli ./src/cli/main.cpp)
-target_link_libraries(cli chess)
-
-
-
 add_subdirectory(src/chess)
+add_subdirectory(src/gui)
+add_subdirectory(src/cli)
 add_subdirectory(tests/chess)
-
-add_executable(gui ${GUI_SOURCES})
-target_link_libraries(gui
-        chess
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
-        )
-
-

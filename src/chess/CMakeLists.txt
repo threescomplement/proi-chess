@@ -1,5 +1,3 @@
-
-
 set(CHESS_LIBRARY_SOURCES
         Game.cpp
         Board.cpp
