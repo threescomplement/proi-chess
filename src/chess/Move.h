@@ -7,18 +7,23 @@
 #include "pieces/Piece.h"
 
 class Position;
+
 class Piece;
 
 class Move {
 private:
     Position from;
     Position to;
-    Piece *piece;
-    bool isCapture;
+    Piece *movedPiece;
+    Piece *capturedPiece;
 
 public:
-    Move(Position from, Position to, Piece *piece, bool isCaputre) :
-            from(from), to(to), piece(piece), isCapture(isCaputre) {};
+    Move(Position from, Position to, Piece *moved, Piece *captured) :
+            from(from), to(to), movedPiece(moved), capturedPiece(captured) {};
+
+    Move(Position from, Position to, Piece *moved) :
+            from(from), to(to), movedPiece(moved), capturedPiece(nullptr) {};
+
 
     const Position &getFrom() const;
 
@@ -26,11 +31,11 @@ public:
 
     Piece *getPiece() const;
 
-    bool getIsCapture() const;
+    bool isCapture() const;
 
-    bool operator==(const Move& rhs) const;
+    bool operator==(const Move &rhs) const;
 
-    bool operator!=(const Move& rhs) const;
+    bool operator!=(const Move &rhs) const;
 
     std::string toString() const;
 };

@@ -24,7 +24,7 @@ class Move;
 class Piece {
 private:
     /**
-     * Get moves in a straight line until another piece or edge of the board is reached
+     * Get moves in a straight line until another movedPiece or edge of the board is reached
      * arguments define the direction of the line
      * @param rowDirection - {-1, 0, 1}
      * @param colDirection - {-1, 0, 1}
@@ -36,7 +36,7 @@ protected:
     Color color;
     Field *parentField;
     /**
-     * Return moves in straight lines, stopping at board boundary, friendly piece or a capture
+     * Return moves in straight lines, stopping at board boundary, friendly movedPiece or a capture
      * in all of the given directions.
      *
      * Directions must have values from {-1, 0, 1}, eg. {1, -1} -> diagonally to upper-left

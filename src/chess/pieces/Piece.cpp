@@ -29,7 +29,7 @@ std::vector<Move> Piece::getMovesInDirection(int rowDirection, int colDirection)
             if (targetField->getPiece()->getColor() != this->getColor()) {  // Is capture
                 moves.emplace_back(sourcePosition, targetPosition, (Piece *) this, true);
             }
-            break;  // Reached either capture or friendly piece
+            break;  // Reached either capture or friendly movedPiece
         }
 
         moves.emplace_back(
