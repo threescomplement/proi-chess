@@ -1,7 +1,13 @@
 #include "Piece.h"
 #include "../Field.h"
+#include "../exceptions/PieceNotOnBoardException.h"
 
 Position Piece::getPosition() const {
+    if (this->getField() == nullptr) {
+        throw PieceNotOnBoardException(
+                "Cannot access position as piece is not currently bound to any field on the board"
+        );
+    }
     return this->getField()->getPosition();
 }
 
@@ -88,4 +94,8 @@ Piece::Piece(Color color, Field *field) {
 
 Board *Piece::getBoard() const {
     return this->parentField->getBoard();
+}
+
+void Piece::setField(Field *newField) {
+    this->parentField = newField;
 }

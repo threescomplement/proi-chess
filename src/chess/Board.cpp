@@ -8,6 +8,7 @@
 #include "pieces/Bishop.h"
 #include "pieces/Queen.h"
 #include "pieces/King.h"
+#include "exceptions/IllegalMoveException.h"
 
 Board::Board() {
     this->allPieces = {};
@@ -217,17 +218,24 @@ Board *Board::fromFEN(const std::string &FENDescription) {
 void Board::makeMove(Move move) {
     auto targetField = this->getField(move.getTo());
     auto sourceField = this->getField(move.getFrom());
+    auto targetPiece = targetField->getPiece();
+    auto sourcePiece = sourceField->getPiece();
 
     if (sourceField->isEmpty()) {
         throw IllegalMoveException("Cannot move from empty field");
     }
 
-    if (!targetField->isEmpty() && targetField->getPiece()->getColor() == sourceField->getPiece()->getColor()) {
+    if (!targetField->isEmpty() && targetPiece->getColor() == sourcePiece->getColor()) {
         throw IllegalMoveException("Player cannot capture his own piece");
     }
 
-    targetField->setPiece(sourceField->getPiece());
+
+    targetField->setPiece(sourcePiece);
     sourceField->setPiece(nullptr);
 
+    sourcePiece->setField(targetField);
+    if (targetPiece != nullptr) {
+        targetPiece->setField(nullptr);
+    }
 }
 

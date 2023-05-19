@@ -11,7 +11,8 @@ set(CHESS_LIBRARY_SOURCES
         pieces/Knight.cpp
         pieces/King.cpp
         pieces/Queen.cpp
-        pieces/Bishop.cpp)
+        pieces/Bishop.cpp
+        )
 
 
 add_library(chess STATIC ${CHESS_LIBRARY_SOURCES})

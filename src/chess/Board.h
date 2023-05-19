@@ -51,16 +51,5 @@ public:
     static Board *fromFEN(const std::string &FENDescription);
 };
 
-class IllegalMoveException : public std::exception {
-private:
-    std::string message;
-public:
-    explicit IllegalMoveException(std::string msg) : message(std::move(msg)) {}
-
-    std::string what() {
-        return message;
-    }
-};
-
 
 #endif //CHESS_BOARD_H

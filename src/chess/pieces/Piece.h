@@ -60,6 +60,8 @@ public:
 
     virtual Field *getField() const;
 
+    virtual void setField(Field *newField);
+
     virtual char getCharacter() const = 0;
 
     virtual Position getPosition() const;
