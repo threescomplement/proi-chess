@@ -31,6 +31,8 @@ public:
 
     Piece *getPiece() const;
 
+    Piece *getCapturedPiece() const;
+
     bool isCapture() const;
 
     bool operator==(const Move &rhs) const;

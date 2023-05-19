@@ -47,3 +47,7 @@ bool Move::operator!=(const Move &rhs) const {
     return !((*this) == rhs);
 }
 
+Piece *Move::getCapturedPiece() const {
+    return capturedPiece;
+}
+
