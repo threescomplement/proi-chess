@@ -1,6 +1,7 @@
 #include <iostream>
+#include <Board.h>
 
 int main() {
-    std::cout << "Hello" << std::endl;
-    return 0;
+    auto board = Board::emptyBoard();
+    std::cout << board->toString();
 }
