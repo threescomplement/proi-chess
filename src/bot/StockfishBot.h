@@ -3,16 +3,23 @@
 
 
 #include <QString>
+#include "Game.h"
 
 class StockfishBot {
 private:
-    QString getStockfishOutput(const char *command);
+    const Game &game;
+
+    static QString getStockfishOutput(const char *command);
+
+    static QString getStockfishOutput(std::string fen);
+
+    static std::string extractMove(QString stockfishOutput);
 
 public:
 
-    QString getStockfishOutput(std::string fen);
+    explicit StockfishBot(const Game &game) : game(game) {};
 
-    std::string extractMove(QString stockfishOutput);
+    Move getMoveFromStockfish(std::string gameFEN) const;
 };
 
 

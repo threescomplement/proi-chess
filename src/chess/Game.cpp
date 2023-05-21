@@ -1,10 +1,5 @@
 #include "Game.h"
-#include "pieces/Rook.h"
-#include "pieces/Bishop.h"
-#include "pieces/Knight.h"
-#include "pieces/Queen.h"
 #include "Board.h"
-#include "pieces/Pawn.h"
 #include "Color.h"
 #include "Player.h"
 
@@ -23,7 +18,7 @@ Game::~Game() {
     delete blackPlayer;
 }
 
-Board *Game::getBoard() {
+Board *Game::getBoard() const {
     return board;
 }
 

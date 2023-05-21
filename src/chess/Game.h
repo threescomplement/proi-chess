@@ -26,7 +26,7 @@ public:
 
     ~Game();
 
-    Board *getBoard();
+    Board *getBoard() const;
 
     Player *getCurrentPlayer();
 

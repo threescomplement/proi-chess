@@ -16,7 +16,7 @@ public:
 
     Player();
 
-    ~Player();
+    ~Player() = default;
 
     std::vector<Piece *> &getPieces();
 

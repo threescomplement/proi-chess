@@ -2,6 +2,9 @@
 #include <QCoreApplication>
 #include <sstream>
 #include "StockfishBot.h"
+#include "Move.h"
+#include "Game.h"
+#include "Board.h"
 
 QString StockfishBot::getStockfishOutput(const char *command) {
     // Create a QtProcess object
@@ -38,7 +41,7 @@ QString StockfishBot::getStockfishOutput(const char *command) {
 QString StockfishBot::getStockfishOutput(std::string fen) {
     std::stringstream ss;
     ss << "position fen " << fen << "\n";
-    return this->getStockfishOutput(ss.str().c_str());
+    return StockfishBot::getStockfishOutput(ss.str().c_str());
 }
 
 std::string StockfishBot::extractMove(QString stockfishOutput) {
@@ -46,4 +49,16 @@ std::string StockfishBot::extractMove(QString stockfishOutput) {
     std::string pattern = "bestmove ";
     auto idx = str.find(pattern);
     return str.substr(idx + pattern.size(), 4);
+}
+
+Move StockfishBot::getMoveFromStockfish(std::string gameFEN) const {
+    auto moveStr = extractMove(getStockfishOutput(gameFEN));
+    auto sourcePosition = Position::fromString(moveStr.substr(0, 2));
+    auto targetPosition = Position::fromString(moveStr.substr(2, 2));
+
+    auto board = this->game.getBoard();
+    auto movedPiece = board->getField(sourcePosition)->getPiece();
+    auto capturedPiece = board->getField(targetPosition)->getPiece();
+
+    return {sourcePosition, targetPosition, movedPiece, capturedPiece};
 }
