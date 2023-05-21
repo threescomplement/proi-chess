@@ -6,17 +6,20 @@
 
 class Piece;
 
+
+/**
+ * Player is not responsible for freeing memory related to his Pieces
+ */
 class Player {
 private:
     std::string name;
     std::vector<Piece *> pieces;
-    bool isChecked;
 public:
     Player(std::string name);
 
-    Player();
-
     ~Player() = default;
+
+    std::string const &getName() const;
 
     std::vector<Piece *> &getPieces();
 

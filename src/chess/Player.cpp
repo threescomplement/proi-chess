@@ -3,11 +3,12 @@
 Player::Player(std::string name) {
     this->name = name;
     this->pieces = {};
-    this->isChecked = false;
+}
+
+std::string const &Player::getName() const {
+    return name;
 }
 
 std::vector<Piece *> &Player::getPieces() {
     return pieces;
 }
-
-Player::Player()=default;
