@@ -11,6 +11,8 @@ private:
 public:
 
     QString getStockfishOutput(std::string fen);
+
+    std::string extractMove(QString stockfishOutput);
 };
 
 

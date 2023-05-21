@@ -26,10 +26,12 @@ QString StockfishBot::getStockfishOutput(const char *command) {
         stockfish.waitForReadyRead();
         QString output = stockfish.readAll();
         if (output.contains("bestmove")) {
+            stockfish.kill();
             return output;
         }
     }
 
+    stockfish.kill();
     return "";
 }
 
@@ -37,4 +39,11 @@ QString StockfishBot::getStockfishOutput(std::string fen) {
     std::stringstream ss;
     ss << "position fen " << fen << "\n";
     return this->getStockfishOutput(ss.str().c_str());
+}
+
+std::string StockfishBot::extractMove(QString stockfishOutput) {
+    std::string str = stockfishOutput.toStdString();
+    std::string pattern = "bestmove ";
+    auto idx = str.find(pattern);
+    return str.substr(idx + pattern.size(), 4);
 }

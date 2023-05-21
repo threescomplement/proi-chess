@@ -13,9 +13,12 @@ int main(int argc, char *argv[])
 
     auto bot = StockfishBot();
     auto bestMove = bot.getStockfishOutput(fen);
+    auto extracted = bot.extractMove(bestMove);
 
     // Print the best move
     qDebug() << "The best move is" << bestMove;
+    qDebug() << "Extracted: " << extracted;
+
 
     return a.exec();
 }
