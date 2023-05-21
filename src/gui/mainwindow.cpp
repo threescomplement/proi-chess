@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
         , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QPixmap board_map(":/Empty_Board.jpg");
+    QPixmap board_map(":/resources/Empty_Board.jpg");
     ui->GameBoard->setPixmap(board_map);
 }
 
