@@ -16,6 +16,8 @@ namespace GameUnitTest {
 
         ASSERT_EQ(16, game.getWhitePlayer()->getPieces().size());
         ASSERT_EQ(16, game.getBlackPlayer()->getPieces().size());
+        ASSERT_TRUE(in(game.getWhitePlayer()->getPieces(), game.getBoard()->getWhiteKing()));
+        ASSERT_TRUE(in(game.getBlackPlayer()->getPieces(), game.getBoard()->getBlackKing()));
 
         ASSERT_EQ(0, game.getMoveHistory().size());
     }

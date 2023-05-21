@@ -6,12 +6,15 @@
 #include <string>
 
 class Move;
+class Piece;
 
 class Position;
 
 namespace ChessUnitTestCommon {
     template<class T>
     bool in(const std::vector<T> &vec, const T &val);
+
+    bool in(const std::vector<Piece*> &vec, Piece *val);
 
     bool isPermutation(const std::vector<Move> &vectorA, const std::vector<Move> &vectorB);
 

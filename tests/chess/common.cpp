@@ -7,6 +7,9 @@ bool ChessUnitTestCommon::in(const std::vector<T> &vec, const T &val) {
     return std::find(vec.begin(), vec.end(), val) != vec.end();
 }
 
+bool ChessUnitTestCommon::in(const std::vector<Piece*> &vec, Piece *val) {
+    return std::find(vec.begin(), vec.end(), val) != vec.end();
+}
 
 bool ChessUnitTestCommon::isPermutation(const std::vector<Move> &vectorA, const std::vector<Move> &vectorB) {
     if (vectorA.size() != vectorB.size()) {
