@@ -1,68 +1,54 @@
-#include <Board.h>
-#include <QObject>
-#include <QProcess>
 #include <QCoreApplication>
+#include <QProcess>
+#include <QDebug>
+#include <QString>
+#include <sstream>
 
+// A function that starts Stockfish as a separate process, sets a position in FEN notation, retrieves the best move and returns it as a QString
+QString getBestMove(std::string fen) {
+    // Create a QtProcess object
+    QProcess stockfish;
 
-int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
+    // Start Stockfish as a separate process
+    stockfish.start("/home/mgarbowski/stockfish_15.1_linux_x64/stockfish-ubuntu-20.04-x86-64");
 
-    // Create a QProcess instance
-    QProcess stockfishProcess;
-
-    // Set the command to be executed
-    QString stockfishProgram = "/home/mgarbowski/stockfish_15.1_linux_x64/stockfish-ubuntu-20.04-x86-64";
-
-    // Start the Stockfish process
-    stockfishProcess.start(stockfishProgram);
-
-    // Wait for Stockfish to initialize
-    if (stockfishProcess.waitForStarted()) {
-        qDebug() << "Stockfish started.";
-
-        // Set up the chess position
-        QString positionCommand = "position startpos\n";
-        stockfishProcess.write(positionCommand.toUtf8());
-        stockfishProcess.waitForBytesWritten();
-        stockfishProcess.waitForReadyRead();
-
-        // Read the output from Stockfish
-        QByteArray output = stockfishProcess.readAll();
-        QString outputString = QString::fromUtf8(output);
-        qDebug() << "Output: " << outputString;
-
-        // Retrieve the next move with depth 1
-        QString nextMoveCommand = "go depth 1\n";
-        stockfishProcess.write(nextMoveCommand.toUtf8());
-        stockfishProcess.waitForBytesWritten();
-
-        // Read the output from Stockfish line by line
-        QTextStream stream(&stockfishProcess);
-        QString line;
-        QString nextMove;
-
-        while (true) {
-            stockfishProcess.waitForReadyRead();
-            line = stream.readLine();
-            qDebug() << line;
-
-            if (line.startsWith("info depth 1")) {
-                line = stream.readLine();
-                QStringList parts = line.split(" ");
-                nextMove = parts[1];
-                break;
-            }
-        }
-
-        qDebug() << "Next Move: " << nextMove;
-    } else {
-        // Error occurred
-        qDebug() << "Error: Failed to start Stockfish.";
+    // Wait for Stockfish to start
+    if (!stockfish.waitForStarted()) {
+        qDebug() << "Stockfish failed to start";
+        return "";
     }
 
-    // Terminate the Stockfish process
-    stockfishProcess.terminate();
-    stockfishProcess.waitForFinished();
+    auto command = "position fen rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq d3 0 2\n";
+
+    // Write commands to Stockfish's stdin
+    stockfish.write("uci\n"); // Initialize UCI mode
+    stockfish.write("ucinewgame\n"); // Start a new game
+    stockfish.write(command); // Set the chessboard position in FEN notation
+    stockfish.write("go depth 10\n"); // Ask Stockfish to calculate the best move with depth 10
+
+    while (true) {
+        stockfish.waitForReadyRead();
+        QString output = stockfish.readAll();
+        if (output.contains("bestmove")) {
+            return output;
+        }
+    }
+
+    return "";
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+    // A sample FEN position
+    std::string fen = "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2";
+
+    // Get the best move for the position
+    QString bestMove = getBestMove(fen);
+
+    // Print the best move
+    qDebug() << "The best move is" << bestMove;
 
     return a.exec();
 }
