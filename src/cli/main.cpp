@@ -5,7 +5,7 @@
 #include <sstream>
 
 // A function that starts Stockfish as a separate process, sets a position in FEN notation, retrieves the best move and returns it as a QString
-QString getBestMove(std::string fen) {
+QString getBestMove(const char *command) {
     // Create a QtProcess object
     QProcess stockfish;
 
@@ -18,7 +18,7 @@ QString getBestMove(std::string fen) {
         return "";
     }
 
-    auto command = "position fen rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq d3 0 2\n";
+
 
     // Write commands to Stockfish's stdin
     stockfish.write("uci\n"); // Initialize UCI mode
@@ -42,10 +42,13 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     // A sample FEN position
-    std::string fen = "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2";
 
+    std::stringstream ss;
+    std::string fen = "rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq d3 0 2";
+    ss << "position fen " << fen << "\n";
+    auto command = "position fen rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq d3 0 2\n";
     // Get the best move for the position
-    QString bestMove = getBestMove(fen);
+    QString bestMove = getBestMove(ss.str().c_str());
 
     // Print the best move
     qDebug() << "The best move is" << bestMove;
