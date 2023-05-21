@@ -32,6 +32,7 @@ FetchContent_MakeAvailable(googletest)
 
 
 add_subdirectory(src/chess)
+add_subdirectory(src/bot)
 add_subdirectory(src/gui)
 add_subdirectory(src/cli)
 add_subdirectory(tests/chess)
