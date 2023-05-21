@@ -3,13 +3,21 @@
 #include "Color.h"
 #include "Player.h"
 
-Game::Game() {
+
+Game::Game(std::string whiteName, std::string blackName) {
     this->board = Board::startingBoard();
-    this->whitePlayer = new Player("White");    // TODO
-    this->blackPlayer = new Player("Black");    // TODO
+    this->whitePlayer = new Player(whiteName);
+    this->blackPlayer = new Player(blackName);
     this->currentPlayer = whitePlayer;
     this->moveHistory = {};
 
+    for (Piece *piece: board->getAllPieces()) {
+        if (piece->getColor() == Color::WHITE) {
+            whitePlayer->getPieces().push_back(piece);
+        } else {
+            blackPlayer->getPieces().push_back(piece);
+        }
+    }
 }
 
 Game::~Game() {
@@ -42,4 +50,12 @@ void Game::makeMove(Move move) {
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
     this->moveHistory.push_back(move);
     this->board->makeMove(move);
+}
+
+Player *Game::getWhitePlayer() const {
+    return whitePlayer;
+}
+
+Player *Game::getBlackPlayer() const {
+    return blackPlayer;
 }

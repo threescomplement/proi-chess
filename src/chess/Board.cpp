@@ -239,3 +239,7 @@ void Board::makeMove(Move move) {
     }
 }
 
+const std::vector<Piece *> &Board::getAllPieces() const {
+    return allPieces;
+}
+

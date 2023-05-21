@@ -2,12 +2,13 @@
 #include "../../src/chess/Position.h"
 #include "../../src/chess/Move.h"
 
-
-bool ChessUnitTestCommon::in(const std::vector <Move> &vec, const Move &val) {
+template<class T>
+bool ChessUnitTestCommon::in(const std::vector <T> &vec, const T &val) {
     return std::find(vec.begin(), vec.end(), val) != vec.end();
 }
 
-bool ChessUnitTestCommon::isPermutation(const std::vector <Move> &container, const std::vector <Move> &contained) {
+template<class T>
+bool ChessUnitTestCommon::isPermutation(const std::vector <T> &container, const std::vector <T> &contained) {
     if (container.size() != contained.size()) {
         return false;
     }
@@ -15,7 +16,7 @@ bool ChessUnitTestCommon::isPermutation(const std::vector <Move> &container, con
     return std::all_of(
             contained.begin(),
             contained.end(),
-            [container](Move const &move) { return in(container, move); }
+            [container](T const &element) { return in(container, element); }
     );
 }
 

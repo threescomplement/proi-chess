@@ -17,12 +17,10 @@ private:
     Player *whitePlayer;
     Player *blackPlayer;
     Player *currentPlayer;
-    King *whiteKing;
-    King *blackKing;
     std::vector<Move> moveHistory;
 
 public:
-    Game();
+    Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
 
     ~Game();
 
@@ -31,6 +29,12 @@ public:
     Player *getCurrentPlayer();
 
     std::vector<Move> &getMoveHistory();
+
+    std::string toFEN() const;
+
+    Player *getWhitePlayer() const;
+
+    Player *getBlackPlayer() const;
 
     void makeMove(Move move);
 

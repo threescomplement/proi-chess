@@ -3,7 +3,7 @@ set(CHESS_UNIT_TEST_SOURCES
         MoveUnitTest.cpp
         PositionUnitTest.cpp
         FieldUnitTest.cpp
-        GameTest.cpp
+        GameUnitTest.cpp
         BoardUnitTest.cpp
         pieces/PawnUnitTest.cpp
         pieces/KingUnitTest.cpp
