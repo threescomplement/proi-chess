@@ -20,7 +20,6 @@ private:
     King *whiteKing;
     King *blackKing;
     std::vector<Move> moveHistory;
-    std::vector<Piece*> allPieces;
 
 public:
     Game();

@@ -9,13 +9,18 @@
 #include "Player.h"
 
 Game::Game() {
+    this->board = Board::startingBoard();
+    this->whitePlayer = new Player("White");    // TODO
+    this->blackPlayer = new Player("Black");    // TODO
+    this->currentPlayer = whitePlayer;
+    this->moveHistory = {};
 
 }
 
 Game::~Game() {
-    for (Piece *piece: allPieces) {
-        delete piece;
-    }
+    delete board;
+    delete whitePlayer;
+    delete blackPlayer;
 }
 
 Board *Game::getBoard() {
@@ -23,7 +28,7 @@ Board *Game::getBoard() {
 }
 
 Player *Game::getCurrentPlayer() {
-    return whitePlayer;
+    return currentPlayer;
 }
 
 std::vector<Move> &Game::getMoveHistory() {
@@ -36,4 +41,10 @@ bool Game::isMate() const {
 
 bool Game::isCheck() const {
     return false;  // TODO
+}
+
+void Game::makeMove(Move move) {
+    this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
+    this->moveHistory.push_back(move);
+    this->board->makeMove(move);
 }
