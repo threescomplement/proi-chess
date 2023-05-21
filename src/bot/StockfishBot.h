@@ -5,9 +5,14 @@
 #include <QString>
 #include "Game.h"
 
+/**
+ * Requires stockfish to be installed and on the system PATH
+ */
 class StockfishBot {
 private:
     const Game &game;
+
+    static const std::string stockfishProgramName;
 
     static QString getStockfishOutput(const char *command);
 

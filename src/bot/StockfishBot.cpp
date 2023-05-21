@@ -6,12 +6,14 @@
 #include "Game.h"
 #include "Board.h"
 
+const std::string StockfishBot::stockfishProgramName = "stockfish";
+
 QString StockfishBot::getStockfishOutput(const char *command) {
     // Create a QtProcess object
     QProcess stockfish;
 
     // Start Stockfish as a separate process
-    stockfish.start("/home/mgarbowski/stockfish_15.1_linux_x64/stockfish-ubuntu-20.04-x86-64");
+    stockfish.start(StockfishBot::stockfishProgramName.c_str());
 
     // Wait for Stockfish to start
     if (!stockfish.waitForStarted()) {
