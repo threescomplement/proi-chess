@@ -243,3 +243,11 @@ const std::vector<Piece *> &Board::getAllPieces() const {
     return allPieces;
 }
 
+Piece *Board::getBlackKing() const {
+    return blackKing;
+}
+
+Piece *Board::getWhiteKing() const {
+    return whiteKing;
+}
+

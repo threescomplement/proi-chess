@@ -3,20 +3,20 @@
 #include "../../src/chess/Move.h"
 
 template<class T>
-bool ChessUnitTestCommon::in(const std::vector <T> &vec, const T &val) {
+bool ChessUnitTestCommon::in(const std::vector<T> &vec, const T &val) {
     return std::find(vec.begin(), vec.end(), val) != vec.end();
 }
 
-template<class T>
-bool ChessUnitTestCommon::isPermutation(const std::vector <T> &container, const std::vector <T> &contained) {
-    if (container.size() != contained.size()) {
+
+bool ChessUnitTestCommon::isPermutation(const std::vector<Move> &vectorA, const std::vector<Move> &vectorB) {
+    if (vectorA.size() != vectorB.size()) {
         return false;
     }
 
     return std::all_of(
-            contained.begin(),
-            contained.end(),
-            [container](T const &element) { return in(container, element); }
+            vectorB.begin(),
+            vectorB.end(),
+            [vectorA](Move const &element) { return in(vectorA, element); }
     );
 }
 

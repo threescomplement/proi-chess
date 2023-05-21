@@ -13,8 +13,7 @@ namespace ChessUnitTestCommon {
     template<class T>
     bool in(const std::vector<T> &vec, const T &val);
 
-    template<class T>
-    bool isPermutation(const std::vector<T> &container, const std::vector<T> &contained);
+    bool isPermutation(const std::vector<Move> &vectorA, const std::vector<Move> &vectorB);
 
     Position pos(const std::string &textRepr);
 }

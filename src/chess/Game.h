@@ -3,6 +3,7 @@
 
 
 #include <vector>
+#include <string>
 
 class Board;
 class Move;
@@ -18,6 +19,16 @@ private:
     Player *blackPlayer;
     Player *currentPlayer;
     std::vector<Move> moveHistory;
+
+    bool canWhiteKingsideCastle;
+    bool canWhiteQueensideCastle;
+    bool canBlackKingsideCastle;
+    bool canBlackQueensideCastle;
+    Position *enPassantTarget;
+    int halfmoveClock;
+    int fullmoveNumber;
+
+    std::string castlingAvailabilityFEN() const;
 
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");

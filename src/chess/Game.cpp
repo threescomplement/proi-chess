@@ -11,6 +11,14 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->currentPlayer = whitePlayer;
     this->moveHistory = {};
 
+    this->canWhiteKingsideCastle = true;
+    this->canWhiteQueensideCastle = true;
+    this->canBlackKingsideCastle = true;
+    this->canBlackQueensideCastle = true;
+    this->enPassantTarget = nullptr;
+    this->halfmoveClock = 0;
+    this->fullmoveNumber = 1;
+
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
             whitePlayer->getPieces().push_back(piece);
@@ -58,4 +66,44 @@ Player *Game::getWhitePlayer() const {
 
 Player *Game::getBlackPlayer() const {
     return blackPlayer;
+}
+
+std::string Game::castlingAvailabilityFEN() const {
+    std::stringstream ss;
+    if (canWhiteKingsideCastle) {
+        ss << "K";
+    }
+    if (canWhiteQueensideCastle) {
+        ss << "Q";
+    }
+    if (canBlackKingsideCastle) {
+        ss << "k";
+    }
+    if (canBlackQueensideCastle) {
+        ss << "q";
+    }
+
+    auto result = ss.str();
+    if (result.size() == 0) {
+        return "-";
+    }
+
+    return result;
+}
+
+std::string Game::toFEN() const {
+    std::stringstream ss;
+    auto board = this->getBoard()->toFEN();
+    auto activePlayer = (this->currentPlayer == this->whitePlayer) ? "w" : "b";
+    auto castling = this->castlingAvailabilityFEN();
+    auto enPassant = (this->enPassantTarget != nullptr) ? this->enPassantTarget->toString() : "-";
+
+    ss << board << " "
+       << activePlayer << " "
+       << castling << " "
+       << enPassant << " "
+       << this->halfmoveClock << " "
+       << this->fullmoveNumber;
+
+    return ss.str();
 }
