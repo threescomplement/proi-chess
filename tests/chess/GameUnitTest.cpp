@@ -43,7 +43,9 @@ namespace GameUnitTest {
         ASSERT_EQ("rnbqkbnr/pppp1pp1/8/4N2p/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3", game.toFEN());
         ASSERT_EQ(15, blackPieces.size());
         ASSERT_EQ(16, whitePieces.size());
+        ASSERT_EQ(32, game.getBoard()->getAllPieces().size());
         ASSERT_FALSE(in(blackPieces, capturedPawn));
+        ASSERT_TRUE(in(game.getBoard()->getAllPieces(), capturedPawn));
         ASSERT_THROW(capturedPawn->getPosition(), PieceNotOnBoardException);
     }
 

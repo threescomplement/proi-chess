@@ -76,6 +76,13 @@ void Game::makeMove(Move move) {
         this->enPassantTarget = new Position(row, col);
     }
 
+    if (move.isCapture()) {
+        auto captured = move.getCapturedPiece();
+        captured->takeOffField();
+        auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
+        player->removePiece(captured);
+    }
+
     this->moveHistory.push_back(move);
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
 }

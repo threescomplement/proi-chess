@@ -27,6 +27,7 @@ public:
 
     std::vector<Piece *> &getPieces();
 
+    void removePiece(Piece *piece);
 };
 
 
