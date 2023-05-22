@@ -144,6 +144,13 @@ Game Game::fromFEN(std::string fen) {
     auto whitePlayer = new Player("Player One", Color::WHITE);
     auto blackPlayer = new Player("Player Two", Color::BLACK);
     auto currentPlayer = (activePlayer[0] == 'w') ? whitePlayer : blackPlayer;
+    for (auto piece: board->getAllPieces()) {
+        if (piece->getColor() == Color::WHITE) {
+            whitePlayer->getPieces().push_back(piece);
+        } else {
+            blackPlayer->getPieces().push_back(piece);
+        }
+    }
 
     auto castling = elements[2];
     auto canWhiteKingsideCastle = castling.find('K') != -1;
