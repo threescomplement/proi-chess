@@ -40,6 +40,8 @@ public:
     bool operator!=(const Move &rhs) const;
 
     std::string toString() const;
+
+    bool isDoublePawnMove() const;
 };
 
 

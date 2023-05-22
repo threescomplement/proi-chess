@@ -2,6 +2,7 @@
 #include "Board.h"
 #include "Color.h"
 #include "Player.h"
+#include "pieces/PieceType.h"
 #include "exceptions/FenException.h"
 
 
@@ -57,6 +58,22 @@ bool Game::isCheck() const {
 
 void Game::makeMove(Move move) {
     this->board->makeMove(move);
+
+    if (this->currentPlayer->getColor() == Color::BLACK) {
+        this->fullmoveNumber++;
+    }
+
+    this->halfmoveClock++;
+    if (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) {
+        this->halfmoveClock = 0;
+    }
+
+    if (move.isDoublePawnMove()) {
+        delete this->enPassantTarget;
+        auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
+        auto col = move.getTo().getCol();
+        this->enPassantTarget = new Position(row, col);
+    }
 
     this->moveHistory.push_back(move);
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
