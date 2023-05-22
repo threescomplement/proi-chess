@@ -48,6 +48,42 @@ namespace GameUnitTest {
         ASSERT_EQ(game.toFEN(), fenGame.toFEN());
     }
 
+    TEST(Game, getMovesFromEmpty) {
+        auto game = Game::fromFEN("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2");
+        auto moves = game.getMovesFrom(pos("c4"));
+        ASSERT_EQ(0, moves.size());
+    }
+
+    TEST(Game, getMovesFromNoAvailable) {
+        auto game = Game::fromFEN("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2");
+        auto moves = game.getMovesFrom(pos("e4"));
+        ASSERT_EQ(0, moves.size());
+    }
+
+    TEST(Game, getMovesMultipleAvailable) {
+        auto game = Game::fromFEN("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2");
+        auto moves = game.getMovesFrom(pos("g1"));
+        std::vector<Move> expected = {
+                Move(pos("g1"), pos("e2"), game.getPiece(pos("g1"))),
+                Move(pos("g1"), pos("f3"), game.getPiece(pos("g1"))),
+                Move(pos("g1"), pos("h3"), game.getPiece(pos("g1"))),
+        };
+        ASSERT_TRUE(isPermutation(expected, moves));
+    }
+
+    TEST(Game, getMovesFromIncludesCapture) {
+        auto game = Game::fromFEN("rnbqkbnr/pppp1pp1/8/4p2p/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq h6 0 3");
+        auto moves = game.getMovesFrom(pos("f3"));
+        std::vector<Move> expected = {
+                Move(pos("f3"), pos("g1"), game.getPiece(pos("f3"))),
+                Move(pos("f3"), pos("d4"), game.getPiece(pos("f3"))),
+                Move(pos("f3"), pos("e5"), game.getPiece(pos("f3")), game.getPiece(pos("e5"))),
+                Move(pos("f3"), pos("g5"), game.getPiece(pos("f3"))),
+                Move(pos("f3"), pos("h4"), game.getPiece(pos("f3"))),
+        };
+        ASSERT_TRUE(isPermutation(expected, moves));
+    }
+
     TEST(Game, fromFENCastling) {
         FAIL();
     }

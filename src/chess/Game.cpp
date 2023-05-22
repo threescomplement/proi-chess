@@ -205,6 +205,25 @@ Game::Game(
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber) {}
 
+std::vector<Move> Game::getMovesFrom(Position position) const {
+    auto piece = this->getPiece(position);
+    if (piece == nullptr) {
+        return {};
+    }
+
+    return piece->getMoves();
+}
+
+std::vector<Move> Game::getAllPlayerMoves(Player &player) const {
+    std::vector<Move> moves = {};
+    for (auto piece: player.getPieces()) {
+        auto pieceMoves = piece->getMoves();
+        moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
+    }
+
+    return moves;
+}
+
 std::vector<std::string> split(const std::string &txt, char ch) {
     std::vector<std::string> strings;
     size_t pos = txt.find(ch);
