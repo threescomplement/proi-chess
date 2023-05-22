@@ -7,8 +7,8 @@
 
 Game::Game(std::string whiteName, std::string blackName) {
     this->board = Board::startingBoard();
-    this->whitePlayer = new Player(whiteName);
-    this->blackPlayer = new Player(blackName);
+    this->whitePlayer = new Player(whiteName, Color::WHITE);
+    this->blackPlayer = new Player(blackName, Color::BLACK);
     this->currentPlayer = whitePlayer;
     this->moveHistory = {};
 
@@ -56,9 +56,10 @@ bool Game::isCheck() const {
 }
 
 void Game::makeMove(Move move) {
-    this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
-    this->moveHistory.push_back(move);
     this->board->makeMove(move);
+
+    this->moveHistory.push_back(move);
+    this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
 }
 
 Player *Game::getWhitePlayer() const {
@@ -122,8 +123,8 @@ Game Game::fromFEN(std::string fen) {
     if (activePlayer.size() != 1 || (activePlayer[0] != 'w' && activePlayer[0] != 'b')) {
         throw FenException("Invalid FEN representation of Game");
     }
-    auto whitePlayer = new Player("Player One");
-    auto blackPlayer = new Player("Player Two");
+    auto whitePlayer = new Player("Player One", Color::WHITE);
+    auto blackPlayer = new Player("Player Two", Color::BLACK);
     auto currentPlayer = (activePlayer[0] == 'w') ? whitePlayer : blackPlayer;
 
     auto castling = elements[2];

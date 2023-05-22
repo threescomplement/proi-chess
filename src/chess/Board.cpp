@@ -136,8 +136,6 @@ std::string Board::toFEN() const {
 }
 
 Board *Board::fromFEN(const std::string &FENDescription) {
-    auto whitePlayer = new Player("White");
-    auto blackPlayer = new Player("Black");
     auto board = Board::emptyBoard();
 
     int row = 7;
