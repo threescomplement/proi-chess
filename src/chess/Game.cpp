@@ -68,8 +68,9 @@ void Game::makeMove(Move move) {
         this->halfmoveClock = 0;
     }
 
+    delete this->enPassantTarget;
+    this->enPassantTarget = nullptr;
     if (move.isDoublePawnMove()) {
-        delete this->enPassantTarget;
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
         auto col = move.getTo().getCol();
         this->enPassantTarget = new Position(row, col);
