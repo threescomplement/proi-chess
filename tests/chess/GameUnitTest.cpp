@@ -3,6 +3,7 @@
 #include "../../src/chess/Player.h"
 #include "../../src/chess/Move.h"
 #include "Board.h"
+#include "exceptions/PieceNotOnBoardException.h"
 #include "common.h"
 
 using namespace ChessUnitTestCommon;
@@ -31,10 +32,27 @@ namespace GameUnitTest {
         ASSERT_EQ("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", game.toFEN());
     }
 
+    TEST(Game, makeMoveCapture) {
+        auto game = Game::fromFEN("rnbqkbnr/pppp1pp1/8/4p2p/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq h6 0 3");
+        auto capturedPawn = game.getPiece(pos("e5"));
+        auto move = Move(pos("f3"), pos("e5"), game.getPiece(pos("f3")), capturedPawn);
+        game.makeMove(move);
+        auto blackPieces = game.getBlackPlayer()->getPieces();
+        auto whitePieces = game.getWhitePlayer()->getPieces();
+
+        ASSERT_EQ("rnbqkbnr/pppp1pp1/8/4N2p/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3", game.toFEN());
+        ASSERT_EQ(15, blackPieces.size());
+        ASSERT_EQ(16, whitePieces.size());
+        ASSERT_FALSE(in(blackPieces, capturedPawn));
+        ASSERT_THROW(capturedPawn->getPosition(), PieceNotOnBoardException);
+    }
+
     TEST(Game, fromFENStartingGame) {
         auto game = Game::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         auto newGame = Game();
         ASSERT_EQ(newGame.toFEN(), game.toFEN());
+        ASSERT_EQ(16, game.getWhitePlayer()->getPieces().size());
+        ASSERT_EQ(16, game.getBlackPlayer()->getPieces().size());
     }
 
     TEST(Game, fromFENAfterMoves) {
@@ -46,6 +64,8 @@ namespace GameUnitTest {
         game.makeMove(Move(pos("g1"), pos("h3"), game.getPiece(pos("g1"))));
 
         ASSERT_EQ(game.toFEN(), fenGame.toFEN());
+        ASSERT_EQ(16, game.getWhitePlayer()->getPieces().size());
+        ASSERT_EQ(16, game.getBlackPlayer()->getPieces().size());
     }
 
     TEST(Game, getMovesFromEmpty) {
