@@ -12,7 +12,7 @@ set(CHESS_LIBRARY_SOURCES
         pieces/King.cpp
         pieces/Queen.cpp
         pieces/Bishop.cpp
-        )
+        exceptions/FenException.h)
 
 
 add_library(chess STATIC ${CHESS_LIBRARY_SOURCES})

@@ -21,4 +21,35 @@ namespace GameUnitTest {
 
         ASSERT_EQ(0, game.getMoveHistory().size());
     }
+
+    TEST(Game, makeMoveNoCapture) {
+        auto game = Game();
+        auto pawn = game.getPiece(pos("e2"));
+        auto move = Move(pos("e2"), pos("e4"), pawn);
+        game.makeMove(move);
+
+        ASSERT_EQ("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", game.toFEN());
+    }
+
+    TEST(Game, fromFENStartingGame) {
+        auto game = Game::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        auto newGame = Game();
+        ASSERT_EQ(newGame.toFEN(), game.toFEN());
+    }
+
+    TEST(Game, fromFENAfterMove) {
+
+    }
+
+    TEST(Game, fromFENCastling) {
+        FAIL();
+    }
+
+    TEST(Game, fromFENInvalidHalfmoveClock) {
+        FAIL();
+    }
+
+    TEST(Game, fromFEN) {
+        FAIL();
+    }
 }

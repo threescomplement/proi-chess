@@ -2,6 +2,7 @@
 #include "Board.h"
 #include "Color.h"
 #include "Player.h"
+#include "exceptions/FenException.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -106,4 +107,95 @@ std::string Game::toFEN() const {
        << this->fullmoveNumber;
 
     return ss.str();
+}
+
+Piece *Game::getPiece(Position position) const {
+    return this->getBoard()->getField(position)->getPiece();
+}
+
+Game Game::fromFEN(std::string fen) {
+    auto elements = split(fen, ' ');
+
+    auto board = Board::fromFEN(elements[0]);
+
+    auto activePlayer = elements[1];
+    if (activePlayer.size() != 1 || (activePlayer[0] != 'w' && activePlayer[0] != 'b')) {
+        throw FenException("Invalid FEN representation of Game");
+    }
+    auto whitePlayer = new Player("Player One");
+    auto blackPlayer = new Player("Player Two");
+    auto currentPlayer = (activePlayer[0] == 'w') ? whitePlayer : blackPlayer;
+
+    auto castling = elements[2];
+    auto canWhiteKingsideCastle = castling.find('K') != -1;
+    auto canWhiteQueensideCastle = castling.find('Q') != -1;
+    auto canBlackKingsideCastle = castling.find('k') != -1;
+    auto canBlackQueensideCastle = castling.find('q') != -1;
+
+    auto enPassant = elements[3];
+    Position *enPassantPosition = nullptr;
+    if (!(enPassant.size() == 1 && enPassant[0] == '-') && enPassant.size() != 2) {
+        throw FenException("Invalid FEN representation of Game");
+    }
+
+    if (enPassant.size() == 2) {
+        auto pos = Position::fromString(enPassant);
+        enPassantPosition = new Position(pos.getRow(), pos.getCol());
+    }
+
+    auto halfmoveClock = std::stoi(elements[4]);
+    auto fullmoveNumber = std::stoi(elements[5]);
+
+    return {
+            board,
+            whitePlayer,
+            blackPlayer,
+            currentPlayer,
+            canWhiteKingsideCastle,
+            canWhiteQueensideCastle,
+            canBlackKingsideCastle,
+            canBlackQueensideCastle,
+            enPassantPosition,
+            halfmoveClock,
+            fullmoveNumber
+    };
+}
+
+Game::Game(
+        Board *board,
+        Player *whitePlayer,
+        Player *blackPlayer,
+        Player *currentPlayer,
+        bool canWhiteKingsideCastle,
+        bool canWhiteQueensideCastle,
+        bool canBlackKingsideCastle,
+        bool canBlackQueensideCastle,
+        Position *enPassantTarget,
+        int halfmoveClock,
+        int fullmoveNumber
+) :
+        board(board),
+        whitePlayer(whitePlayer),
+        blackPlayer(blackPlayer),
+        currentPlayer(currentPlayer),
+        canWhiteKingsideCastle(canWhiteKingsideCastle),
+        canWhiteQueensideCastle(canWhiteQueensideCastle),
+        canBlackKingsideCastle(canBlackKingsideCastle),
+        canBlackQueensideCastle(canBlackQueensideCastle),
+        enPassantTarget(enPassantTarget),
+        halfmoveClock(halfmoveClock),
+        fullmoveNumber(fullmoveNumber) {}
+
+std::vector<std::string> split(const std::string &txt, char ch) {
+    std::vector<std::string> strings;
+    size_t pos = txt.find(ch);
+    size_t initialPos = 0;
+    while (pos != std::string::npos) {
+        strings.push_back(txt.substr(initialPos, pos - initialPos));
+        initialPos = pos + 1;
+        pos = txt.find(ch, initialPos);
+    }
+
+    strings.push_back(txt.substr(initialPos, std::min(pos, txt.size()) - initialPos + 1));
+    return strings;
 }

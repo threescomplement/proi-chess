@@ -28,6 +28,12 @@ private:
     int halfmoveClock;
     int fullmoveNumber;
 
+    Game(Board *board, Player *whitePlayer, Player *blackPlayer, Player *currentPlayer, bool canWhiteKingsideCastle,
+         bool canWhiteQueensideCastle, bool canBlackKingsideCastle, bool canBlackQueensideCastle,
+         Position *enPassantTarget, int halfmoveClock, int fullmoveNumber);
+
+private:
+
     std::string castlingAvailabilityFEN() const;
 
 public:
@@ -36,6 +42,8 @@ public:
     ~Game();
 
     Board *getBoard() const;
+
+    Piece *getPiece(Position position) const;
 
     Player *getCurrentPlayer();
 
@@ -59,8 +67,10 @@ public:
 
     bool isCheck() const;
 
-
+    static Game fromFEN(std::string fen);
 };
+
+std::vector<std::string> split(const std::string &txt, char ch);
 
 
 #endif //CHESS_GAME_H
