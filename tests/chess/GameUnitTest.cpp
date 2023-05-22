@@ -37,8 +37,15 @@ namespace GameUnitTest {
         ASSERT_EQ(newGame.toFEN(), game.toFEN());
     }
 
-    TEST(Game, fromFENAfterMove) {
-        FAIL();
+    TEST(Game, fromFENAfterMoves) {
+        auto fenGame = Game::fromFEN("rnbqkbnr/pppp1ppp/8/4p3/4P3/7N/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
+
+        auto game = Game();
+        game.makeMove(Move(pos("e2"), pos("e4"), game.getPiece(pos("e2"))));
+        game.makeMove(Move(pos("e7"), pos("e5"), game.getPiece(pos("e7"))));
+        game.makeMove(Move(pos("g1"), pos("h3"), game.getPiece(pos("g1"))));
+
+        ASSERT_EQ(game.toFEN(), fenGame.toFEN());
     }
 
     TEST(Game, fromFENCastling) {
