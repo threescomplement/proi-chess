@@ -38,7 +38,7 @@ namespace GameUnitTest {
     }
 
     TEST(Game, fromFENAfterMove) {
-
+        FAIL();
     }
 
     TEST(Game, fromFENCastling) {
