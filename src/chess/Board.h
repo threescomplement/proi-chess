@@ -33,6 +33,12 @@ public:
 
     Field *getField(Position position) const;
 
+    Piece *getBlackKing() const;
+
+    Piece *getWhiteKing() const;
+
+    const std::vector<Piece *> &getAllPieces() const;
+
     static Board *emptyBoard();
 
     /**

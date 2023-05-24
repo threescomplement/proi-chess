@@ -51,3 +51,10 @@ Piece *Move::getCapturedPiece() const {
     return capturedPiece;
 }
 
+bool Move::isDoublePawnMove() const {
+    auto sourceRow = this->getFrom().getRow();
+    auto targetRow = this->getTo().getRow();
+    auto type = this->getPiece()->getType();
+    return (type == PieceType::PAWN && abs(sourceRow - targetRow) == 2);
+}
+

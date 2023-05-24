@@ -136,8 +136,6 @@ std::string Board::toFEN() const {
 }
 
 Board *Board::fromFEN(const std::string &FENDescription) {
-    auto whitePlayer = new Player("White");
-    auto blackPlayer = new Player("Black");
     auto board = Board::emptyBoard();
 
     int row = 7;
@@ -237,5 +235,17 @@ void Board::makeMove(Move move) {
     if (targetPiece != nullptr) {
         targetPiece->setField(nullptr);
     }
+}
+
+const std::vector<Piece *> &Board::getAllPieces() const {
+    return allPieces;
+}
+
+Piece *Board::getBlackKing() const {
+    return blackKing;
+}
+
+Piece *Board::getWhiteKing() const {
+    return whiteKing;
 }
 

@@ -94,8 +94,6 @@ namespace BoardUnitTest {
     TEST(Board, FEN_initialBoardState) {
         auto testBoard = Board::emptyBoard();
         std::vector<Piece *> allPieces = {};
-        auto whitePlayer = new Player(std::string("White Player"));
-        auto blackPlayer = new Player(std::string("Black Player"));
 
         {
             allPieces.push_back(new Rook(Color::WHITE, testBoard->getField(Position(1, 1))));
@@ -148,8 +146,6 @@ namespace BoardUnitTest {
     TEST(Board, FEN_goofyItalian) {
         auto testBoard = Board::emptyBoard();
         std::vector<Piece *> allPieces = {};
-        auto whitePlayer = new Player(std::string("White Player"));
-        auto blackPlayer = new Player(std::string("Black Player"));
 
         {
             allPieces.push_back(new Rook(Color::WHITE, testBoard->getField(Position(1, 1))));

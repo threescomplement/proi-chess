@@ -5,21 +5,29 @@
 #include <vector>
 
 class Piece;
+enum class Color;
 
+
+/**
+ * Player is not responsible for freeing memory related to his Pieces
+ */
 class Player {
 private:
     std::string name;
+    Color color;
     std::vector<Piece *> pieces;
-    bool isChecked;
 public:
-    Player(std::string name);
-
-    Player();
+    Player(std::string name, Color color);
 
     ~Player() = default;
 
+    std::string const &getName() const;
+
+    Color getColor() const;
+
     std::vector<Piece *> &getPieces();
 
+    void removePiece(Piece *piece);
 };
 
 

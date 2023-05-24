@@ -3,6 +3,7 @@
 
 
 #include <vector>
+#include <string>
 
 class Board;
 class Move;
@@ -17,20 +18,42 @@ private:
     Player *whitePlayer;
     Player *blackPlayer;
     Player *currentPlayer;
-    King *whiteKing;
-    King *blackKing;
     std::vector<Move> moveHistory;
 
+    bool canWhiteKingsideCastle;
+    bool canWhiteQueensideCastle;
+    bool canBlackKingsideCastle;
+    bool canBlackQueensideCastle;
+    Position *enPassantTarget;
+    int halfmoveClock;
+    int fullmoveNumber;
+
+    Game(Board *board, Player *whitePlayer, Player *blackPlayer, Player *currentPlayer, bool canWhiteKingsideCastle,
+         bool canWhiteQueensideCastle, bool canBlackKingsideCastle, bool canBlackQueensideCastle,
+         Position *enPassantTarget, int halfmoveClock, int fullmoveNumber);
+
+private:
+
+    std::string castlingAvailabilityFEN() const;
+
 public:
-    Game();
+    Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
 
     ~Game();
 
     Board *getBoard() const;
 
+    Piece *getPiece(Position position) const;
+
     Player *getCurrentPlayer();
 
     std::vector<Move> &getMoveHistory();
+
+    std::string toFEN() const;
+
+    Player *getWhitePlayer() const;
+
+    Player *getBlackPlayer() const;
 
     void makeMove(Move move);
 
@@ -44,8 +67,10 @@ public:
 
     bool isCheck() const;
 
-
+    static Game fromFEN(std::string fen);
 };
+
+std::vector<std::string> split(const std::string &txt, char ch);
 
 
 #endif //CHESS_GAME_H
