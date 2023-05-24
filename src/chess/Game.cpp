@@ -95,6 +95,10 @@ Player *Game::getBlackPlayer() const {
     return blackPlayer;
 }
 
+Player *Game::getCurrentPlayer() const {
+    return currentPlayer;
+}
+
 std::string Game::castlingAvailabilityFEN() const {
     std::stringstream ss;
     if (canWhiteKingsideCastle) {

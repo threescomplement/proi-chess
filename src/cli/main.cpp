@@ -1,21 +1,53 @@
-#include <QCoreApplication>
-#include <QProcess>
-#include <QString>
-#include <sstream>
-#include "../bot/StockfishBot.h"
+#include <iostream>
+#include "Game.h"
+#include "Color.h"
+#include "Player.h"
 #include "Move.h"
+#include "Board.h"
+#include "Position.h"
 
+
+std::string playerPrompt(const Game &game) {
+    return (game.getCurrentPlayer()->getColor() == Color::WHITE)
+           ? "White move > "
+           : "Black move > ";
+}
+
+Move parseMove(const std::string& moveStr, const Game &game) {
+    if (moveStr.size() != 4) {
+        throw std::invalid_argument("Invalid representation of a move");
+    }
+
+    Position sourcePosition = Position::fromString(moveStr.substr(0, 2));
+    Position targetPosition = Position::fromString(moveStr.substr(2, 2));
+    auto movedPiece = game.getPiece(sourcePosition);
+    auto capturedPiece = game.getPiece(targetPosition);
+
+    if (game.getCurrentPlayer()->getColor() != movedPiece->getColor()) {
+        throw std::invalid_argument("Player can only move his own piece");
+    }
+
+    return {sourcePosition, targetPosition, movedPiece, capturedPiece};
+}
 
 int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
-    std::string fen = "rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq d6 0 3";
-
     auto game = Game();
-    auto bot = StockfishBot(game);
 
-    // Print the best move
-    qDebug() << "The best move is" << bot.getMoveFromStockfish(fen).toString();
+    while (true) {
+        std::cout << game.getBoard()->toString() << std::endl;
+        std::string moveStr;
+        std::cout << playerPrompt(game);
+
+        try {
+            std::cin >> moveStr;
+            auto move = parseMove(moveStr, game);
+            game.makeMove(move);
+        } catch (std::exception &e) {
+            std::cout << "Cannot make move " << moveStr << std::endl;
+            continue;
+        }
+    }
 
 
-    return a.exec();
+    return 0;
 }

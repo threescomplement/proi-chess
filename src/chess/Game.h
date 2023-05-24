@@ -55,6 +55,8 @@ public:
 
     Player *getBlackPlayer() const;
 
+    Player * getCurrentPlayer() const;
+
     void makeMove(Move move);
 
     Game afterMove(Move move) const;
