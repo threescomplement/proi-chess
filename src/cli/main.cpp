@@ -49,19 +49,28 @@ int main(int argc, char *argv[]) {
             std::cin >> moveStr;
             auto move = parseMove(moveStr, game);
             auto availableMoves = game.getMovesFrom(move.getFrom());
+
             if (std::find(availableMoves.begin(), availableMoves.end(), move) == availableMoves.end()) {
-                throw IllegalMoveException("Move not allowed");
+                std::cout << "Illegal move " << moveStr << ", moves allowed from " << move.getFrom().toString() << ":"
+                          << std::endl;
+                for (auto avilableMove: availableMoves) {
+                    std::cout << avilableMove.toStockfishNotation() << " ";
+                }
+                std::cout << std::endl;
+                continue;
             }
 
             game.makeMove(move);
-        } catch (const std::exception &e) {
-            std::cout << "Cannot make move: " << moveStr << " " << e.what() << std::endl;
+        } catch (const ChessException &e) {
+            std::cout << moveStr << ": " << e.what() << std::endl;
             continue;
+        } catch (const CLIException &e) {
+            std::cout << moveStr << ": " << e.what() << std::endl;
+            continue;
+        } catch (const std::exception &e) {
+            std::cout << moveStr << ": cannot make move " << e.what() << std::endl;
         }
     }
-
-    // TODO: handle exceptions and print more helpful messages
-
 
     return 0;
 }
