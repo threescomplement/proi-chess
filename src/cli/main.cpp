@@ -1,4 +1,6 @@
 #include <iostream>
+#include <iomanip>
+#include <algorithm>
 #include "Game.h"
 #include "Color.h"
 #include "Player.h"
@@ -34,19 +36,27 @@ int main(int argc, char *argv[]) {
     auto game = Game();
 
     while (true) {
-        std::cout << game.getBoard()->toString() << std::endl;
+        std::cout  << game.getBoard()->toString() << std::endl;
         std::string moveStr;
         std::cout << playerPrompt(game);
 
         try {
             std::cin >> moveStr;
             auto move = parseMove(moveStr, game);
+            auto availableMoves = game.getMovesFrom(move.getFrom());
+            if (std::find(availableMoves.begin(), availableMoves.end(), move) == availableMoves.end()) {
+                throw std::invalid_argument("Illegal move");
+            }
+
             game.makeMove(move);
         } catch (std::exception &e) {
             std::cout << "Cannot make move " << moveStr << std::endl;
             continue;
         }
     }
+
+    // TODO: use appropriate exceptions
+    // TODO: handle exceptions and print more helpful messages
 
 
     return 0;
