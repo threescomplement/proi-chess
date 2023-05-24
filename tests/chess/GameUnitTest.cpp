@@ -3,7 +3,7 @@
 #include "../../src/chess/Player.h"
 #include "../../src/chess/Move.h"
 #include "Board.h"
-#include "exceptions/PieceNotOnBoardException.h"
+#include "ChessExceptions.h"
 #include "common.h"
 
 using namespace ChessUnitTestCommon;

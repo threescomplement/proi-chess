@@ -1,3 +1,4 @@
+#include "gtest/gtest.h"
 #include "../../src/chess/Board.h"
 #include "../../src/chess/pieces/Pawn.h"
 #include "../../src/chess/pieces/Rook.h"
@@ -7,12 +8,8 @@
 #include "../../src/chess/pieces/King.h"
 #include "../../src/chess/Color.h"
 #include "../../src/chess/Player.h"
-#include "../../src/chess/exceptions/PieceNotOnBoardException.h"
+#include "ChessExceptions.h"
 #include "common.h"
-
-#include <iostream>
-#include "gtest/gtest.h"
-#include "exceptions/IllegalMoveException.h"
 
 using namespace ChessUnitTestCommon;
 
