@@ -26,6 +26,10 @@ Move parseMove(const std::string &moveStr, const Game &game) {
     auto movedPiece = game.getPiece(sourcePosition);
     auto capturedPiece = game.getPiece(targetPosition);
 
+    if (movedPiece == nullptr) {
+        throw InvalidPlayerInputException("Cannot move from empty field");
+    }
+
     if (game.getCurrentPlayer()->getColor() != movedPiece->getColor()) {
         throw InvalidPlayerInputException("Player can only move his own piece");
     }
@@ -57,7 +61,6 @@ int main(int argc, char *argv[]) {
     }
 
     // TODO: handle exceptions and print more helpful messages
-    // FIXME: segfault on move from empty field
 
 
     return 0;
