@@ -72,5 +72,10 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // TODO: help command
+    // TODO: give up command
+    // TODO: handle end of game
+    // TODO: load from FEN
+
     return 0;
 }
