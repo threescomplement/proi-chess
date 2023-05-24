@@ -11,6 +11,16 @@
 #include "StockfishBot.h"
 
 
+bool handleIfSpecialCommand(const std::string& playerInput) {
+    if (playerInput == "help") {
+        std::cout << "Type the move you want to make in Smith notation" << std::endl;
+        std::cout << "eg. to move from e2 to e4 simply type 'e2e4', no need to specify the piece type" << std::endl;
+        return true;
+    }
+
+    return false;
+}
+
 std::string playerPrompt(const Game &game) {
     return (game.getCurrentPlayer()->getColor() == Color::WHITE)
            ? "White move > "
@@ -43,9 +53,13 @@ void processPlayerTurn(Game &game) {
         std::cout << game.getBoard()->toString() << std::endl;
         std::string moveStr;
         std::cout << playerPrompt(game);
+        std::cin >> moveStr;
+
+        if (handleIfSpecialCommand(moveStr)) {
+            continue;
+        }
 
         try {
-            std::cin >> moveStr;
             auto move = parseMove(moveStr, game);
             auto availableMoves = game.getMovesFrom(move.getFrom());
 
@@ -136,7 +150,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // TODO: help command
     // TODO: give up command
     // TODO: handle end of game
     // TODO: load from FEN
