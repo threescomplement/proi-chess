@@ -2,15 +2,16 @@
 #define CHESS_CHESSEXCEPTIONS_H
 
 #include <exception>
+#include <utility>
 
 class ChessException : public std::exception {
 private:
-    char *message;
+    std::string message;
 public:
-    explicit ChessException(char *msg) : message(msg) {}
+    explicit ChessException(std::string msg) : message(std::move(msg)) {}
 
-    const char *what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW override {
-        return message;
+    [[nodiscard]] const char *what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW override {
+        return message.c_str();
     }
 };
 

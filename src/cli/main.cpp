@@ -7,7 +7,7 @@
 #include "Board.h"
 #include "Position.h"
 #include "ChessExceptions.h"
-#include "InvalidPlayerInputException.h"
+#include "CLIExceptions.h"
 
 
 std::string playerPrompt(const Game &game) {
@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // TODO: use appropriate exceptions
     // TODO: handle exceptions and print more helpful messages
     // FIXME: segfault on move from empty field
 
