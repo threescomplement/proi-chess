@@ -37,7 +37,7 @@ Move parseMove(const std::string &moveStr, const Game &game) {
     return {sourcePosition, targetPosition, movedPiece, capturedPiece};
 }
 
-int main(int argc, char *argv[]) {
+void playPlayerVersusPlayer() {
     auto game = Game();
 
     while (true) {
@@ -71,6 +71,10 @@ int main(int argc, char *argv[]) {
             std::cout << moveStr << ": cannot make move " << e.what() << std::endl;
         }
     }
+}
+
+int main(int argc, char *argv[]) {
+    playPlayerVersusPlayer();
 
     // TODO: help command
     // TODO: give up command
