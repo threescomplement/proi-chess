@@ -3,7 +3,7 @@
 #include "Color.h"
 #include "Player.h"
 #include "pieces/PieceType.h"
-#include "exceptions/FenException.h"
+#include "ChessExceptions.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {

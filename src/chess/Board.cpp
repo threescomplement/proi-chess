@@ -8,7 +8,7 @@
 #include "pieces/Bishop.h"
 #include "pieces/Queen.h"
 #include "pieces/King.h"
-#include "exceptions/IllegalMoveException.h"
+#include "ChessExceptions.h"
 
 Board::Board() {
     this->allPieces = {};
