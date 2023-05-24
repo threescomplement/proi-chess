@@ -11,7 +11,7 @@
 #include "StockfishBot.h"
 
 
-bool handleIfSpecialCommand(const std::string& playerInput) {
+bool handleIfSpecialCommand(const std::string &playerInput) {
     if (playerInput == "help") {
         std::cout << "Type the move you want to make in Smith notation" << std::endl;
         std::cout << "eg. to move from e2 to e4 simply type 'e2e4', no need to specify the piece type" << std::endl;
@@ -93,16 +93,13 @@ void processBotTurn(Game &game, StockfishBot &bot) {
     game.makeMove(bot.getBestNextMove());
 }
 
-void playPlayerVersusPlayer() {
-    auto game = Game();
-
+void playPlayerVersusPlayer(Game &game) {
     while (true) {
         processPlayerTurn(game);
     }
 }
 
-void playPlayerVersusComputer() {
-    auto game = Game();
+void playPlayerVersusComputer(Game &game) {
     auto bot = StockfishBot(game);
     Color botColor;
 
@@ -132,7 +129,17 @@ void playPlayerVersusComputer() {
     }
 }
 
+Game initiateGame(int argc, char *argv[]) {
+    if (argc == 2) {
+        std::string fen = argv[1];
+        return Game::fromFEN(fen);
+    }
+    return {};
+}
+
 int main(int argc, char *argv[]) {
+    Game game = initiateGame(argc, argv);
+
     while (true) {
         std::string choice;
         std::cout << "1. Play against another player on the same keyboard" << std::endl;
@@ -141,9 +148,9 @@ int main(int argc, char *argv[]) {
         std::cin >> choice;
 
         if (choice[0] == '1') {
-            playPlayerVersusPlayer();
+            playPlayerVersusPlayer(game);
         } else if (choice[0] == '2') {
-            playPlayerVersusComputer();
+            playPlayerVersusComputer(game);
         } else {
             std::cout << "Invalid command, choose either '1' or '2'" << std::endl;
             continue;
@@ -152,7 +159,6 @@ int main(int argc, char *argv[]) {
 
     // TODO: give up command
     // TODO: handle end of game
-    // TODO: load from FEN
 
     return 0;
 }
