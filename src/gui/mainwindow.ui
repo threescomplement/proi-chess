@@ -535,116 +535,43 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton_42">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>560</y>
-      <width>75</width>
+      <x>10</x>
+      <y>10</y>
+      <width>621</width>
+      <height>471</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="GameLayout">
+     <item>
+      <widget class="QLabel" name="GameBoard">
+       <property name="font">
+        <font>
+         <pointsize>17</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>GAME BOARD</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_69">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>520</y>
+      <width>619</width>
       <height>24</height>
      </rect>
     </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
     <property name="text">
      <string>PushButton</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_65">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>460</y>
-      <width>51</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_66">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>470</y>
-      <width>51</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_67">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>480</y>
-      <width>51</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_68">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>490</y>
-      <width>51</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-   <widget class="ClickableLabel" name="pushButton_69">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>80</y>
-      <width>51</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="GameBoard">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>80</y>
-      <width>491</width>
-      <height>381</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>17</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>GAME BOARD</string>
-    </property>
-   </widget>
-   <zorder>gridLayoutWidget_2</zorder>
-   <zorder>pushButton_42</zorder>
-   <zorder>pushButton_65</zorder>
-   <zorder>pushButton_66</zorder>
-   <zorder>pushButton_67</zorder>
-   <zorder>pushButton_68</zorder>
-   <zorder>GameBoard</zorder>
-   <zorder>pushButton_69</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -669,13 +596,6 @@
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>ClickableLabel</class>
-   <extends>QPushButton</extends>
-   <header location="global">../../../PROI_Chess/src/gui/clickable_label.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
