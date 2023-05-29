@@ -1,6 +1,10 @@
-set(GUI_SOURCES main.cpp mainwindow.cpp mainwindow.h
+set(GUI_SOURCES main.cpp
+        mainwindow.cpp
+        mainwindow.h
         mainwindow.ui
-        sources.qrc)
+        sources.qrc
+        clickable_label.cpp
+        clickable_label.h)
 set(CMAKE_AUTORCC ON)
 add_executable(gui ${GUI_SOURCES})
 target_link_libraries(gui
