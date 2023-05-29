@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "pieces/PieceType.h"
 #include "exceptions/FenException.h"
+#include "pieces/Pawn.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -81,6 +82,11 @@ void Game::makeMove(Move move) {
         captured->takeOffField();
         auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
         player->removePiece(captured);
+    }
+
+    if (move.isDoublePawnMove()) {
+        auto movedPawn = dynamic_cast<Pawn*>(move.getPiece());
+        movedPawn->setMadeDoubleMove(true);
     }
 
     this->moveHistory.push_back(move);
