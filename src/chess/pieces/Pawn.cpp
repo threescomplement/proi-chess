@@ -124,3 +124,7 @@ std::vector<Move> Pawn::enPassantMoves() const {
 
 }
 
+void Pawn::setMadeDoubleMove(bool valToSet) {
+    madeDoubleMove = valToSet;
+}
+

@@ -52,6 +52,14 @@ public:
      * Validates the board situation except checks and pins.
      * */
 
+    void setMadeDoubleMove(bool valToSet);
+    // TODO: delete this later, used for test purposes before implementing actual move mechanics
+    /**
+     * Used to set the madeDoubleMove param to a given bool
+     * */;
+
+
+
 };
 
 
