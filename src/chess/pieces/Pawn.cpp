@@ -115,7 +115,7 @@ std::vector<Move> Pawn::enPassantMoves() const {
         // check whether there is a pawn on the field
         auto pieceAtField = dynamic_cast<Pawn *>(getBoard()->getField(ePPos)->getPiece());
         if (!pieceAtField) { continue; }
-        if (pieceAtField->getColor() != color && pieceAtField->madeDoubleMove) {
+        if (pieceAtField->getColor() != color && pieceAtField->isEnPassantTarget) {
             auto enPassantToPosition = Position(ePPos.getRow() + moveDirection, ePPos.getCol());
             moves.push_back(Move(getPosition(), enPassantToPosition, (Piece *) this, pieceAtField));
         }
@@ -124,7 +124,7 @@ std::vector<Move> Pawn::enPassantMoves() const {
 
 }
 
-void Pawn::setMadeDoubleMove(bool valToSet) {
-    madeDoubleMove = valToSet;
+void Pawn::setIsEnPassantTarget(bool valToSet) {
+    isEnPassantTarget = valToSet;
 }
 

@@ -32,7 +32,7 @@ private:
      */
     std::vector<Move> attackingMoves() const;
 
-    bool madeDoubleMove;
+    bool isEnPassantTarget;
 
 
 public:
@@ -52,10 +52,10 @@ public:
      * Validates the board situation except checks and pins.
      * */
 
-    void setMadeDoubleMove(bool valToSet);
+    void setIsEnPassantTarget(bool valToSet);
     // TODO: delete this later, used for test purposes before implementing actual move mechanics
     /**
-     * Used to set the madeDoubleMove param to a given bool
+     * Used to set the isEnPassantTarget param to a given bool
      * */;
 
 

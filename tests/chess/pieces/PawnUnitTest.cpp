@@ -72,7 +72,7 @@ namespace PawnUnitTest {
         auto board = Board::fromFEN("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR");
         auto whitePawn = board->getField(pos("e5"))->getPiece();
         auto blackPawn = dynamic_cast<Pawn *> (board->getField(pos("d5"))->getPiece());
-        blackPawn->setMadeDoubleMove(true);
+        blackPawn->setIsEnPassantTarget(true);
         auto moves = whitePawn->getMoves();
 
 
