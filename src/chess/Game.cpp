@@ -86,7 +86,7 @@ void Game::makeMove(Move move) {
 
     if (move.isDoublePawnMove()) {
         auto movedPawn = dynamic_cast<Pawn*>(move.getPiece());
-        movedPawn->setMadeDoubleMove(true);
+        movedPawn->setIsEnPassantTarget(true);
     }
 
     this->moveHistory.push_back(move);
