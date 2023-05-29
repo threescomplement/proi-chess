@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include "pieces/Pawn.h"
 
 class Board;
 class Move;
@@ -27,6 +28,7 @@ private:
     Position *enPassantTarget;
     int halfmoveClock;
     int fullmoveNumber;
+    Pawn* enPassantTargetPiece;
 
     Game(Board *board, Player *whitePlayer, Player *blackPlayer, Player *currentPlayer, bool canWhiteKingsideCastle,
          bool canWhiteQueensideCastle, bool canBlackKingsideCastle, bool canBlackQueensideCastle,
