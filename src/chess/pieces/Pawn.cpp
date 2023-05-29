@@ -79,6 +79,13 @@ std::vector<Move> Pawn::attackingMoves() const {
         moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this,
                            this->getBoard()->getField(toPosAfterAttack)->getPiece());
     }
+
+    // check for en passant possibilities
+    if ((getPosition().getRow() == 5 && color == Color::WHITE) ||
+        (getPosition().getRow() == 4 && color == Color::BLACK)) {
+        auto EPMoves = enPassantMoves();
+        moves.insert(moves.end(), EPMoves.begin(), EPMoves.end());
+    }
     return moves;
 }
 
@@ -96,5 +103,24 @@ bool Pawn::possibleAttackInGivenDirection(bool positiveColumnOffset) const {
     }
 
     return true;
+}
+
+std::vector<Move> Pawn::enPassantMoves() const {
+    std::vector<Move> moves;
+    std::vector<std::pair<int, int>> enPassantOffsets = {{0, 1},
+                                                         {0, -1}};
+    auto enPassantPositions = getAllowedPositionsFromOffsets(enPassantOffsets);
+
+    for (auto ePPos: enPassantPositions) {
+        // check whether there is a pawn on the field
+        auto pieceAtField = dynamic_cast<Pawn *>(getBoard()->getField(ePPos)->getPiece());
+        if (!pieceAtField) { continue; }
+        if (pieceAtField->getColor() != color && pieceAtField->madeDoubleMove) {
+            auto enPassantToPosition = Position(ePPos.getRow() + moveDirection, ePPos.getCol());
+            moves.push_back(Move(getPosition(), enPassantToPosition, (Piece *) this, pieceAtField));
+        }
+    }
+    return moves;
+
 }
 

@@ -32,6 +32,8 @@ private:
      */
     std::vector<Move> attackingMoves() const;
 
+    bool madeDoubleMove;
+
 
 public:
     Pawn(Color color, Field *field);
@@ -43,6 +45,13 @@ public:
     char getCharacter() const override;
 
     std::string getUnicodeSymbol() const override;
+
+    std::vector<Move> enPassantMoves() const;
+    /**
+     * Returns vector of possible en passant moves or empty if there are none.
+     * Validates the board situation except checks and pins.
+     * */
+
 };
 
 
