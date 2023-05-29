@@ -8,8 +8,32 @@
 #include "pieces/Bishop.h"
 #include "pieces/Queen.h"
 #include "pieces/King.h"
+#include "exceptions/IllegalMoveException.h"
 
-Board::Board() = default;
+Board::Board() {
+    this->allPieces = {};
+    this->blackKing = nullptr;
+    this->whiteKing = nullptr;
+
+    for (int row = 0; row < BOARD_SIZE; ++row) {
+        for (int col = 0; col < BOARD_SIZE; ++col) {
+            this->fields[row][col] = new Field(nullptr, Position(row + 1, col + 1), this);
+        }
+    }
+};
+
+Board::~Board() {
+    for (auto piecePtr: allPieces) {
+        delete piecePtr;
+    }
+
+    for (int row = 0; row < BOARD_SIZE; ++row) {
+        for (int col = 0; col < BOARD_SIZE; ++col) {
+            delete this->fields[row][col];
+        }
+    }
+
+}
 
 std::string Board::toString() const {
     std::stringstream ss;
@@ -33,29 +57,54 @@ std::string Board::toString() const {
 }
 
 Board *Board::emptyBoard() {
-    auto board = new Board();
-    std::array<std::array<Field *, 8>, 8> fields = {};
-    for (int row = 0; row < BOARD_SIZE; ++row) {
-        for (int col = 0; col < BOARD_SIZE; ++col) {
-            fields[row][col] = new Field(nullptr, Position(row + 1, col + 1), board);
-        }
-    }
-    board->fields = fields;
-    board->whiteKing = nullptr;
-    board->blackKing = nullptr;
-    return board;
+    return new Board();
 }
 
 Field *Board::getField(Position position) const {
     return fields[position.getRow() - 1][position.getCol() - 1];
 }
 
-void Board::setBlackKing(Piece *blackKing) {
-    this->blackKing = blackKing;
-}
 
-void Board::setWhiteKing(Piece *whiteKing) {
-    this->whiteKing = whiteKing;
+Board *Board::startingBoard() {
+    auto board = Board::emptyBoard();
+
+    for (int col = 1; col <= BOARD_SIZE; col++) {
+        board->allPieces.push_back(new Pawn(Color::WHITE, board->getField(Position(2, col))));
+    }
+
+    for (int col = 1; col <= BOARD_SIZE; col++) {
+        board->allPieces.push_back(new Pawn(Color::BLACK, board->getField(Position(7, col))));
+    }
+
+    board->allPieces.push_back(new Rook(Color::WHITE, board->getField(Position::fromString("a1"))));
+    board->allPieces.push_back(new Knight(Color::WHITE, board->getField(Position::fromString("b1"))));
+    board->allPieces.push_back(new Bishop(Color::WHITE, board->getField(Position::fromString("c1"))));
+    board->allPieces.push_back(new Queen(Color::WHITE, board->getField(Position::fromString("d1"))));
+    board->allPieces.push_back(new Bishop(Color::WHITE, board->getField(Position::fromString("f1"))));
+    board->allPieces.push_back(new Knight(Color::WHITE, board->getField(Position::fromString("g1"))));
+    board->allPieces.push_back(new Rook(Color::WHITE, board->getField(Position::fromString("h1"))));
+
+    board->allPieces.push_back(new Rook(Color::BLACK, board->getField(Position::fromString("a8"))));
+    board->allPieces.push_back(new Knight(Color::BLACK, board->getField(Position::fromString("b8"))));
+    board->allPieces.push_back(new Bishop(Color::BLACK, board->getField(Position::fromString("c8"))));
+    board->allPieces.push_back(new Queen(Color::BLACK, board->getField(Position::fromString("d8"))));
+    board->allPieces.push_back(new Bishop(Color::BLACK, board->getField(Position::fromString("f8"))));
+    board->allPieces.push_back(new Knight(Color::BLACK, board->getField(Position::fromString("g8"))));
+    board->allPieces.push_back(new Rook(Color::BLACK, board->getField(Position::fromString("h8"))));
+
+    auto whiteKing = new King(Color::WHITE, board->getField(Position::fromString("e1")));
+    auto blackKing = new King(Color::BLACK, board->getField(Position::fromString("e8")));
+    board->whiteKing = whiteKing;
+    board->blackKing = blackKing;
+    board->allPieces.push_back(whiteKing);
+    board->allPieces.push_back(blackKing);
+
+    // Set pointers in both ways
+    for (auto piece: board->allPieces) {
+        piece->getField()->setPiece(piece);
+    }
+
+    return board;
 }
 
 std::string Board::toFEN() const {
@@ -87,8 +136,6 @@ std::string Board::toFEN() const {
 }
 
 Board *Board::fromFEN(const std::string &FENDescription) {
-    auto whitePlayer = new Player("White");
-    auto blackPlayer = new Player("Black");
     auto board = Board::emptyBoard();
 
     int row = 7;
@@ -108,60 +155,97 @@ Board *Board::fromFEN(const std::string &FENDescription) {
             Piece *piece = nullptr;
             switch (character) {
                 case 'p': {
-                    piece = new Pawn(Color::BLACK, board->fields[row][col], blackPlayer);
+                    piece = new Pawn(Color::BLACK, board->fields[row][col]);
                     break;
                 }
                 case 'P': {
-                    piece = new Pawn(Color::WHITE, board->fields[row][col], whitePlayer);
+                    piece = new Pawn(Color::WHITE, board->fields[row][col]);
                     break;
                 }
                 case 'r': {
-                    piece = new Rook(Color::BLACK, board->fields[row][col], blackPlayer);
+                    piece = new Rook(Color::BLACK, board->fields[row][col]);
                     break;
                 }
                 case 'R': {
-                    piece = new Rook(Color::WHITE, board->fields[row][col], whitePlayer);
+                    piece = new Rook(Color::WHITE, board->fields[row][col]);
                     break;
                 }
                 case 'n': {
-                    piece = new Knight(Color::BLACK, board->fields[row][col], blackPlayer);
+                    piece = new Knight(Color::BLACK, board->fields[row][col]);
                     break;
                 }
                 case 'N': {
-                    piece = new Knight(Color::WHITE, board->fields[row][col], whitePlayer);
+                    piece = new Knight(Color::WHITE, board->fields[row][col]);
                     break;
                 }
                 case 'b': {
-                    piece = new Bishop(Color::BLACK, board->fields[row][col], blackPlayer);
+                    piece = new Bishop(Color::BLACK, board->fields[row][col]);
                     break;
                 }
                 case 'B': {
-                    piece = new Bishop(Color::WHITE, board->fields[row][col], whitePlayer);
+                    piece = new Bishop(Color::WHITE, board->fields[row][col]);
                     break;
                 }
                 case 'q': {
-                    piece = new Queen(Color::BLACK, board->fields[row][col], blackPlayer);
+                    piece = new Queen(Color::BLACK, board->fields[row][col]);
                     break;
                 }
                 case 'Q': {
-                    piece = new Queen(Color::WHITE, board->fields[row][col], whitePlayer);
+                    piece = new Queen(Color::WHITE, board->fields[row][col]);
                     break;
                 }
                 case 'k': {
-                    piece = new King(Color::BLACK, board->fields[row][col], blackPlayer);
+                    piece = new King(Color::BLACK, board->fields[row][col]);
                     break;
                 }
                 case 'K': {
-                    piece = new King(Color::WHITE, board->fields[row][col], whitePlayer);
+                    piece = new King(Color::WHITE, board->fields[row][col]);
                     break;
                 }
                 default:
                     throw std::invalid_argument("Invalid FEN literal in string.");
             }
+            board->allPieces.push_back(piece);
             board->fields[row][col]->setPiece(piece);
             col += 1;
         }
     }
     return board;
+}
+
+void Board::makeMove(Move move) {
+    auto targetField = this->getField(move.getTo());
+    auto sourceField = this->getField(move.getFrom());
+    auto targetPiece = targetField->getPiece();
+    auto sourcePiece = sourceField->getPiece();
+
+    if (sourceField->isEmpty()) {
+        throw IllegalMoveException("Cannot move from empty field");
+    }
+
+    if (!targetField->isEmpty() && targetPiece->getColor() == sourcePiece->getColor()) {
+        throw IllegalMoveException("Player cannot capture his own piece");
+    }
+
+
+    targetField->setPiece(sourcePiece);
+    sourceField->setPiece(nullptr);
+
+    sourcePiece->setField(targetField);
+    if (targetPiece != nullptr) {
+        targetPiece->setField(nullptr);
+    }
+}
+
+const std::vector<Piece *> &Board::getAllPieces() const {
+    return allPieces;
+}
+
+Piece *Board::getBlackKing() const {
+    return blackKing;
+}
+
+Piece *Board::getWhiteKing() const {
+    return whiteKing;
 }
 

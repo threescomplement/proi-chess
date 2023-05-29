@@ -3,14 +3,14 @@ set(CHESS_UNIT_TEST_SOURCES
         MoveUnitTest.cpp
         PositionUnitTest.cpp
         FieldUnitTest.cpp
-        GameTest.cpp
+        GameUnitTest.cpp
         BoardUnitTest.cpp
         pieces/PawnUnitTest.cpp
         pieces/KingUnitTest.cpp
         pieces/KnightUnitTests.cpp
         pieces/QueenUnitTest.cpp
         pieces/BishopUnitTest.cpp
-        pieces/RookUnitTest.cpp)
+        pieces/RookUnitTest.cpp PlayerUnitTest.cpp)
 
 add_executable(all-unit-tests ${CHESS_UNIT_TEST_SOURCES})
 target_link_libraries(all-unit-tests PUBLIC gtest_main chess)

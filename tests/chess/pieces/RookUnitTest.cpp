@@ -24,16 +24,16 @@ namespace RookUnitTest {
         auto moves = rook->getMoves();
 
         auto expected = {
-                Move(pos("d4"), pos("d3"), rook, false),
-                Move(pos("d4"), pos("b4"), rook, false),
-                Move(pos("d4"), pos("c4"), rook, false),
-                Move(pos("d4"), pos("e4"), rook, false),
-                Move(pos("d4"), pos("f4"), rook, false),
-                Move(pos("d4"), pos("g4"), rook, false),
-                Move(pos("d4"), pos("h4"), rook, false),
-                Move(pos("d4"), pos("d5"), rook, false),
-                Move(pos("d4"), pos("d6"), rook, false),
-                Move(pos("d4"), pos("d7"), rook, true),
+                Move(pos("d4"), pos("d3"), rook),
+                Move(pos("d4"), pos("b4"), rook),
+                Move(pos("d4"), pos("c4"), rook),
+                Move(pos("d4"), pos("e4"), rook),
+                Move(pos("d4"), pos("f4"), rook),
+                Move(pos("d4"), pos("g4"), rook),
+                Move(pos("d4"), pos("h4"), rook),
+                Move(pos("d4"), pos("d5"), rook),
+                Move(pos("d4"), pos("d6"), rook),
+                Move(pos("d4"), pos("d7"), rook, board->getField(pos("d7"))->getPiece()),
         };
 
         ASSERT_TRUE(isPermutation(moves, expected));

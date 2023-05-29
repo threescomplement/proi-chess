@@ -28,19 +28,19 @@ namespace BishopUnitTest {
         auto blackBishopMoves = blackBishop->getMoves();
 
         std::vector<Move> expectedWhiteMoves = {
-                Move(pos("f1"), pos("e2"), whiteBishop, false),
-                Move(pos("f1"), pos("d3"), whiteBishop, false),
-                Move(pos("f1"), pos("c4"), whiteBishop, false),
-                Move(pos("f1"), pos("b5"), whiteBishop, false),
-                Move(pos("f1"), pos("a6"), whiteBishop, false)
+                Move(pos("f1"), pos("e2"), whiteBishop),
+                Move(pos("f1"), pos("d3"), whiteBishop),
+                Move(pos("f1"), pos("c4"), whiteBishop),
+                Move(pos("f1"), pos("b5"), whiteBishop),
+                Move(pos("f1"), pos("a6"), whiteBishop)
         };
 
         std::vector<Move> expectedBlackMoves = {
-                Move(pos("c8"), pos("d7"), blackBishop, false),
-                Move(pos("c8"), pos("e6"), blackBishop, false),
-                Move(pos("c8"), pos("f5"), blackBishop, false),
-                Move(pos("c8"), pos("g4"), blackBishop, false),
-                Move(pos("c8"), pos("h3"), blackBishop, false)
+                Move(pos("c8"), pos("d7"), blackBishop),
+                Move(pos("c8"), pos("e6"), blackBishop),
+                Move(pos("c8"), pos("f5"), blackBishop),
+                Move(pos("c8"), pos("g4"), blackBishop),
+                Move(pos("c8"), pos("h3"), blackBishop)
         };
 
         ASSERT_EQ(whiteBishopMoves.size(), blackBishopMoves.size());
@@ -56,31 +56,31 @@ namespace BishopUnitTest {
         auto whiteBishopMoves = whiteBishop->getMoves();
         auto blackBishopMoves = blackBishop->getMoves();
         std::vector<Move> expectedWhiteMoves = {
-                Move(pos("e3"), pos("c1"), whiteBishop, false),
-                Move(pos("e3"), pos("d2"), whiteBishop, false),
-                Move(pos("e3"), pos("f4"), whiteBishop, false),
-                Move(pos("e3"), pos("g5"), whiteBishop, false),
-                Move(pos("e3"), pos("h6"), whiteBishop, false),
-                Move(pos("e3"), pos("a7"), whiteBishop, false),
-                Move(pos("e3"), pos("b6"), whiteBishop, false),
-                Move(pos("e3"), pos("c5"), whiteBishop, false),
-                Move(pos("e3"), pos("d4"), whiteBishop, false),
-                Move(pos("e3"), pos("f2"), whiteBishop, false),
-                Move(pos("e3"), pos("g1"), whiteBishop, false)
+                Move(pos("e3"), pos("c1"), whiteBishop),
+                Move(pos("e3"), pos("d2"), whiteBishop),
+                Move(pos("e3"), pos("f4"), whiteBishop),
+                Move(pos("e3"), pos("g5"), whiteBishop),
+                Move(pos("e3"), pos("h6"), whiteBishop),
+                Move(pos("e3"), pos("a7"), whiteBishop),
+                Move(pos("e3"), pos("b6"), whiteBishop),
+                Move(pos("e3"), pos("c5"), whiteBishop),
+                Move(pos("e3"), pos("d4"), whiteBishop),
+                Move(pos("e3"), pos("f2"), whiteBishop),
+                Move(pos("e3"), pos("g1"), whiteBishop)
         };
 
         std::vector<Move> expectedBlackMoves = {
-                Move(pos("e6"), pos("c8"), blackBishop, false),
-                Move(pos("e6"), pos("d7"), blackBishop, false),
-                Move(pos("e6"), pos("f5"), blackBishop, false),
-                Move(pos("e6"), pos("g4"), blackBishop, false),
-                Move(pos("e6"), pos("h3"), blackBishop, false),
-                Move(pos("e6"), pos("a2"), blackBishop, false),
-                Move(pos("e6"), pos("b3"), blackBishop, false),
-                Move(pos("e6"), pos("c4"), blackBishop, false),
-                Move(pos("e6"), pos("d5"), blackBishop, false),
-                Move(pos("e6"), pos("f7"), blackBishop, false),
-                Move(pos("e6"), pos("g8"), blackBishop, false),
+                Move(pos("e6"), pos("c8"), blackBishop),
+                Move(pos("e6"), pos("d7"), blackBishop),
+                Move(pos("e6"), pos("f5"), blackBishop),
+                Move(pos("e6"), pos("g4"), blackBishop),
+                Move(pos("e6"), pos("h3"), blackBishop),
+                Move(pos("e6"), pos("a2"), blackBishop),
+                Move(pos("e6"), pos("b3"), blackBishop),
+                Move(pos("e6"), pos("c4"), blackBishop),
+                Move(pos("e6"), pos("d5"), blackBishop),
+                Move(pos("e6"), pos("f7"), blackBishop),
+                Move(pos("e6"), pos("g8"), blackBishop),
         };
 
         ASSERT_EQ(whiteBishopMoves.size(), blackBishopMoves.size());
@@ -94,13 +94,13 @@ namespace BishopUnitTest {
         auto whiteBishop = testBoard->getField(pos("e3"))->getPiece();
         auto whiteBishopMoves = whiteBishop->getMoves();
         std::vector<Move> expectedWhiteMoves = {
-                Move(pos("e3"), pos("g1"), whiteBishop, false),
-                Move(pos("e3"), pos("f2"), whiteBishop, false),
-                Move(pos("e3"), pos("d4"), whiteBishop, false),
-                Move(pos("e3"), pos("c5"), whiteBishop, false),
-                Move(pos("e3"), pos("b6"), whiteBishop, false),
-                Move(pos("e3"), pos("a7"), whiteBishop, false),
-                Move(pos("e3"), pos("f4"), whiteBishop, true),
+                Move(pos("e3"), pos("g1"), whiteBishop),
+                Move(pos("e3"), pos("f2"), whiteBishop),
+                Move(pos("e3"), pos("d4"), whiteBishop),
+                Move(pos("e3"), pos("c5"), whiteBishop),
+                Move(pos("e3"), pos("b6"), whiteBishop),
+                Move(pos("e3"), pos("a7"), whiteBishop),
+                Move(pos("e3"), pos("f4"), whiteBishop, testBoard->getField(pos("f4"))->getPiece()),
         };
         ASSERT_TRUE(isPermutation(whiteBishopMoves, expectedWhiteMoves));
     }

@@ -10,23 +10,23 @@ const Position &Move::getTo() const {
 }
 
 Piece *Move::getPiece() const {
-    return piece;
+    return movedPiece;
 }
 
-bool Move::getIsCapture() const {
-    return isCapture;
+bool Move::isCapture() const {
+    return (capturedPiece != nullptr);
 }
 
 std::string Move::toString() const {
     std::stringstream ss;
 
     char pieceChar;
-    if (piece->getType() == PieceType::PAWN) {
-        pieceChar = (isCapture) ? 'a' + from.getCol() - 1 : '\0';
-    } else { pieceChar = piece->getCharacter(); }
+    if (movedPiece->getType() == PieceType::PAWN) {
+        pieceChar = (this->isCapture()) ? 'a' + from.getCol() - 1 : '\0';
+    } else { pieceChar = movedPiece->getCharacter(); }
 
     if (pieceChar) { ss << pieceChar; }
-    if (isCapture) {
+    if (this->isCapture()) {
         ss << 'x';
     }
     ss << to.toString();
@@ -38,12 +38,23 @@ bool Move::operator==(const Move &rhs) const {
     return (
             from == rhs.from &&
             to == rhs.to &&
-            piece == rhs.piece &&
-            isCapture == rhs.isCapture
+            movedPiece == rhs.movedPiece &&
+            capturedPiece == rhs.capturedPiece
     );
 }
 
 bool Move::operator!=(const Move &rhs) const {
     return !((*this) == rhs);
+}
+
+Piece *Move::getCapturedPiece() const {
+    return capturedPiece;
+}
+
+bool Move::isDoublePawnMove() const {
+    auto sourceRow = this->getFrom().getRow();
+    auto targetRow = this->getTo().getRow();
+    auto type = this->getPiece()->getType();
+    return (type == PieceType::PAWN && abs(sourceRow - targetRow) == 2);
 }
 
