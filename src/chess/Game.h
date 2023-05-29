@@ -28,7 +28,7 @@ private:
     Position *enPassantTarget;
     int halfmoveClock;
     int fullmoveNumber;
-    Pawn* enPassantTargetPiece;
+    Pawn* enPassantTargetPiece; //todo: think this one over
 
     Game(Board *board, Player *whitePlayer, Player *blackPlayer, Player *currentPlayer, bool canWhiteKingsideCastle,
          bool canWhiteQueensideCastle, bool canBlackKingsideCastle, bool canBlackQueensideCastle,

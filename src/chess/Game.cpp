@@ -69,12 +69,19 @@ void Game::makeMove(Move move) {
         this->halfmoveClock = 0;
     }
 
+    if (this->enPassantTargetPiece != nullptr) {
+        this->enPassantTargetPiece->setIsEnPassantTarget(false);
+        this->enPassantTargetPiece = nullptr;
+    };
     delete this->enPassantTarget;
     this->enPassantTarget = nullptr;
+
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
         auto col = move.getTo().getCol();
         this->enPassantTarget = new Position(row, col);
+        auto movedPawn = dynamic_cast<Pawn *>(move.getPiece()); // todo: is this code duplication?
+        movedPawn->setIsEnPassantTarget(true);
     }
 
     if (move.isCapture()) {
@@ -84,10 +91,6 @@ void Game::makeMove(Move move) {
         player->removePiece(captured);
     }
 
-    if (move.isDoublePawnMove()) {
-        auto movedPawn = dynamic_cast<Pawn*>(move.getPiece());
-        movedPawn->setIsEnPassantTarget(true);
-    }
 
     this->moveHistory.push_back(move);
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
