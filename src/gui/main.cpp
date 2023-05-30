@@ -2,8 +2,7 @@
 #include <QApplication>
 #include "../chess//Game.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 //    Game *game = new Game("bialy", "czarny");
 //    delete game;

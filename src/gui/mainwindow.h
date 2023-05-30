@@ -18,7 +18,9 @@ private:
 
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
+
     MainWindow(QWidget *parent);
+
     ~MainWindow();
 
 
@@ -43,10 +45,15 @@ public:
     // maybe an "update board" function that gets a board and updates all images on it?
     // or change them during the make_move method?
 public slots:
+
     void move(int start_x, int start_y);
+
     void highlightNeighbours(int origin_x, int origin_y);
+
 signals:
+
     void update_label(int x, int y);
+
 private:
     Ui::MainWindow *ui;
 };

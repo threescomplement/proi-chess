@@ -9,7 +9,7 @@
 
 
 class ClickableLabel : public QLabel {
-    Q_OBJECT
+Q_OBJECT
 
 
 private:

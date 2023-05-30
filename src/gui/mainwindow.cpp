@@ -5,7 +5,7 @@
 #include "../chess/Game.h"
 
 MainWindow::MainWindow(Game *game, QWidget *parent)
-        : MainWindow(parent){
+        : MainWindow(parent) {
     this->game = game;
 }
 
@@ -19,11 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
     //click_label->setAlignment(Qt::AlignRight);
     //click_label->setGeometry(50, 100, 50, 50);
     //click_label->show();
-    for (int row = 1; row <=8; row++){
-        for (int column =1; column <=8; column++){
+    for (int row = 1; row <= 8; row++) {
+        for (int column = 1; column <= 8; column++) {
             ClickableLabel *click_label = new ClickableLabel(QString("Nie kliknięte"), this);
             click_label->setAlignment(Qt::AlignLeft);
-            click_label->setGeometry(50*column - 20, 50*row + 20, 50, 50);
+            click_label->setGeometry(50 * column - 20, 50 * row + 20, 50, 50);
             click_label->show();
         }
 
