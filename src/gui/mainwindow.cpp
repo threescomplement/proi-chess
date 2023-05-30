@@ -10,7 +10,7 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 }
 
 MainWindow::MainWindow(QWidget *parent)
-        : QMainWindow(parent), ui(new Ui::MainWindow) {
+        : QMainWindow(parent), ui(new Ui::MainWindow), game(nullptr) {
     ui->setupUi(this);
     QPixmap board_map(":/resources/Empty_Board.jpg");
     ui->GameBoard->setPixmap(board_map);
@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {
     delete ui;
     delete game;
+
+
 }
 
 void MainWindow::move(int start_x, int start_y) {
