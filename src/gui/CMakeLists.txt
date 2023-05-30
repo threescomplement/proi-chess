@@ -1,12 +1,13 @@
-set(GUI_SOURCES main.cpp
+set(CMAKE_AUTORCC ON)
+set(GUI_SOURCES
+        main.cpp
         mainwindow.cpp
-        mainwindow.h
         mainwindow.ui
         sources.qrc
-        clickable_label.cpp
-        ./clickable_label.h)
-set(CMAKE_AUTORCC ON)
+        clickable_label.cpp)
+
 add_executable(gui ${GUI_SOURCES})
+target_include_directories(gui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gui
         chess
         Qt::Core
