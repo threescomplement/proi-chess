@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/Empty_Board.jpg</file>
+    </qresource>
+</RCC>
