@@ -55,6 +55,8 @@ public:
 
     Player *getBlackPlayer() const;
 
+    Player * getCurrentPlayer() const;
+
     void makeMove(Move move);
 
     Game afterMove(Move move) const;
@@ -67,7 +69,7 @@ public:
 
     bool isCheck() const;
 
-    static Game fromFEN(std::string fen);
+    static Game fromFEN(const std::string& fen);
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

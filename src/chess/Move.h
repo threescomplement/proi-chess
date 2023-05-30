@@ -41,6 +41,8 @@ public:
 
     std::string toString() const;
 
+    std::string toStockfishNotation() const; // TODO: rename
+
     bool isDoublePawnMove() const;
 };
 

@@ -64,3 +64,7 @@ Move StockfishBot::getMoveFromStockfish(std::string gameFEN) const {
 
     return {sourcePosition, targetPosition, movedPiece, capturedPiece};
 }
+
+Move StockfishBot::getBestNextMove() const {
+    return this->getMoveFromStockfish(game.toFEN());
+}

@@ -3,7 +3,7 @@
 #include "Color.h"
 #include "Player.h"
 #include "pieces/PieceType.h"
-#include "exceptions/FenException.h"
+#include "ChessExceptions.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -95,6 +95,10 @@ Player *Game::getBlackPlayer() const {
     return blackPlayer;
 }
 
+Player *Game::getCurrentPlayer() const {
+    return currentPlayer;
+}
+
 std::string Game::castlingAvailabilityFEN() const {
     std::stringstream ss;
     if (canWhiteKingsideCastle) {
@@ -139,7 +143,7 @@ Piece *Game::getPiece(Position position) const {
     return this->getBoard()->getField(position)->getPiece();
 }
 
-Game Game::fromFEN(std::string fen) {
+Game Game::fromFEN(const std::string& fen) {
     auto elements = split(fen, ' ');
 
     auto board = Board::fromFEN(elements[0]);
@@ -179,7 +183,7 @@ Game Game::fromFEN(std::string fen) {
     auto halfmoveClock = std::stoi(elements[4]);
     auto fullmoveNumber = std::stoi(elements[5]);
 
-    return {
+    auto game = Game(
             board,
             whitePlayer,
             blackPlayer,
@@ -191,7 +195,9 @@ Game Game::fromFEN(std::string fen) {
             enPassantPosition,
             halfmoveClock,
             fullmoveNumber
-    };
+    );
+
+    return game;
 }
 
 Game::Game(

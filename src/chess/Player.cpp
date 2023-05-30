@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "Player.h"
 #include "Color.h"
-#include "exceptions/PieceNotOnBoardException.h"
+#include "ChessExceptions.h"
 
 Player::Player(std::string name, Color color) {
     this->name = name;
