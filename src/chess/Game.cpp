@@ -19,6 +19,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->canBlackKingsideCastle = true;
     this->canBlackQueensideCastle = true;
     this->enPassantTarget = nullptr;
+    this->enPassantTargetPiece = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
 
