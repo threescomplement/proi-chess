@@ -57,6 +57,8 @@ public:
 
     Player *getBlackPlayer() const;
 
+    Player * getCurrentPlayer() const;
+
     void makeMove(Move move);
 
     Game afterMove(Move move) const;
@@ -69,13 +71,12 @@ public:
 
     bool isCheck() const;
 
-    static Game fromFEN(std::string fen);
-
     Pawn* getEnPassantTargetPiece() const;
     /**
      * Get the pawn threatened by en passant based on enPassantTargetLocation.
      * If the piece is not a pawn or there is no piece, throws bad_cast.
      * */
+    static Game fromFEN(const std::string& fen);
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

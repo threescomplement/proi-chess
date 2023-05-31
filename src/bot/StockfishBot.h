@@ -12,6 +12,8 @@ class StockfishBot {
 private:
     const Game &game;
 
+    Move getMoveFromStockfish(std::string gameFEN) const;
+
     static const std::string stockfishProgramName;
 
     static QString getStockfishOutput(const char *command);
@@ -24,7 +26,7 @@ public:
 
     explicit StockfishBot(const Game &game) : game(game) {};
 
-    Move getMoveFromStockfish(std::string gameFEN) const;
+    Move getBestNextMove() const;
 };
 
 

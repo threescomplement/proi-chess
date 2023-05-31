@@ -3,7 +3,7 @@
 #include "Color.h"
 #include "Player.h"
 #include "pieces/PieceType.h"
-#include "exceptions/FenException.h"
+#include "ChessExceptions.h"
 #include "pieces/Pawn.h"
 
 
@@ -89,7 +89,6 @@ void Game::makeMove(Move move) {
         player->removePiece(captured);
     }
 
-
     this->moveHistory.push_back(move);
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
 }
@@ -100,6 +99,10 @@ Player *Game::getWhitePlayer() const {
 
 Player *Game::getBlackPlayer() const {
     return blackPlayer;
+}
+
+Player *Game::getCurrentPlayer() const {
+    return currentPlayer;
 }
 
 std::string Game::castlingAvailabilityFEN() const {
@@ -146,7 +149,7 @@ Piece *Game::getPiece(Position position) const {
     return this->getBoard()->getField(position)->getPiece();
 }
 
-Game Game::fromFEN(std::string fen) {
+Game Game::fromFEN(const std::string& fen) {
     auto elements = split(fen, ' ');
 
     auto board = Board::fromFEN(elements[0]);
@@ -186,7 +189,7 @@ Game Game::fromFEN(std::string fen) {
     auto halfmoveClock = std::stoi(elements[4]);
     auto fullmoveNumber = std::stoi(elements[5]);
 
-    return {
+    auto game = Game(
             board,
             whitePlayer,
             blackPlayer,

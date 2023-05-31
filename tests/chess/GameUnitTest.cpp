@@ -4,7 +4,7 @@
 #include "../../src/chess/Move.h"
 #include "Board.h"
 #include "pieces/Pawn.h"
-#include "exceptions/PieceNotOnBoardException.h"
+#include "ChessExceptions.h"
 #include "common.h"
 
 using namespace ChessUnitTestCommon;

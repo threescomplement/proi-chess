@@ -1,6 +1,6 @@
 #include "Piece.h"
 #include "../Field.h"
-#include "../exceptions/PieceNotOnBoardException.h"
+#include "../ChessExceptions.h"
 
 Position Piece::getPosition() const {
     if (this->getField() == nullptr) {
