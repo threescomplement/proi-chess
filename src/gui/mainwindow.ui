@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>663</width>
-    <height>530</height>
+    <height>568</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,7 +32,7 @@
       <x>10</x>
       <y>10</y>
       <width>621</width>
-      <height>471</height>
+      <height>491</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="GameLayout">
@@ -45,6 +45,13 @@
        </property>
        <property name="text">
         <string>GAME BOARD</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="newGameButton">
+       <property name="text">
+        <string>Start new game</string>
        </property>
       </widget>
      </item>

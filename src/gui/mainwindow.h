@@ -52,7 +52,12 @@ public slots:
 
 signals:
 
-    void update_label(int x, int y);
+    void update_field(int x, int y, int piece_number = -1);
+
+private slots:
+
+
+    void on_newGameButton_clicked();
 
 private:
     Ui::MainWindow *ui;
