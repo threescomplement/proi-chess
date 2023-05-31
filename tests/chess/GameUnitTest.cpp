@@ -55,12 +55,7 @@ namespace GameUnitTest {
         std::vector<Move> legalMoves = game.getMovesFrom(pos("b3"));
         ASSERT_EQ(legalMoves.size(), 1);
         Move onlyMove = legalMoves[0];
-        Position expected_goal = pos("b4");
-        ASSERT_EQ(onlyMove.getTo().getRow(), expected_goal.getRow());
-        ASSERT_EQ(onlyMove.getTo().getCol(), expected_goal.getCol());
-
-
-
+        ASSERT_EQ(pos("b4"), onlyMove.getTo());
     }
 
     TEST(Game, fromFENStartingGame) {

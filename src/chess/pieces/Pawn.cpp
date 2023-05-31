@@ -91,8 +91,13 @@ bool Pawn::possibleAttackInGivenDirection(bool positiveColumnOffset) const {
     }
 
     auto attackedPosition = position.positionWithOffset(moveDirection, horizontalMoveDirection);
-    if (this->getBoard()->getField(attackedPosition)->isEmpty()) {
+    auto attackedField = this->getBoard()->getField(attackedPosition);
+    if (attackedField->isEmpty()) {
         return false;  // nothing to attack
+    }
+
+    if (attackedField->getPiece()->getColor() == this->getColor()) {
+        return false;
     }
 
     return true;
