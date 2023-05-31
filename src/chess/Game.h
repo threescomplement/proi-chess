@@ -15,7 +15,7 @@ class Pawn;
 
 class Game {
 private:
-    Board  *board;
+    Board *board;
     Player *whitePlayer;
     Player *blackPlayer;
     Player *currentPlayer;
@@ -36,6 +36,7 @@ private:
 private:
 
     std::string castlingAvailabilityFEN() const;
+
     void refreshEnPassant();
 
 public:
@@ -57,7 +58,7 @@ public:
 
     Player *getBlackPlayer() const;
 
-    Player * getCurrentPlayer() const;
+    Player *getCurrentPlayer() const;
 
     void makeMove(Move move);
 
@@ -71,12 +72,13 @@ public:
 
     bool isCheck() const;
 
-    Pawn* getEnPassantTargetPiece() const;
     /**
-     * Get the pawn threatened by en passant based on enPassantTargetLocation.
-     * If the piece is not a pawn or there is no piece, throws bad_cast.
-     * */
-    static Game fromFEN(const std::string& fen);
+     * Get the pawn threatened by en passant based on enPassantTargetLocation
+     * @throws std::bas_cast if the piece is not a pawn or there is no piece
+     */
+    Pawn *getEnPassantTargetPiece() const;
+
+    static Game fromFEN(const std::string &fen);
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

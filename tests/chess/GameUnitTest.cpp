@@ -119,10 +119,10 @@ namespace GameUnitTest {
         FAIL();
     }
 
+    /**
+     * 1. e4a6 2.e5d5 3.exd6 - checking the value of enPassantTargetPiece after each move and performing enPassant
+     */
     TEST(Game, staticEnPassantMechanics) {
-        /**
-         * 1. e4a6 2.e5d5 3.exd6 - checking the value of enPassantTargetPiece after each move and performing enPassant
-         * */
         auto game = Game();
         auto whiteEPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("e2"))->getPiece());
         auto blackAPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("a7"))->getPiece());
