@@ -70,10 +70,7 @@ void Game::makeMove(Move move) {
     }
 
     if (this->enPassantTargetPosition != nullptr) {
-        auto oldEnPassantTarget = this->getEnPassantTargetPiece();
-        oldEnPassantTarget->setIsEnPassantTarget(false);
-        delete this->enPassantTargetPosition;
-        this->enPassantTargetPosition = nullptr;
+        refreshEnPassant();
     };
 
 
@@ -261,6 +258,13 @@ Pawn *Game::getEnPassantTargetPiece() const {
     if (ePTargetPiece == nullptr)
         throw std::bad_cast();
     return ePTargetPiece;
+}
+
+void Game::refreshEnPassant() {
+    auto oldEnPassantTarget = this->getEnPassantTargetPiece();
+    oldEnPassantTarget->setIsEnPassantTarget(false);
+    delete this->enPassantTargetPosition;
+    this->enPassantTargetPosition = nullptr;
 }
 
 std::vector<std::string> split(const std::string &txt, char ch) {

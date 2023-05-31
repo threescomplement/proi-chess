@@ -36,6 +36,7 @@ private:
 private:
 
     std::string castlingAvailabilityFEN() const;
+    void refreshEnPassant();
 
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
@@ -71,6 +72,10 @@ public:
     static Game fromFEN(std::string fen);
 
     Pawn* getEnPassantTargetPiece() const;
+    /**
+     * Get the pawn threatened by en passant based on enPassantTargetLocation.
+     * If the piece is not a pawn or there is no piece, throws bad_cast.
+     * */
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);
