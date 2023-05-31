@@ -14,6 +14,22 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+
+/**
+ * @class MainWindow
+ * Qt window which handles the creation of almost the entire program
+ * Connects to @class GameField fields on the board via
+ * update_field() (outgoing)
+ * handleFieldClick() (incoming)
+ *
+ * handles keeping the state of the window and the internal game the same
+ * and enables interaction with it
+ *
+ * TODO: Implement buttons/menu options allowing the user to start a new game, start a game from FEN, etc.
+ *
+ *
+ *
+ */
 class MainWindow : public QMainWindow {
 Q_OBJECT
 
@@ -32,8 +48,6 @@ private:
 
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
-
-    MainWindow(QWidget *parent);
 
     ~MainWindow();
 

@@ -11,14 +11,20 @@
 #include "pieces/PieceType.h"
 #include <vector>
 
-MainWindow::MainWindow(Game *game, QWidget *parent)
-        : MainWindow(parent) {
-    this->game = game;
-    updateBoardDisplay();
-}
 
-MainWindow::MainWindow(QWidget *parent)
-        : QMainWindow(parent), ui(new Ui::MainWindow), game(nullptr), pickedField(nullptr) {
+/**
+ * displays the image of a board,
+ * then sets up a 8 x 8 grid of @class GameField
+ * to act as clickable tiles on the board.
+ * Connects the appropriate signals between the fields and the window
+ *
+ *
+ *
+ * @param game - the game that will be played and displayed in the window
+ * @param parent
+ */
+MainWindow::MainWindow(Game *game, QWidget *parent)
+        : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr) {
     ui->setupUi(this);
     QPixmap board_map(":/resources/Empty_Board.jpg");
     ui->GameBoard->setPixmap(board_map);
@@ -26,13 +32,14 @@ MainWindow::MainWindow(QWidget *parent)
     for (int row = 1; row <= 8; row++) {
         for (int column = 1; column <= 8; column++) {
             auto *field = new GameField(QString("Nie kliknięte"), column, row, this);
-            QObject::connect(this, &MainWindow::update_field, field, &GameField::update_called);
+            QObject::connect(this, &MainWindow::update_field, field, &GameField::updateCalled);
             QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
             field->setAlignment(Qt::AlignLeft);
             field->setGeometry(50 * column - 20, 50 * row + 20, 50, 50);
             field->show();
         }
     }
+    updateBoardDisplay();
 }
 
 MainWindow::~MainWindow() {
@@ -52,6 +59,12 @@ void MainWindow::on_newGameButton_clicked() {
 
 }
 
+/**
+ * updates the state of fields in the window
+ * to the state of the internal game
+ *
+ * TODO: change it so that it passes a color and piece type or the filename of the new icon instead of just piece Type
+ */
 void MainWindow::updateBoardDisplay() {
     for (int row = 1; row <= BOARD_SIZE; row++) {
         for (int col = 1; col <= BOARD_SIZE; col++) {
@@ -62,6 +75,17 @@ void MainWindow::updateBoardDisplay() {
     }
 }
 
+/**
+ * activated by emitting a "fieldClicked" signal by a connected @class GameField
+ * handles everything related to picking a piece and making moves
+ *
+ * if there is no field selected, it will select that field
+ * if a field is selected:
+ *          - if the clicked field is one where a piece from the selected field can move, make that move
+ *          - if not, select the newly clicked field and un-select the old one
+ *
+ * @param field
+ */
 void MainWindow::handleFieldClick(GameField *field) {
 
     if (field != pickedField) {
@@ -80,6 +104,15 @@ void MainWindow::handleFieldClick(GameField *field) {
     updateBoardDisplay();
 }
 
+/**
+ * check whether a field is the endpoint of one of the moves that are currenly
+ * being considered for the selected piece (if any)
+ *
+ *
+ * @param moves
+ * @param field
+ * @return the move with an endpoint at the given field, or nullptr if such a move is not found
+ */
 Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *field) {
     Move *foundMove = nullptr;
     for (auto move: moves) {
@@ -102,6 +135,12 @@ void MainWindow::makeMove(Move const move) {
     updateBoardDisplay();
 }
 
+
+/**
+ * Makes sure that the state of all fields is consistent after de-selecting a piece (ex. after a move)
+ * or selecting a new one
+ * @param new_picked - the field that is now supposed to be considered for moves etc.
+ */
 void MainWindow::changePickedField(GameField *const new_picked) {
 
     if (pickedField != nullptr) {
