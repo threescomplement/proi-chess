@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 #include "./clickable_label.h"
-#include "../chess/Game.h"
+#include "Game.h"
 #include "pieces/PieceType.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
