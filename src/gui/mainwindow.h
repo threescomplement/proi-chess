@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "./clickable_label.h"
 #include "../chess/Game.h"
+#include "pieces/PieceType.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,6 +16,7 @@ Q_OBJECT
 private:
     Game *game;
 
+    void updateBoardDisplay();
 
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
@@ -52,7 +54,7 @@ public slots:
 
 signals:
 
-    void update_field(int x, int y, int piece_number = -1);
+    void update_field(int x, int y, PieceType type = PieceType::NONE);
 
 private slots:
 

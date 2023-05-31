@@ -3,6 +3,7 @@
 #define CHESS_GAMEFIELD_H
 
 #include "clickable_label.h"
+#include "pieces/PieceType.h"
 
 class GameField : public ClickableLabel {
 
@@ -21,7 +22,7 @@ public:
 
 public slots:
 
-    void update_called(int called_x, int called_y, int piece_number = -1);
+    void update_called(int called_x, int called_y, PieceType type = PieceType::NONE);
 
 signals:
 

@@ -1,32 +1,27 @@
 
 #include "GameField.h"
+#include "pieces/PieceType.h"
 #include <QMouseEvent>
 #include <map>
 #include <string>
 
 
-std::map<int, std::string> piece_char{
-        {0,  ""},
-        {1,  "♔"},
-        {2,  "♕"},
-        {3,  "♖"},
-        {4,  "♗"},
-        {5,  "♘"},
-        {6,  "♙"},
-        {7,  "♚"},
-        {8,  "♛"},
-        {9,  "♜"},
-        {10, "♝"},
-        {11, "♞"},
-        {12, "♟"}
+std::map<PieceType, std::string> pieceChars {
+        {PieceType::NONE, ""},
+        {PieceType::PAWN, "♟"},
+        {PieceType::ROOK, "♜"},
+        {PieceType::BISHOP, "♝"},
+        {PieceType::KNIGHT, "♞"},
+        {PieceType::KING, "♛"},
+        {PieceType::QUEEN, "♚"},
 };
 
 
-void GameField::update_called(int called_x, int called_y, int piece_number) {
+void GameField::update_called(int called_x, int called_y, PieceType type) {
     if (called_x == x && called_y == y) {
         clicked = !clicked;
 
-        setPiece(piece_char[piece_number]);
+        setPiece(pieceChars[type]);
     }
 }
 
