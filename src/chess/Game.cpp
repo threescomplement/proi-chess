@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "pieces/PieceType.h"
 #include "ChessExceptions.h"
+#include "pieces/Pawn.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -17,7 +18,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->canWhiteQueensideCastle = true;
     this->canBlackKingsideCastle = true;
     this->canBlackQueensideCastle = true;
-    this->enPassantTarget = nullptr;
+    this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
 
@@ -68,12 +69,17 @@ void Game::makeMove(Move move) {
         this->halfmoveClock = 0;
     }
 
-    delete this->enPassantTarget;
-    this->enPassantTarget = nullptr;
+    if (this->enPassantTargetPosition != nullptr) {
+        refreshEnPassant();
+    };
+
+
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
         auto col = move.getTo().getCol();
-        this->enPassantTarget = new Position(row, col);
+        this->enPassantTargetPosition = new Position(row, col);
+        auto movedPawn = dynamic_cast<Pawn *>(move.getPiece());
+        movedPawn->setIsEnPassantTarget(true);
     }
 
     if (move.isCapture()) {
@@ -127,7 +133,7 @@ std::string Game::toFEN() const {
     auto board = this->getBoard()->toFEN();
     auto activePlayer = (this->currentPlayer == this->whitePlayer) ? "w" : "b";
     auto castling = this->castlingAvailabilityFEN();
-    auto enPassant = (this->enPassantTarget != nullptr) ? this->enPassantTarget->toString() : "-";
+    auto enPassant = (this->enPassantTargetPosition != nullptr) ? this->enPassantTargetPosition->toString() : "-";
 
     ss << board << " "
        << activePlayer << " "
@@ -143,7 +149,7 @@ Piece *Game::getPiece(Position position) const {
     return this->getBoard()->getField(position)->getPiece();
 }
 
-Game Game::fromFEN(const std::string& fen) {
+Game Game::fromFEN(const std::string &fen) {
     auto elements = split(fen, ' ');
 
     auto board = Board::fromFEN(elements[0]);
@@ -196,9 +202,8 @@ Game Game::fromFEN(const std::string& fen) {
             halfmoveClock,
             fullmoveNumber
     );
-
     return game;
-}
+};
 
 Game::Game(
         Board *board,
@@ -221,7 +226,7 @@ Game::Game(
         canWhiteQueensideCastle(canWhiteQueensideCastle),
         canBlackKingsideCastle(canBlackKingsideCastle),
         canBlackQueensideCastle(canBlackQueensideCastle),
-        enPassantTarget(enPassantTarget),
+        enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber) {}
 
@@ -242,6 +247,28 @@ std::vector<Move> Game::getAllPlayerMoves(Player &player) const {
     }
 
     return moves;
+}
+
+Pawn *Game::getEnPassantTargetPiece() const {
+    if (enPassantTargetPosition == nullptr)
+        return nullptr;
+
+    int targetRow = enPassantTargetPosition->getRow();
+    int targetCol = enPassantTargetPosition->getCol();
+    int rowOffsetFromEPPosition = (currentPlayer == whitePlayer) ? -1 : 1;
+
+    auto positionOfTargetPiece = Position(targetRow + rowOffsetFromEPPosition, targetCol);
+    auto ePTargetPiece = dynamic_cast<Pawn *>(getPiece(positionOfTargetPiece));
+    if (ePTargetPiece == nullptr)
+        throw std::bad_cast();
+    return ePTargetPiece;
+}
+
+void Game::refreshEnPassant() {
+    auto oldEnPassantTarget = this->getEnPassantTargetPiece();
+    oldEnPassantTarget->setIsEnPassantTarget(false);
+    delete this->enPassantTargetPosition;
+    this->enPassantTargetPosition = nullptr;
 }
 
 std::vector<std::string> split(const std::string &txt, char ch) {

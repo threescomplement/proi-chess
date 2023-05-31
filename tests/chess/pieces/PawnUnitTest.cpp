@@ -67,4 +67,32 @@ namespace PawnUnitTest {
         };
         ASSERT_TRUE(isPermutation(moves, expected));
     }
+
+    TEST(Pawn, enPassantExpected) {
+        auto board = Board::fromFEN("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR");
+        auto whitePawn = board->getField(pos("e5"))->getPiece();
+        auto blackPawn = dynamic_cast<Pawn *> (board->getField(pos("d5"))->getPiece());
+        blackPawn->setIsEnPassantTarget(true);
+        auto moves = whitePawn->getMoves();
+
+
+        auto expected = {
+                Move(pos("e5"), pos("e6"), whitePawn, nullptr),
+                Move(pos("e5"), pos("d6"), whitePawn, blackPawn)
+        };
+        ASSERT_TRUE(isPermutation(moves, expected));
+    }
+
+    TEST(Pawn, enPassantPosNoEP) {
+        auto board = Board::fromFEN("rnbqkbnr/ppppp1pp/8/8/4PpP1/8/PPPP1P1P/RNBQKBNR");
+        auto blackPawn = board->getField(pos("f4"))->getPiece();
+        auto moves = blackPawn->getMoves();
+
+        auto expected = {
+                Move(pos("f4"), pos("f3"), blackPawn, nullptr),
+        };
+        ASSERT_TRUE(isPermutation(moves, expected));
+    }
+
+
 };
