@@ -39,6 +39,14 @@ private:
 
     void refreshEnPassant();
 
+    /**
+     * If king move, disable castling in both directions for moving player. If rook move, disable castling
+     * in its direction. If move is a rook capture and the rook has not moved yet, disable possibility of castling
+     * in its direction.
+     **/
+    void refreshCastlingPossibilites(const Move &move);
+    void refreshCastlingAfterRookCapture(const Piece *takenRook);
+
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
 

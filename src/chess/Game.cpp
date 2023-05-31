@@ -1,3 +1,4 @@
+#include <map>
 #include "Game.h"
 #include "Board.h"
 #include "Color.h"
@@ -5,6 +6,7 @@
 #include "pieces/PieceType.h"
 #include "ChessExceptions.h"
 #include "pieces/Pawn.h"
+#include "pieces/PieceType.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -73,6 +75,7 @@ void Game::makeMove(Move move) {
         refreshEnPassant();
     };
 
+    this->refreshCastlingPossibilites(move);
 
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
@@ -269,6 +272,49 @@ void Game::refreshEnPassant() {
     oldEnPassantTarget->setIsEnPassantTarget(false);
     delete this->enPassantTargetPosition;
     this->enPassantTargetPosition = nullptr;
+}
+
+void Game::refreshCastlingPossibilites(const Move &move) {
+    if (move.getPiece()->getType() != PieceType::KING) {
+        if (move.getPiece()->getColor() == Color::WHITE) {
+            canWhiteKingsideCastle = false;
+            canWhiteQueensideCastle = false;
+        } else {
+            canBlackKingsideCastle = false;
+            canBlackQueensideCastle = false;
+        }
+
+    } else if (move.getPiece()->getType() != PieceType::ROOK) {
+        if (move.getPiece()->getColor() == Color::WHITE) {
+            if (move.getFrom().getCol() == 1) {
+                canWhiteQueensideCastle = false;
+            } else {
+                canWhiteKingsideCastle = false;
+            }
+        } else {
+            if (move.getFrom().getCol() == 1) {
+                canBlackQueensideCastle = false;
+            } else {
+                canBlackKingsideCastle = false;
+            }
+        }
+    }
+    if (move.isCapture() && move.getCapturedPiece()->getType() == PieceType::ROOK) {
+        refreshCastlingAfterRookCapture(move.getCapturedPiece());
+    }
+}
+
+void Game::refreshCastlingAfterRookCapture(const Piece *takenRook) {
+    if (takenRook->getPosition() == Position(1, 1)) {
+        canWhiteQueensideCastle = false;
+    } else if (takenRook->getPosition() == Position(1, 8)) {
+        canWhiteKingsideCastle = false;
+    }
+    if (takenRook->getPosition() == Position(8, 1)) {
+        canBlackQueensideCastle = false;
+    } else if (takenRook->getPosition() == Position(8, 8)) {
+        canBlackKingsideCastle = false;
+    }
 }
 
 std::vector<std::string> split(const std::string &txt, char ch) {
