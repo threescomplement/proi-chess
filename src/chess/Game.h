@@ -36,7 +36,6 @@ private:
 private:
 
     std::string castlingAvailabilityFEN() const;
-    Pawn* getEnPassantTargetPiece() const;
 
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
@@ -70,6 +69,8 @@ public:
     bool isCheck() const;
 
     static Game fromFEN(std::string fen);
+
+    Pawn* getEnPassantTargetPiece() const;
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

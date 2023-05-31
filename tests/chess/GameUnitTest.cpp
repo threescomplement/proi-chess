@@ -3,6 +3,7 @@
 #include "../../src/chess/Player.h"
 #include "../../src/chess/Move.h"
 #include "Board.h"
+#include "pieces/Pawn.h"
 #include "exceptions/PieceNotOnBoardException.h"
 #include "common.h"
 
@@ -117,4 +118,37 @@ namespace GameUnitTest {
     TEST(Game, fromFEN) {
         FAIL();
     }
+
+    TEST(Game, staticEnPassantMechanics) {
+        /**
+         * 1. e4a6 2.e5d5 3.exd6 - checking the value of enPassantTargetPiece after each move and performing enPassant
+         * */
+        auto game = Game();
+        auto whiteEPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("e2"))->getPiece());
+        auto blackAPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("a7"))->getPiece());
+        auto blackDPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("d7"))->getPiece());
+
+        ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
+        // e4
+        game.makeMove(Move(pos("e2"), pos("e4"), whiteEPawn, nullptr));
+        ASSERT_EQ(game.getEnPassantTargetPiece(), dynamic_cast<Pawn*>(whiteEPawn));
+        // a6
+        game.makeMove(Move(pos("a7"), pos("a6"), blackAPawn, nullptr));
+        ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
+
+        //e5
+        game.makeMove(Move(pos("e4"), pos("e5"), whiteEPawn, nullptr));
+        ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
+        //d5
+        game.makeMove(Move(pos("d7"), pos("d5"), blackDPawn, nullptr));
+        ASSERT_EQ(game.getEnPassantTargetPiece(), blackDPawn);
+
+        // is exd6 a valid move?
+        auto moves = whiteEPawn->getMoves();
+        auto exd6EnPassant = Move(pos("e5"), pos("d6"), whiteEPawn, blackDPawn);
+        ASSERT_TRUE(in(moves, exd6EnPassant));
+        game.makeMove(exd6EnPassant);
+        ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
+    }
+
 }
