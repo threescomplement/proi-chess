@@ -149,7 +149,7 @@ Piece *Game::getPiece(Position position) const {
     return this->getBoard()->getField(position)->getPiece();
 }
 
-Game Game::fromFEN(const std::string& fen) {
+Game Game::fromFEN(const std::string &fen) {
     auto elements = split(fen, ' ');
 
     auto board = Board::fromFEN(elements[0]);
@@ -201,8 +201,9 @@ Game Game::fromFEN(const std::string& fen) {
             enPassantPosition,
             halfmoveClock,
             fullmoveNumber
-    };
-}
+    );
+    return game;
+};
 
 Game::Game(
         Board *board,
