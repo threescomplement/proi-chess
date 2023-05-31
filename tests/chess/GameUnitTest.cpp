@@ -49,6 +49,22 @@ namespace GameUnitTest {
         ASSERT_THROW(capturedPawn->getPosition(), PieceNotOnBoardException);
     }
 
+    TEST(Game, makeMoveCaptureFriendly) {
+        auto game = Game::fromFEN("rnbqkbnr/ppp1pppp/8/3p4/2P5/1P6/P2PPPPP/RNBQKBNR w KQkq - 0 1");
+        auto capturedPawn = game.getPiece(pos("c4"));
+        auto move = Move(pos("b3"), pos("c4"), game.getPiece(pos("b3")), capturedPawn);
+
+        std::vector<Move> legalMoves = game.getMovesFrom(pos("c4"));
+        ASSERT_EQ(legalMoves.size(), 1);
+        Move onlyMove = legalMoves[0];
+        Position expected_goal = pos("b4");
+        ASSERT_EQ(onlyMove.getTo().getRow(), expected_goal.getRow());
+        ASSERT_EQ(onlyMove.getTo().getCol(), expected_goal.getCol());
+
+
+
+    }
+
     TEST(Game, fromFENStartingGame) {
         auto game = Game::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         auto newGame = Game();
@@ -105,6 +121,7 @@ namespace GameUnitTest {
         };
         ASSERT_TRUE(isPermutation(expected, moves));
     }
+
 
     TEST(Game, fromFENCastling) {
         FAIL();
