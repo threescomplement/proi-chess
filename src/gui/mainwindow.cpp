@@ -24,11 +24,11 @@ MainWindow::MainWindow(QWidget *parent)
         for (int column = 1; column <= 8; column++) {
             GameField *field = new GameField(QString("Nie kliknięte"), column, row, this);
             QObject::connect(this, &MainWindow::update_field, field, &GameField::update_called);
-            QObject::connect( field, &GameField::fieldClicked, this, &MainWindow::highlightNeighbours);
+            QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::highlightNeighbours);
             field->setAlignment(Qt::AlignLeft);
             field->setGeometry(50 * column - 20, 50 * row + 20, 50, 50);
             field->show();
-            if (row == 1){ // black
+            if (row == 1) { // black
                 switch (column) {
                     case 1:
                     case 8:
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
                         break;
                 }
 
-            } else if (row == 2){ // black
+            } else if (row == 2) { // black
                 emit update_field(column, row, 12); // pawn
             }
         }
@@ -71,10 +71,10 @@ void MainWindow::move(int start_x, int start_y) {
 }
 
 void MainWindow::highlightNeighbours(int origin_x, int origin_y) {
-    emit update_field(origin_x - 1, origin_y, (origin_y + origin_x)%13);
-    emit update_field(origin_x, origin_y - 1, (origin_y + origin_x)%13);
-    emit update_field(origin_x + 1, origin_y, (origin_y + origin_x)%13);
-    emit update_field(origin_x, origin_y + 1,(origin_y + origin_x)%13);
+    emit update_field(origin_x - 1, origin_y, (origin_y + origin_x) % 13);
+    emit update_field(origin_x, origin_y - 1, (origin_y + origin_x) % 13);
+    emit update_field(origin_x + 1, origin_y, (origin_y + origin_x) % 13);
+    emit update_field(origin_x, origin_y + 1, (origin_y + origin_x) % 13);
 
 }
 
@@ -82,8 +82,7 @@ void MainWindow::highlightNeighbours(int origin_x, int origin_y) {
 // create a
 
 
-void MainWindow::on_newGameButton_clicked()
-{
+void MainWindow::on_newGameButton_clicked() {
 
 }
 
