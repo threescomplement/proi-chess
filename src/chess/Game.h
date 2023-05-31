@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <string>
-#include "pieces/Pawn.h"
 
 class Board;
 class Move;
@@ -12,6 +11,7 @@ class Player;
 class Piece;
 class Position;
 class King;
+class Pawn;
 
 class Game {
 private:
@@ -25,10 +25,9 @@ private:
     bool canWhiteQueensideCastle;
     bool canBlackKingsideCastle;
     bool canBlackQueensideCastle;
-    Position *enPassantTarget;
+    Position *enPassantTargetPosition;
     int halfmoveClock;
     int fullmoveNumber;
-    Pawn* enPassantTargetPiece; //todo: think this one over
 
     Game(Board *board, Player *whitePlayer, Player *blackPlayer, Player *currentPlayer, bool canWhiteKingsideCastle,
          bool canWhiteQueensideCastle, bool canBlackKingsideCastle, bool canBlackQueensideCastle,
@@ -37,6 +36,7 @@ private:
 private:
 
     std::string castlingAvailabilityFEN() const;
+    Pawn* getEnPassantTargetPiece() const;
 
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
