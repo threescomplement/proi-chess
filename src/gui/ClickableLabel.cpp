@@ -18,14 +18,6 @@ void ClickableLabel::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         clicked = !clicked;
     }
-
-
-
-//    if (clicked) {
-//        this->setText(QString("kliknięte"));
-//    } else {
-//        this->setText(QString("NIE kliknięte"));
-//    }
 }
 
 
