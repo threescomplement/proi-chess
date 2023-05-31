@@ -6,21 +6,34 @@
 #include <string>
 
 
-std::map<PieceType, std::string> pieceChars {
-        {PieceType::NONE, ""},
-        {PieceType::PAWN, "♟"},
-        {PieceType::ROOK, "♜"},
+std::map<PieceType, std::string> pieceChars{
+        {PieceType::NONE,   ""},
+        {PieceType::PAWN,   "♟"},
+        {PieceType::ROOK,   "♜"},
         {PieceType::BISHOP, "♝"},
         {PieceType::KNIGHT, "♞"},
-        {PieceType::KING, "♛"},
-        {PieceType::QUEEN, "♚"},
+        {PieceType::KING,   "♛"},
+        {PieceType::QUEEN,  "♚"},
 };
 
 
-void GameField::update_called(int called_x, int called_y, PieceType type) {
+GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::WindowFlags f) : ClickableLabel(text,
+                                                                                                             parent,
+                                                                                                             f),
+                                                                                              marked(false) {
+    QFont font = this->font();
+    font.setPointSize(20);
+    font.setBold(true);
+    this->setFont(font);
+    this->x = x;
+    this->y = y;
+}
+
+
+void GameField::update_called(int called_x, int called_y, PieceType type, bool mark) {
     if (called_x == x && called_y == y) {
         clicked = !clicked;
-
+        marked = mark;
         setPiece(pieceChars[type]);
     }
 }
@@ -28,24 +41,25 @@ void GameField::update_called(int called_x, int called_y, PieceType type) {
 void GameField::mousePressEvent(QMouseEvent *event) {
     ClickableLabel::mousePressEvent(event);
     if (event->button() == Qt::LeftButton) {
-        emit fieldClicked(x, y);
+        emit fieldClicked(this);
     }
 }
 
 void GameField::setPiece(std::string new_piece) {
-    piece = new_piece;
-    QString new_text = QString::fromStdString(piece);
+    QString new_text = QString::fromStdString(new_piece);
     this->setText(new_text);
 
 }
 
-GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::WindowFlags f) : ClickableLabel(text,
-                                                                                                             parent,
-                                                                                                             f) {
-    QFont font = this->font();
-    font.setPointSize(20);
-    font.setBold(true);
-    this->setFont(font);
-    this->x = x;
-    this->y = y;
+
+int GameField::getX() const {
+    return x;
+}
+
+int GameField::getY() const {
+    return y;
+}
+
+const PieceType &GameField::getPiece() const {
+    return piece;
 }

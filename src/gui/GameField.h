@@ -2,7 +2,7 @@
 #ifndef CHESS_GAMEFIELD_H
 #define CHESS_GAMEFIELD_H
 
-#include "clickable_label.h"
+#include "ClickableLabel.h"
 #include "pieces/PieceType.h"
 
 class GameField : public ClickableLabel {
@@ -10,9 +10,11 @@ class GameField : public ClickableLabel {
 Q_OBJECT
 
 private:
-    std::string piece;
+    PieceType piece;
+    bool marked;
     int x;
     int y;
+
 public:
     GameField(const QString &text, int x, int y, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
 
@@ -20,13 +22,19 @@ public:
 
     void mousePressEvent(QMouseEvent *event) override;
 
+    int getX() const;
+
+    int getY() const;
+
+    const PieceType &getPiece() const;
+
 public slots:
 
-    void update_called(int called_x, int called_y, PieceType type = PieceType::NONE);
+    void update_called(int called_x, int called_y, PieceType type = PieceType::NONE, bool mark = false);
 
 signals:
 
-    void fieldClicked(int x, int y);
+    void fieldClicked(GameField *field);
 
 };
 

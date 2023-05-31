@@ -2,9 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "./clickable_label.h"
+#include "./ClickableLabel.h"
 #include "Game.h"
 #include "pieces/PieceType.h"
+#include <vector>
+#include "Move.h"
+#include "GameField.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -16,8 +19,16 @@ Q_OBJECT
 
 private:
     Game *game;
+    GameField *pickedField; // currently selected field
+    std::vector<Move> validMoves; // moves possible from that field
+
+
 
     void updateBoardDisplay();
+
+    Move *findMove(const std::vector<Move> &moves, const GameField *field);
+
+    void changePickedField(GameField *const new_picked);
 
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
@@ -26,6 +37,7 @@ public:
 
     ~MainWindow();
 
+    void makeMove(Move const move);
 
 
     //keep the positions or pointers to labels where a move starts and finishes
@@ -49,13 +61,14 @@ public:
     // or change them during the make_move method?
 public slots:
 
-    void move(int start_x, int start_y);
 
     void highlightNeighbours(int origin_x, int origin_y);
 
+    void handleFieldClick(GameField *field);
+
 signals:
 
-    void update_field(int x, int y, PieceType type = PieceType::NONE);
+    void update_field(int x, int y, PieceType type = PieceType::NONE, bool mark = false);
 
 private slots:
 
