@@ -11,10 +11,11 @@ class Player;
 class Piece;
 class Position;
 class King;
+class Pawn;
 
 class Game {
 private:
-    Board  *board;
+    Board *board;
     Player *whitePlayer;
     Player *blackPlayer;
     Player *currentPlayer;
@@ -24,7 +25,7 @@ private:
     bool canWhiteQueensideCastle;
     bool canBlackKingsideCastle;
     bool canBlackQueensideCastle;
-    Position *enPassantTarget;
+    Position *enPassantTargetPosition;
     int halfmoveClock;
     int fullmoveNumber;
 
@@ -35,6 +36,8 @@ private:
 private:
 
     std::string castlingAvailabilityFEN() const;
+
+    void refreshEnPassant();
 
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
@@ -55,7 +58,7 @@ public:
 
     Player *getBlackPlayer() const;
 
-    Player * getCurrentPlayer() const;
+    Player *getCurrentPlayer() const;
 
     void makeMove(Move move);
 
@@ -69,7 +72,13 @@ public:
 
     bool isCheck() const;
 
-    static Game fromFEN(const std::string& fen);
+    /**
+     * Get the pawn threatened by en passant based on enPassantTargetLocation
+     * @throws std::bas_cast if the piece is not a pawn or there is no piece
+     */
+    Pawn *getEnPassantTargetPiece() const;
+
+    static Game fromFEN(const std::string &fen);
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);
