@@ -7,7 +7,16 @@
 
 #include <QLabel>
 
-
+/**
+ * class ClickLabel
+ *
+ * a simple class which has all the functionality of a Label
+ * with the added bonus of having a mousePressEvent, which toggles
+ * the "clicked" attribute when left-clicked
+ *
+ * word wrapping is set to true by default
+ *
+ */
 class ClickableLabel : public QLabel {
 Q_OBJECT
 

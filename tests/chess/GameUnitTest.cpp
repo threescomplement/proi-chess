@@ -49,17 +49,14 @@ namespace GameUnitTest {
         ASSERT_THROW(capturedPawn->getPosition(), PieceNotOnBoardException);
     }
 
-    TEST(Game, makeMoveCaptureFriendly) {
+    TEST(Game, getMovesCaptureFriendly) {
         auto game = Game::fromFEN("rnbqkbnr/ppp1pppp/8/3p4/2P5/1P6/P2PPPPP/RNBQKBNR w KQkq - 0 1");
-
         std::vector<Move> legalMoves = game.getMovesFrom(pos("b3"));
         ASSERT_EQ(legalMoves.size(), 1);
         Move onlyMove = legalMoves[0];
         Position expected_goal = pos("b4");
         ASSERT_EQ(onlyMove.getTo().getRow(), expected_goal.getRow());
         ASSERT_EQ(onlyMove.getTo().getCol(), expected_goal.getCol());
-
-
 
     }
 

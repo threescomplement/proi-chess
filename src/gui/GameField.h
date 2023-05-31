@@ -5,6 +5,23 @@
 #include "ClickableLabel.h"
 #include "pieces/PieceType.h"
 
+
+/**
+ * @class GameField
+ *
+ * inherits from ClickableLabel
+ *
+ * communicates with MainWindow using
+ * the updateCalled slot  (comes in)
+ * and fieldCLicked signal (goes out)
+ *
+ *  @param x - column of the board counted from left to right, starting at 1
+ *  @param y - row of the board, counted from top to bottom, starting at 1
+ *  @param marked - whether the field should be highlighted on the board or not
+ *  @param piece - the piece type currently on this field this might later be replaced with a icon file name
+ *
+ */
+
 class GameField : public ClickableLabel {
 
 Q_OBJECT
@@ -30,7 +47,7 @@ public:
 
 public slots:
 
-    void update_called(int called_x, int called_y, PieceType type = PieceType::NONE, bool mark = false);
+    void updateCalled(int called_x, int called_y, PieceType type = PieceType::NONE, bool mark = false);
 
 signals:
 

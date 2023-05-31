@@ -12,15 +12,13 @@ std::map<PieceType, std::string> pieceChars{
         {PieceType::ROOK,   "♜"},
         {PieceType::BISHOP, "♝"},
         {PieceType::KNIGHT, "♞"},
-        {PieceType::KING,   "♛"},
-        {PieceType::QUEEN,  "♚"},
+        {PieceType::KING,   "♚"},
+        {PieceType::QUEEN,  "♛"},
 };
 
 
-GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::WindowFlags f) : ClickableLabel(text,
-                                                                                                             parent,
-                                                                                                             f),
-                                                                                              marked(false) {
+GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::WindowFlags f) :
+        ClickableLabel(text, parent, f), marked(false) {
     QFont font = this->font();
     font.setPointSize(20);
     font.setBold(true);
@@ -29,8 +27,14 @@ GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::Win
     this->y = y;
 }
 
-
-void GameField::update_called(int called_x, int called_y, PieceType type, bool mark) {
+/**
+ *
+ * @param called_x - identifies which field was called to update
+ * @param called_y - identifies which field was called to update
+ * @param type - SUBJECT TO CHANGE: the type of piece it's supposed to now hold
+ * @param mark - the new state of being marked, false by default
+ */
+void GameField::updateCalled(int called_x, int called_y, PieceType type, bool mark) {
     if (called_x == x && called_y == y) {
         clicked = !clicked;
         marked = mark;
@@ -50,7 +54,6 @@ void GameField::setPiece(std::string new_piece) {
     this->setText(new_text);
 
 }
-
 
 int GameField::getX() const {
     return x;
