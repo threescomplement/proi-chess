@@ -21,7 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
     //click_label->show();
     for (int row = 1; row <= 8; row++) {
         for (int column = 1; column <= 8; column++) {
-            ClickableLabel *click_label = new ClickableLabel(QString("Nie kliknięte"), this);
+            ClickableLabel *click_label = new ClickableLabel(QString("Nie kliknięte"), column, row, this);
+            QObject::connect(this, &MainWindow::update_label, click_label, &ClickableLabel::update_called );
+            QObject::connect( click_label, &ClickableLabel::labelClicked, this, &MainWindow::highlightNeighbours);
             click_label->setAlignment(Qt::AlignLeft);
             click_label->setGeometry(50 * column - 20, 50 * row + 20, 50, 50);
             click_label->show();
@@ -43,7 +45,10 @@ void MainWindow::move(int start_x, int start_y) {
 }
 
 void MainWindow::highlightNeighbours(int origin_x, int origin_y) {
-    emit update_label(origin_x - 1, origin_y - 1);
+    emit update_label(origin_x - 1, origin_y);
+    emit update_label(origin_x, origin_y - 1);
+    emit update_label(origin_x + 1, origin_y);
+    emit update_label(origin_x, origin_y + 1);
 
 }
 
