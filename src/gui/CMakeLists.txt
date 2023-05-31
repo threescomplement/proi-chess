@@ -4,7 +4,7 @@ set(GUI_SOURCES
         mainwindow.cpp
         mainwindow.ui
         sources.qrc
-        clickable_label.cpp
+        ClickableLabel.cpp
         GameField.cpp
         GameField.h)
 

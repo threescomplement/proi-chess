@@ -1,5 +1,5 @@
 
-#include "clickable_label.h"
+#include "ClickableLabel.h"
 #include <QMouseEvent>
 
 ClickableLabel::ClickableLabel(const QString &text, QWidget *parent, Qt::WindowFlags f)

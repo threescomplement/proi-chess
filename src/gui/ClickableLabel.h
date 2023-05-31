@@ -2,8 +2,8 @@
 // Created by Admin on 2023-05-21.
 //
 
-#ifndef CHESS_CLICKABLE_LABEL_H
-#define CHESS_CLICKABLE_LABEL_H
+#ifndef CHESS_CLICKABLELABEL_H
+#define CHESS_CLICKABLELABEL_H
 
 #include <QLabel>
 
@@ -28,4 +28,4 @@ public:
 };
 
 
-#endif //CHESS_CLICKABLE_LABEL_H
+#endif //CHESS_CLICKABLELABEL_H
