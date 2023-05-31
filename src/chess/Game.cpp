@@ -232,10 +232,9 @@ Game::Game(
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
-    if (piece == nullptr) {
+    if (piece == nullptr || piece->getColor() != currentPlayer->getColor()) {
         return {};
     }
-
     return piece->getMoves();
 }
 
