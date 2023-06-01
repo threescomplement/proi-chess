@@ -12,6 +12,7 @@ class Piece;
 class Position;
 class King;
 class Pawn;
+class Move;
 
 class Game {
 private:
@@ -51,9 +52,15 @@ private:
      * Utilites for checking whether the current player can castle - whether the flags are true and
      * there are no pieces between the king and rook
      * */
-    bool possibleKingsideCastlingThisRound();
-    bool possibleQueensideCastlingThisRound();
+    bool possibleKingsideCastlingThisRound() const;
+    bool possibleQueensideCastlingThisRound() const;
     bool noPiecesBetweenKingAndRook(const Piece* king, const Piece* rook) const;
+
+    /**
+     *Generate a move object for a castle in a given direction based on the currentPlayer parameter
+     * */
+    Move generateKingSideCastle() const;
+    Move generateQueenSideCastle() const;
 
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");

@@ -82,7 +82,7 @@ void Game::makeMove(Move move) {
         auto col = move.getTo().getCol();
         this->enPassantTargetPosition = new Position(row, col);
         auto movedPawn = dynamic_cast<Pawn *>(move.getPiece());
-        movedPawn->setIsEnPassantTarget(true);
+        movedPawn->setIsEnPassantTarget(true);f
     }
 
     if (move.isCapture()) {
@@ -238,11 +238,20 @@ std::vector<Move> Game::getMovesFrom(Position position) const {
     if (piece == nullptr) {
         return {};
     }
-
-    return piece->getMoves();
+    auto movesForPiece = piece->getMoves();
+    if (piece->getType() == PieceType::KING) {
+        if (possibleKingsideCastlingThisRound()) {
+            movesForPiece.push_back(generateKingSideCastle());
+        }
+        if (possibleQueensideCastlingThisRound()) {
+            movesForPiece.push_back(generateQueenSideCastle());
+        }
+    }
+    return movesForPiece;
 }
 
 std::vector<Move> Game::getAllPlayerMoves(Player &player) const {
+    // todo - refactor to calculate from position to include castling
     std::vector<Move> moves = {};
     for (auto piece: player.getPieces()) {
         auto pieceMoves = piece->getMoves();
@@ -317,7 +326,7 @@ void Game::refreshCastlingAfterRookCapture(const Piece *takenRook) {
     }
 }
 
-bool Game::possibleKingsideCastlingThisRound() {
+bool Game::possibleKingsideCastlingThisRound() const {
     if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteKingsideCastle ||
         getCurrentPlayer()->getColor() == Color::BLACK && !canBlackKingsideCastle) {
         return false;
@@ -330,7 +339,7 @@ bool Game::possibleKingsideCastlingThisRound() {
     return canCastle;
 }
 
-bool Game::possibleQueensideCastlingThisRound() {
+bool Game::possibleQueensideCastlingThisRound() const {
     if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteKingsideCastle ||
         getCurrentPlayer()->getColor() == Color::BLACK && !canBlackKingsideCastle) {
         return false;
@@ -357,6 +366,20 @@ bool Game::noPiecesBetweenKingAndRook(const Piece *king, const Piece *rook) cons
             return false;
     }
     return true;
+}
+
+Move Game::generateKingSideCastle() const {
+    int castlingRank = (currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
+    auto fromPosition = Position(castlingRank, 5);
+    auto toPosition = Position(castlingRank, 7);
+    return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
+}
+
+Move Game::generateQueenSideCastle() const {
+    int castlingRank = (currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
+    auto fromPosition = Position(castlingRank, 5);
+    auto toPosition = Position(castlingRank, 3);
+    return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
 }
 
 std::vector<std::string> split(const std::string &txt, char ch) {
