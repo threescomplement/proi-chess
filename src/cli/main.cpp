@@ -89,7 +89,7 @@ void processPlayerTurn(Game &game) {
     }
 }
 
-void processBotTurn(Game &game, StockfishBot &bot) {
+void processBotTurn(Game &game, ChessBot &bot) {
     game.makeMove(bot.getBestNextMove());
 }
 
@@ -100,7 +100,7 @@ void playPlayerVersusPlayer(Game &game) {
 }
 
 void playPlayerVersusComputer(Game &game) {
-    auto bot = StockfishBot(game);
+    ChessBot &bot = *new StockfishBot(game);
     Color botColor;
 
     while (true) {
