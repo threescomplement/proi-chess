@@ -317,6 +317,48 @@ void Game::refreshCastlingAfterRookCapture(const Piece *takenRook) {
     }
 }
 
+bool Game::possibleKingsideCastlingThisRound() {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteKingsideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackKingsideCastle) {
+        return false;
+    }
+    int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
+    auto kingSideRook = getPiece(Position(currentPlayerBackRank, 8));
+    auto king = getPiece(Position(currentPlayerBackRank, 5));
+
+    bool canCastle = (noPiecesBetweenKingAndRook(king, kingSideRook));
+    return canCastle;
+}
+
+bool Game::possibleQueensideCastlingThisRound() {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteKingsideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackKingsideCastle) {
+        return false;
+    }
+    int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
+    auto kingSideRook = getPiece(Position(currentPlayerBackRank, 1));
+    auto king = getPiece(Position(currentPlayerBackRank, 5));
+
+    bool canCastle = (noPiecesBetweenKingAndRook(king, kingSideRook));
+    return canCastle;
+}
+
+bool Game::noPiecesBetweenKingAndRook(const Piece *king, const Piece *rook) const {
+    if (king->getPosition().getRow() != rook->getPosition().getRow())
+        throw std::invalid_argument("King and rook can't be in different rows!");
+
+    auto row = king->getPosition().getRow();
+    auto lowestColToCheck = std::min(king->getPosition().getCol(), rook->getPosition().getCol()) + 1;
+    auto upperLimit = std::max(king->getPosition().getCol(), rook->getPosition().getCol());
+
+    for (int currentCol = lowestColToCheck; currentCol < upperLimit; currentCol++) {
+        auto currentPosition = Position(row, currentCol);
+        if (getPiece(currentPosition) != nullptr)
+            return false;
+    }
+    return true;
+}
+
 std::vector<std::string> split(const std::string &txt, char ch) {
     std::vector<std::string> strings;
     size_t pos = txt.find(ch);

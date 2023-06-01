@@ -47,6 +47,14 @@ private:
     void refreshCastlingPossibilites(const Move &move);
     void refreshCastlingAfterRookCapture(const Piece *takenRook);
 
+    /**
+     * Utilites for checking whether the current player can castle - whether the flags are true and
+     * there are no pieces between the king and rook
+     * */
+    bool possibleKingsideCastlingThisRound();
+    bool possibleQueensideCastlingThisRound();
+    bool noPiecesBetweenKingAndRook(const Piece* king, const Piece* rook) const;
+
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
 
