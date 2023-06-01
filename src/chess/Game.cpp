@@ -82,7 +82,7 @@ void Game::makeMove(Move move) {
         auto col = move.getTo().getCol();
         this->enPassantTargetPosition = new Position(row, col);
         auto movedPawn = dynamic_cast<Pawn *>(move.getPiece());
-        movedPawn->setIsEnPassantTarget(true);f
+        movedPawn->setIsEnPassantTarget(true);
     }
 
     if (move.isCapture()) {
