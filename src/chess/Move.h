@@ -44,6 +44,8 @@ public:
     std::string toStockfishNotation() const; // TODO: rename
 
     bool isDoublePawnMove() const;
+
+    bool isCastling() const;
 };
 
 

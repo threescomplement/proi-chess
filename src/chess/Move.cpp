@@ -64,3 +64,9 @@ std::string Move::toStockfishNotation() const {
     return ss.str();
 }
 
+bool Move::isCastling() const {
+    if (movedPiece->getType() == PieceType::KING && abs(getTo().getCol() - getFrom().getCol()) == 2)
+        return true;
+    return false;
+}
+
