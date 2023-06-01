@@ -4,14 +4,13 @@
 
 #include <QString>
 #include "Game.h"
+#include "ChessBot.h"
 
 /**
  * Requires stockfish to be installed and on the system PATH
  */
-class StockfishBot {
+class StockfishBot : public ChessBot {
 private:
-    const Game &game;
-
     Move getMoveFromStockfish(std::string gameFEN) const;
 
     static const std::string stockfishProgramName;
@@ -23,10 +22,9 @@ private:
     static std::string extractMove(QString stockfishOutput);
 
 public:
+    using ChessBot::ChessBot;
 
-    explicit StockfishBot(const Game &game) : game(game) {};
-
-    Move getBestNextMove() const;
+    Move getBestNextMove() const override;
 };
 
 
