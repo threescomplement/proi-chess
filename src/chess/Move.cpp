@@ -18,8 +18,13 @@ bool Move::isCapture() const {
 }
 
 std::string Move::toString() const {
-    std::stringstream ss;
+    if (isCastling()) {
+        if (getTo().getCol() == 3)
+            return "O-O-O";
+        return "O-O";
+    }
 
+    std::stringstream ss;
     char pieceChar;
     if (movedPiece->getType() == PieceType::PAWN) {
         pieceChar = (this->isCapture()) ? 'a' + from.getCol() - 1 : '\0';
@@ -74,5 +79,9 @@ Move Move::generateCastlingComplement(Piece *castlingRook) {
     int toCol = (castlingRook->getPosition().getCol() == 1) ? 4 : 6;
     int row = castlingRook->getPosition().getRow();
     return Move(castlingRook->getPosition(), Position(row, toCol), castlingRook, nullptr);
+}
+
+bool Move::isLongCastle() const {
+    return (isCastling() && getTo().getRow() == 3);
 }
 

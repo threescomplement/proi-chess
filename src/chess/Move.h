@@ -52,6 +52,8 @@ public:
      * the king.
      **/
     static Move generateCastlingComplement(Piece *CastlingRook);
+
+    bool isLongCastle() const;
 };
 
 

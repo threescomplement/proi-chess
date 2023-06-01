@@ -237,7 +237,7 @@ void Board::makeMove(Move move) {
     }
 
     if (move.isCastling()) {
-        auto rookCol = (move.getTo().getCol() == 3) ? 1 : 8;
+        auto rookCol = (move.isLongCastle()) ? 1 : 8;
         auto row = (move.getTo().getRow());
         auto castledRook = getField(Position(row, rookCol))->getPiece();
         makeMove(Move::generateCastlingComplement(castledRook));
