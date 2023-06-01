@@ -70,3 +70,9 @@ bool Move::isCastling() const {
     return false;
 }
 
+Move Move::generateCastlingComplement(Piece *castlingRook) {
+    int toCol = (castlingRook->getPosition().getCol() == 1) ? 4 : 6;
+    int row = castlingRook->getPosition().getRow();
+    return Move(castlingRook->getPosition(), Position(row, toCol), castlingRook, nullptr);
+}
+
