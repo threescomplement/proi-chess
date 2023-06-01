@@ -37,21 +37,23 @@ Board::~Board() {
 
 std::string Board::toString() const {
     std::stringstream ss;
-    auto blackSquare = "■";
-    auto whiteSquare = "□";
+    auto empty = " ";
+    auto separator = "  ";
 
-    for (int row = 0; row < BOARD_SIZE; ++row) {
+    for (int row = BOARD_SIZE - 1; row >= 0; --row) {
+        ss << row + 1 << separator;
         for (int col = 0; col < BOARD_SIZE; ++col) {
             auto field = fields[row][col];
             if (!field->isEmpty()) {
-                ss << field->getPiece()->getUnicodeSymbol();
+                ss << field->getPiece()->getUnicodeSymbol() << separator;
             } else {
-                auto symbol = ((row + col) % 2 == 0) ? blackSquare : whiteSquare;
-                ss << symbol;
+                ss << empty << separator;
             }
         }
         ss << std::endl;
     }
+    ss << empty << separator << "A" << separator << "B" << separator << "C" << separator << "D" << separator << "E"
+       << separator << "F" << separator << "G" << separator << "H" << separator << "" << std::endl;
 
     return ss.str();
 }
