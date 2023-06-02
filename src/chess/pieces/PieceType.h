@@ -3,6 +3,7 @@
 
 
 enum class PieceType {
+    NONE,
     PAWN,
     ROOK,
     BISHOP,
