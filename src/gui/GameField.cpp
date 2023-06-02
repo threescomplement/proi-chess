@@ -32,8 +32,11 @@ GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::Win
     overlay->setPixmap(
             QPixmap(":/resources/orange_frame_overlay.png").scaled(50, 50,
                                                                    Qt::AspectRatioMode::KeepAspectRatio));
+
+    //overlay->setPixmap(QPixmap());
     overlay->show();
     overlay->raise();
+    setMark(false);
 }
 
 GameField::~GameField() noexcept {
