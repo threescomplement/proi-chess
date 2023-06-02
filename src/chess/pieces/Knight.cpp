@@ -5,34 +5,28 @@
 #include <vector>
 
 
-Knight::Knight(Color color, Field *field, Player *owner) {
-    this->color = color;
-    this->parentField = field;
-    this->player = owner;
-}
-
 std::vector<Move> Knight::getMoves() const {
     std::vector<Move> moves;
     auto targetPositions = this->getTargetPositions();
 
     for (auto targetPosition: targetPositions) {
         auto targetField = this->getBoard()->getField(targetPosition);
-        auto isCapture = false;
+        Piece *capturedPiece = nullptr;
 
         if (!targetField->isEmpty()) {
-            auto targetPieceColor = targetField->getPiece()->getColor();
-            if (targetPieceColor == this->getColor()) {
+            auto targetPiece = targetField->getPiece();
+            if (targetPiece->getColor() == this->getColor()) {
                 continue;
             }
 
-            isCapture = true;
+            capturedPiece = targetPiece;
         }
 
         moves.emplace_back(
                 this->getField()->getPosition(),
                 targetPosition,
                 (Piece *) this,
-                isCapture
+                capturedPiece
         );
     }
 
@@ -43,21 +37,6 @@ PieceType Knight::getType() const {
     return PieceType::KNIGHT;
 }
 
-Color Knight::getColor() const {
-    return color;
-}
-
-Board *Knight::getBoard() const {
-    return parentField->getBoard();
-}
-
-Field *Knight::getField() const {
-    return parentField;
-}
-
-Player *Knight::getPlayer() const {
-    return player;
-}
 
 char Knight::getCharacter() const {
     return (color == Color::BLACK) ? 'n' : 'N';

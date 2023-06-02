@@ -1,17 +1,11 @@
-#include <iostream>
-#include "../chess/Game.h"
 #include "mainwindow.h"
-
-
+#include "Game.h"
 #include <QApplication>
 
-int main(int argc, char *argv[])
-{
-    std::cout << "Hello" << std::endl;
-    Game *game = new Game;
-
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    MainWindow w;
+    auto game = new Game("bialy", "czarny");
+    auto  w = MainWindow(game);
     w.show();
     return a.exec();
 }

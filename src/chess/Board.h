@@ -2,6 +2,7 @@
 #define CHESS_BOARD_H
 
 #include <memory>
+#include <utility>
 #include "Field.h"
 #include "Move.h"
 #include "constants.h"
@@ -15,12 +16,15 @@ class Field;
 
 class Board {
 private:
-    std::array<std::array<Field *, BOARD_SIZE>, BOARD_SIZE> fields;
+    std::array<std::array<Field *, BOARD_SIZE>, BOARD_SIZE> fields{};
+    std::vector<Piece *> allPieces;
     Piece *blackKing;
     Piece *whiteKing;
 
 public:
     Board();
+
+    ~Board();
 
     void makeMove(Move move);
 
@@ -29,11 +33,18 @@ public:
 
     Field *getField(Position position) const;
 
-    void setBlackKing(Piece *blackKing);
+    Piece *getBlackKing() const;
 
-    void setWhiteKing(Piece *whiteKing);
+    Piece *getWhiteKing() const;
+
+    const std::vector<Piece *> &getAllPieces() const;
 
     static Board *emptyBoard();
+
+    /**
+     * Create new board with all pieces set in their initial positions
+     */
+    static Board *startingBoard();
 
     std::string toString() const;
 

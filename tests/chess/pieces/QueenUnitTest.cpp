@@ -24,18 +24,18 @@ namespace QueenUnitTest {
         auto moves = queen->getMoves();
 
         auto expected = {
-                Move(pos("b3"), pos("c2"), queen, false),
-                Move(pos("b3"), pos("d1"), queen, false),
-                Move(pos("b3"), pos("a3"), queen, false),
-                Move(pos("b3"), pos("a4"), queen, false),
-                Move(pos("b3"), pos("b4"), queen, false),
-                Move(pos("b3"), pos("b5"), queen, false),
-                Move(pos("b3"), pos("b6"), queen, false),
-                Move(pos("b3"), pos("b7"), queen, true),
-                Move(pos("b3"), pos("c4"), queen, false),
-                Move(pos("b3"), pos("d5"), queen, false),
-                Move(pos("b3"), pos("e6"), queen, false),
-                Move(pos("b3"), pos("f7"), queen, true),
+                Move(pos("b3"), pos("c2"), queen),
+                Move(pos("b3"), pos("d1"), queen),
+                Move(pos("b3"), pos("a3"), queen),
+                Move(pos("b3"), pos("a4"), queen),
+                Move(pos("b3"), pos("b4"), queen),
+                Move(pos("b3"), pos("b5"), queen),
+                Move(pos("b3"), pos("b6"), queen),
+                Move(pos("b3"), pos("b7"), queen, board->getField(pos("b7"))->getPiece()),
+                Move(pos("b3"), pos("c4"), queen),
+                Move(pos("b3"), pos("d5"), queen),
+                Move(pos("b3"), pos("e6"), queen),
+                Move(pos("b3"), pos("f7"), queen, board->getField(pos("f7"))->getPiece()),
         };
 
         ASSERT_TRUE(isPermutation(moves, expected));
@@ -47,23 +47,23 @@ namespace QueenUnitTest {
         auto moves = queen->getMoves();
 
         auto expected = {
-                Move(pos("a4"), pos("a3"), queen, false),
-                Move(pos("a4"), pos("b3"), queen, false),
-                Move(pos("a4"), pos("c2"), queen, false),
-                Move(pos("a4"), pos("d1"), queen, false),
-                Move(pos("a4"), pos("b4"), queen, false),
-                Move(pos("a4"), pos("c4"), queen, false),
-                Move(pos("a4"), pos("d4"), queen, false),
-                Move(pos("a4"), pos("e4"), queen, false),
-                Move(pos("a4"), pos("f4"), queen, false),
-                Move(pos("a4"), pos("g4"), queen, false),
-                Move(pos("a4"), pos("h4"), queen, false),
-                Move(pos("a4"), pos("b5"), queen, false),
-                Move(pos("a4"), pos("c6"), queen, false),
-                Move(pos("a4"), pos("d7"), queen, true),
-                Move(pos("a4"), pos("a5"), queen, false),
-                Move(pos("a4"), pos("a6"), queen, false),
-                Move(pos("a4"), pos("a7"), queen, true),
+                Move(pos("a4"), pos("a3"), queen),
+                Move(pos("a4"), pos("b3"), queen),
+                Move(pos("a4"), pos("c2"), queen),
+                Move(pos("a4"), pos("d1"), queen),
+                Move(pos("a4"), pos("b4"), queen),
+                Move(pos("a4"), pos("c4"), queen),
+                Move(pos("a4"), pos("d4"), queen),
+                Move(pos("a4"), pos("e4"), queen),
+                Move(pos("a4"), pos("f4"), queen),
+                Move(pos("a4"), pos("g4"), queen),
+                Move(pos("a4"), pos("h4"), queen),
+                Move(pos("a4"), pos("b5"), queen),
+                Move(pos("a4"), pos("c6"), queen),
+                Move(pos("a4"), pos("d7"), queen, board->getField(pos("d7"))->getPiece()),
+                Move(pos("a4"), pos("a5"), queen),
+                Move(pos("a4"), pos("a6"), queen),
+                Move(pos("a4"), pos("a7"), queen, board->getField(pos("a7"))->getPiece()),
         };
 
         ASSERT_TRUE(isPermutation(moves, expected));

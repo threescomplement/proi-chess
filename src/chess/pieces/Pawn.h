@@ -7,9 +7,6 @@
 
 class Pawn : public Piece {
 private:
-    Color color;
-    Field *parentField;
-    Player *player;
     int moveDirection;
 
     /**
@@ -35,27 +32,34 @@ private:
      */
     std::vector<Move> attackingMoves() const;
 
+    bool isEnPassantTarget;
+
 
 public:
-    Pawn(Color color, Field *field, Player *owner);
-
-    ~Pawn() override = default;
+    Pawn(Color color, Field *field);
 
     std::vector<Move> getMoves() const override;
 
     PieceType getType() const override;
 
-    Color getColor() const override;
-
-    Board *getBoard() const override;
-
-    Field *getField() const override;
-
-    Player *getPlayer() const override;
-
     char getCharacter() const override;
 
     std::string getUnicodeSymbol() const override;
+
+    std::vector<Move> enPassantMoves() const;
+    /**
+     * Returns vector of possible en passant moves or empty if there are none.
+     * Validates the board situation except checks and pins.
+     * */
+
+    void setIsEnPassantTarget(bool valToSet);
+    // TODO: delete this later, used for test purposes before implementing actual move mechanics
+    /**
+     * Used to set the isEnPassantTarget param to a given bool
+     * */;
+
+
+
 };
 
 

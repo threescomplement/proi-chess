@@ -7,18 +7,25 @@
 #include "pieces/Piece.h"
 
 class Position;
+
 class Piece;
 
 class Move {
 private:
     Position from;
     Position to;
-    Piece *piece;
-    bool isCapture;
+    Piece *movedPiece;
+    Piece *capturedPiece;
 
 public:
-    Move(Position from, Position to, Piece *piece, bool isCaputre) :
-            from(from), to(to), piece(piece), isCapture(isCaputre) {};
+    Move(Position from, Position to, Piece *moved, Piece *captured) :
+            from(from), to(to), movedPiece(moved), capturedPiece(captured) {};
+
+    Move(Position from, Position to, Piece *moved) :
+            from(from), to(to), movedPiece(moved), capturedPiece(nullptr) {};
+
+    Move(const Move &move): from(move.getFrom()), to(move.getTo()), movedPiece(move.getPiece()), capturedPiece(move.getCapturedPiece()){};
+
 
     const Position &getFrom() const;
 
@@ -26,13 +33,19 @@ public:
 
     Piece *getPiece() const;
 
-    bool getIsCapture() const;
+    Piece *getCapturedPiece() const;
 
-    bool operator==(const Move& rhs) const;
+    bool isCapture() const;
 
-    bool operator!=(const Move& rhs) const;
+    bool operator==(const Move &rhs) const;
+
+    bool operator!=(const Move &rhs) const;
 
     std::string toString() const;
+
+    std::string toStockfishNotation() const; // TODO: rename
+
+    bool isDoublePawnMove() const;
 };
 
 

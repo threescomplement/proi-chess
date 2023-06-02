@@ -5,10 +5,7 @@
 #include "Pawn.h"
 // TODO: Promotion mechanics, en passant
 
-Pawn::Pawn(Color color, Field *field, Player *owner) {
-    this->color = color;
-    this->parentField = field;
-    this->player = owner;
+Pawn::Pawn(Color color, Field *field) : Piece(color, field) {
     this->moveDirection = (color == Color::WHITE) ? 1 : -1;
 }
 
@@ -30,22 +27,6 @@ PieceType Pawn::getType() const {
     return PieceType::PAWN;
 }
 
-
-Color Pawn::getColor() const {
-    return color;
-}
-
-Board *Pawn::getBoard() const {
-    return parentField->getBoard();
-}
-
-Field *Pawn::getField() const {
-    return parentField;
-}
-
-Player *Pawn::getPlayer() const {
-    return player;
-}
 
 char Pawn::getCharacter() const {
     return (color == Color::BLACK) ? 'p' : 'P';
@@ -70,13 +51,13 @@ std::vector<Move> Pawn::nonAttackingMoves() const {
 
     // Single forward push
     if (!possibleForwardMove) { return moves; }
-    moves.emplace_back(parentField->getPosition(), singleMoveToPosition, (Piece *) this, false);
+    moves.emplace_back(parentField->getPosition(), singleMoveToPosition, (Piece *) this);
 
     // Double forward push
     if (canMakeDoubleMove()) {
         auto doubleMoveToPosition = parentField->getPosition().positionWithOffset(2 * moveDirection, 0);
         if (getBoard()->getField(doubleMoveToPosition)->isEmpty()) {
-            moves.emplace_back(parentField->getPosition(), doubleMoveToPosition, (Piece *) this, false);
+            moves.emplace_back(parentField->getPosition(), doubleMoveToPosition, (Piece *) this);
         }
     }
     return moves;
@@ -89,12 +70,21 @@ std::vector<Move> Pawn::attackingMoves() const {
     // attack with a positive column offset
     if (possibleAttackInGivenDirection(true)) {
         auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, 1);
-        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true);
+        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this,
+                           this->getBoard()->getField(toPosAfterAttack)->getPiece());
     }
 
     if (possibleAttackInGivenDirection(false)) {
         auto toPosAfterAttack = parentField->getPosition().positionWithOffset(moveDirection, -1);
-        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this, true);
+        moves.emplace_back(parentField->getPosition(), toPosAfterAttack, (Piece *) this,
+                           this->getBoard()->getField(toPosAfterAttack)->getPiece());
+    }
+
+    // check for en passant possibilities
+    if ((getPosition().getRow() == 5 && color == Color::WHITE) ||
+        (getPosition().getRow() == 4 && color == Color::BLACK)) {
+        auto EPMoves = enPassantMoves();
+        moves.insert(moves.end(), EPMoves.begin(), EPMoves.end());
     }
     return moves;
 }
@@ -108,10 +98,38 @@ bool Pawn::possibleAttackInGivenDirection(bool positiveColumnOffset) const {
     }
 
     auto attackedPosition = position.positionWithOffset(moveDirection, horizontalMoveDirection);
-    if (this->getBoard()->getField(attackedPosition)->isEmpty()) {
+    auto attackedField = this->getBoard()->getField(attackedPosition);
+    if (attackedField->isEmpty()) {
         return false;  // nothing to attack
     }
 
+    if (attackedField->getPiece()->getColor() == this->getColor()) {
+        return false;
+    }
+
     return true;
+}
+
+std::vector<Move> Pawn::enPassantMoves() const {
+    std::vector<Move> moves;
+    std::vector<std::pair<int, int>> enPassantOffsets = {{0, 1},
+                                                         {0, -1}};
+    auto enPassantPositions = getAllowedPositionsFromOffsets(enPassantOffsets);
+
+    for (auto ePPos: enPassantPositions) {
+        // check whether there is a pawn on the field
+        auto pieceAtField = dynamic_cast<Pawn *>(getBoard()->getField(ePPos)->getPiece());
+        if (!pieceAtField) { continue; }
+        if (pieceAtField->getColor() != color && pieceAtField->isEnPassantTarget) {
+            auto enPassantToPosition = Position(ePPos.getRow() + moveDirection, ePPos.getCol());
+            moves.push_back(Move(getPosition(), enPassantToPosition, (Piece *) this, pieceAtField));
+        }
+    }
+    return moves;
+
+}
+
+void Pawn::setIsEnPassantTarget(bool valToSet) {
+    isEnPassantTarget = valToSet;
 }
 

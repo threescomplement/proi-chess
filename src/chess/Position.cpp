@@ -66,3 +66,7 @@ bool Position::offsetWithinBounds(int rowOffset, int colOffset) const {
     return Position::withinBounds(this->getRow() + rowOffset, this->getCol() + colOffset);
 }
 
+Position *Position::copy(Position position) {
+    return new Position(position.getRow(), position.getCol());
+}
+

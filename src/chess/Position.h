@@ -38,6 +38,8 @@ public:
      */
     static Position fromString(std::string positionString);
 
+    static Position *copy(Position position);
+
     static bool withinBounds(int row, int col);
 };
 
