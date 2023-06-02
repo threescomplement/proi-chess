@@ -91,7 +91,8 @@ void GameField::setMark(bool new_mark) {
 
     marked = new_mark;
     if (marked) {
-        overlay->setPixmap(QPixmap(":/resources/orange_frame_overlay.png").scaled(50,50,Qt::AspectRatioMode::KeepAspectRatio));
+        overlay->setPixmap(
+                QPixmap(":/resources/orange_frame_overlay.png").scaled(50, 50, Qt::AspectRatioMode::KeepAspectRatio));
     } else {
         overlay->setPixmap(QPixmap());
     }
