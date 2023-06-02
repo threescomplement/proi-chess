@@ -31,9 +31,11 @@ private:
     bool marked;
     int x;
     int y;
+    QLabel * overlay;
 
 public:
     GameField(const QString &text, int x, int y, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    ~GameField();
 
     void setPiece(PieceType type);
 

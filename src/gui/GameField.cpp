@@ -25,7 +25,20 @@ GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::Win
     this->setFont(font);
     this->x = x;
     this->y = y;
+    overlay = new QLabel(this);
+    //overlay->setGeometry(this->geometry());
+    overlay->setPixmap(QPixmap(":/resources/orange_frame_overlay.png").scaled(50, 50, Qt::AspectRatioMode::KeepAspectRatio));
+    overlay->show();
+    overlay->raise();
 }
+
+GameField::~GameField() noexcept {
+    // destructor calls will propagate upwards the inheritance tree, so everything will be cleaned up
+    delete overlay;
+
+}
+
+
 
 /**
  *

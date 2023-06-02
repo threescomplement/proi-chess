@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>resources/Empty_Board.jpg</file>
         <file>resources/symmetrical_empty_board.jpg</file>
+        <file>resources/orange_frame_overlay.png</file>
     </qresource>
 </RCC>
