@@ -31,12 +31,13 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 
     for (int row = 1; row <= 8; row++) {
         for (int column = 1; column <= 8; column++) {
-            auto *field = new GameField(QString("Nie kliknięte"), column, 9-row, ui->GameBoard);
-            QObject::connect(this, &MainWindow::updateField, field, &GameField::updateCalled);
+            auto *field = new GameField(QString("Nie kliknięte"), column, 9 - row, ui->GameBoard);
+            QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
             QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
             QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
+            QObject::connect(this, &MainWindow::updateFieldMark, field, &GameField::markUpdateCalled);
             field->setAlignment(Qt::AlignLeft);
-            field->setGeometry(50 * column-27, 50 * row-21, 50, 50);
+            field->setGeometry(50 * column - 27, 50 * row - 21, 50, 50);
             field->show();
         }
     }
@@ -49,10 +50,10 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::highlightNeighbours(int origin_x, int origin_y) {
-    emit updateField(origin_x - 1, origin_y, PieceType::PAWN);
-    emit updateField(origin_x, origin_y - 1, PieceType::PAWN);
-    emit updateField(origin_x + 1, origin_y, PieceType::PAWN);
-    emit updateField(origin_x, origin_y + 1, PieceType::PAWN);
+    emit updateFieldPiece(origin_x - 1, origin_y, PieceType::PAWN);
+    emit updateFieldPiece(origin_x, origin_y - 1, PieceType::PAWN);
+    emit updateFieldPiece(origin_x + 1, origin_y, PieceType::PAWN);
+    emit updateFieldPiece(origin_x, origin_y + 1, PieceType::PAWN);
 }
 
 
@@ -71,7 +72,7 @@ void MainWindow::updateBoardDisplay() {
         for (int col = 1; col <= BOARD_SIZE; col++) {
             auto piece = this->game->getPiece(Position(row, col));
             auto type = (piece != nullptr) ? piece->getType() : PieceType::NONE;
-            emit updateField(col, row, type);
+            emit updateFieldPiece(col, row, type);
         }
     }
 }
@@ -123,7 +124,7 @@ Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *fiel
             break;
         }
     }
-    if (foundMove != nullptr){
+    if (foundMove != nullptr) {
         return new Move(*foundMove);
     } else {
         return nullptr;
@@ -134,9 +135,9 @@ Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *fiel
 void MainWindow::makeMove(Move const move) {
     game->makeMove(move);
     updateBoardDisplay();
-    if (game->isMate()){
+    if (game->isMate()) {
         // what happens when mate?
-    } else if (botGame){
+    } else if (botGame) {
         //make bot move
     };
     updateBoardDisplay();
@@ -152,20 +153,31 @@ void MainWindow::changePickedField(GameField *const new_picked) {
 
     if (pickedField != nullptr) {
         // mark the previously picked field as not marked anymore
-        emit updateField(pickedField->getX(), pickedField->getY(), pickedField->getPiece(), false);
+        emit updateFieldPiece(pickedField->getX(), pickedField->getY(), pickedField->getPiece());
+        emit updateFieldMark(pickedField->getX(), pickedField->getY(),false);
         // TODO: create a function updating all marks/highlights here
+
     }
     if (new_picked != nullptr) { // if the new picked is a field
         validMoves = game->getMovesFrom(Position(new_picked->getY(), new_picked->getX()));
         // update the mark of the newly picked field
-        emit updateField(new_picked->getX(), new_picked->getY(), new_picked->getPiece(), true);
+        emit updateFieldPiece(new_picked->getX(), new_picked->getY(), new_picked->getPiece());
+        emit updateFieldMark(new_picked->getX(), new_picked->getY(), true);
         // TODO: create a function resetting all marks/highlights here
     } else {
         validMoves.clear();
     }
-
+    emit callReset();
 
     pickedField = new_picked;
+    if (pickedField != nullptr){
+        emit updateFieldMark(pickedField->getX(), pickedField->getY(), true);
+    }
+    for (auto move: validMoves){
+        int dest_x = move.getTo().getCol();
+        int dest_y = move.getTo().getRow();
+        emit updateFieldMark(dest_x, dest_y, true);
+    }
 }
 
 void MainWindow::newGame(bool botGame, std::string whiteName, std::string blackName, Color botColor) {
@@ -178,12 +190,9 @@ void MainWindow::newGame(bool botGame, std::string whiteName, std::string blackN
     updateBoardDisplay();
 
 
-
-
 }
 
-void MainWindow::on_actionstart_new_pvp_game_triggered()
-{
+void MainWindow::on_actionstart_new_pvp_game_triggered() {
     newGame(false);
 }
 

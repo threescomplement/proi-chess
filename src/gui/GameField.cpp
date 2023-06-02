@@ -27,7 +27,11 @@ GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::Win
     this->y = y;
     overlay = new QLabel(this);
     //overlay->setGeometry(this->geometry());
-    overlay->setPixmap(QPixmap(":/resources/orange_frame_overlay.png").scaled(50, 50, Qt::AspectRatioMode::KeepAspectRatio));
+    int width = this->width();
+    int height = this->height();
+    overlay->setPixmap(
+            QPixmap(":/resources/orange_frame_overlay.png").scaled(50, 50,
+                                                                   Qt::AspectRatioMode::KeepAspectRatio));
     overlay->show();
     overlay->raise();
 }
@@ -39,7 +43,6 @@ GameField::~GameField() noexcept {
 }
 
 
-
 /**
  *
  * @param called_x - identifies which field was called to update
@@ -47,13 +50,12 @@ GameField::~GameField() noexcept {
  * @param type - SUBJECT TO CHANGE: the type of piece it's supposed to now hold
  * @param mark - the new state of being marked, false by default
  */
-void GameField::updateCalled(int called_x, int called_y, PieceType type, bool mark) {
+void GameField::updatePieceCalled(int called_x, int called_y, PieceType type) {
     if (called_x == x && called_y == y) {
-        clicked = !clicked;
-        marked = mark;
         setPiece(type);
     }
 }
+
 
 void GameField::mousePressEvent(QMouseEvent *event) {
     ClickableLabel::mousePressEvent(event);
@@ -82,6 +84,22 @@ const PieceType &GameField::getPiece() const {
 void GameField::reset() {
     setPiece(PieceType::NONE);
     clicked = false;
-    marked = false;
-    // update the label containing the mark overlay
+    setMark(false);
 }
+
+void GameField::setMark(bool new_mark) {
+
+    marked = new_mark;
+    if (marked) {
+        overlay->setPixmap(QPixmap(":/resources/orange_frame_overlay.png").scaled(50,50,Qt::AspectRatioMode::KeepAspectRatio));
+    } else {
+        overlay->setPixmap(QPixmap());
+    }
+}
+
+void GameField::markUpdateCalled(int called_x, int called_y, bool new_mark) {
+    if (this->x == called_x and called_y == this->y) {
+        setMark(new_mark);
+    }
+}
+

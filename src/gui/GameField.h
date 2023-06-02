@@ -12,7 +12,7 @@
  * inherits from ClickableLabel
  *
  * communicates with MainWindow using
- * the updateCalled slot  (comes in)
+ * the updatePieceCalled slot  (comes in)
  * and fieldCLicked signal (goes out)
  *
  *  @param x - column of the board counted from left to right, starting at 1
@@ -31,10 +31,11 @@ private:
     bool marked;
     int x;
     int y;
-    QLabel * overlay;
+    QLabel *overlay;
 
 public:
     GameField(const QString &text, int x, int y, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+
     ~GameField();
 
     void setPiece(PieceType type);
@@ -47,10 +48,15 @@ public:
 
     const PieceType &getPiece() const;
 
+    void setMark(bool new_mark);
+
 public slots:
 
     void reset();
-    void updateCalled(int called_x, int called_y, PieceType type = PieceType::NONE, bool mark = false);
+
+    void updatePieceCalled(int called_x, int called_y, PieceType type = PieceType::NONE);
+
+    void markUpdateCalled(int called_x, int called_y, bool new_mark);
 
 signals:
 
