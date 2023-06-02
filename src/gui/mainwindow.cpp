@@ -15,6 +15,7 @@
 #include <QDir>
 #include "ChessExceptions.h"
 #include <QMessageBox>
+#include "Player.h"
 
 
 /**
@@ -91,25 +92,38 @@ void MainWindow::updateBoardDisplay() {
  * if there is no field selected, it will select that field
  * if a field is selected:
  *          - if the clicked field is one where a piece from the selected field can move, make that move
- *          - if not, select the newly clicked field and un-select the old one
+ *          - if not, check if that field can be selected (must be a pawn of current player)
  *
  * @param field
  */
 void MainWindow::handleFieldClick(GameField *field) {
-    game->toFEN() == "rnbqkbnr/ppp1p1pp/8/3p1p2/3P4/3Q4/PPP1PPPP/RNB1KBNR w KQkq - 0 1";
-    if (field != pickedField) {
 
+    if (field != pickedField) {
+        bool validChoice = false;
         // check if there is a move to the chosen position
         Move *correspondingMove = findMove(validMoves, field);
         if (correspondingMove != nullptr) {
             makeMove(correspondingMove);
             changePickedField(nullptr);
-        } else {    // if not, pick the clicked field as the starting one
-            changePickedField(field);
+            validChoice = true;
+            // check if the field exists or if its just being reset
+        } else if (field != nullptr) {
+            // get piece from that field
+            Piece *piece = game->getPiece(Position(field->getY(), field->getX()));
+            if (piece != nullptr &&
+                game->getCurrentPlayer() != nullptr) { // check if the piece and current player exist
+                if (piece->getColor() == game->getCurrentPlayer()->getColor()) { // check if the piece belongs to player
+                    changePickedField(field);
+                    validChoice = true;
+                }
+            }
+
         }
-    } else if (pickedField == nullptr) {
-        changePickedField(field);
+        if (!validChoice){
+            changePickedField(nullptr);
+        }
     }
+
     updateBoardDisplay();
 }
 
@@ -204,20 +218,20 @@ void MainWindow::on_actionRegular_game_triggered() {
 void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string whiteName, std::string blackName,
                             Color bot_color) {
     //newGame(botGame, whiteName, blackName, bot_color);
-    Game* new_game = nullptr;
+    Game *new_game = nullptr;
     try {
         new_game = new Game(Game::fromFEN(fenNotation));
         game = new_game;
         // TODO: handle bot
         updateBoardDisplay();
 
-    } catch (FenException){
+    } catch (FenException) {
         // incorrect fen notation
         delete new_game;
         QMessageBox::warning(
                 this,
                 tr("Invalid FEN notation"),
-                tr("Failed to initialise game from given FEN notation. \n") );
+                tr("Failed to initialise game from given FEN notation. \n"));
 
     }
     delete new_game;
@@ -234,15 +248,14 @@ void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string w
 }
 
 
-void MainWindow::on_actionGame_from_FEN_triggered()
-{
+void MainWindow::on_actionGame_from_FEN_triggered() {
     bool ok;
 
     QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
                                          tr("User name:"), QLineEdit::Normal,
                                          QDir::home().dirName(), &ok);
 
-    if (ok){
+    if (ok) {
         newFenGame(false, text.toStdString());
     }
 
