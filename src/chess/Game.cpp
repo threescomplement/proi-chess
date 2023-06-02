@@ -345,10 +345,10 @@ bool Game::possibleQueensideCastlingThisRound() const {
         return false;
     }
     int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
-    auto kingSideRook = getPiece(Position(currentPlayerBackRank, 1));
+    auto queenSideRook = getPiece(Position(currentPlayerBackRank, 1));
     auto king = getPiece(Position(currentPlayerBackRank, 5));
 
-    bool canCastle = (noPiecesBetweenKingAndRook(king, kingSideRook));
+    bool canCastle = (noPiecesBetweenKingAndRook(king, queenSideRook));
     return canCastle;
 }
 
