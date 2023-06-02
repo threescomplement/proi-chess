@@ -217,6 +217,7 @@ void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string w
     } catch (FenException) {
         // incorrect fen notation
         delete new_game;
+        // display warning pop-up
         QMessageBox::warning(
                 this,
                 tr("Invalid FEN notation"),
@@ -224,16 +225,6 @@ void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string w
 
     }
     delete new_game;
-//     catch (std::invalid_argument){
-//        // incorrect fen notation
-//        QMessageBox::warning(
-//                this,
-//                tr("Invalid FEN notation"),
-//                tr("Failed to initialise game from given FEN notation. \n") );
-//
-//
-//    }
-
 }
 
 
