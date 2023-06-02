@@ -71,7 +71,14 @@
     <property name="title">
      <string>nynynyny</string>
     </property>
-    <addaction name="actionstart_new_pvp_game"/>
+    <widget class="QMenu" name="menunew_pvp_game">
+     <property name="title">
+      <string>new pvp game</string>
+     </property>
+     <addaction name="actionRegular_game"/>
+     <addaction name="actionGame_from_FEN"/>
+    </widget>
+    <addaction name="menunew_pvp_game"/>
    </widget>
    <addaction name="menupogg"/>
   </widget>
@@ -81,9 +88,14 @@
     <string>nynyny</string>
    </property>
   </action>
-  <action name="actionstart_new_pvp_game">
+  <action name="actionRegular_game">
    <property name="text">
-    <string>start new pvp game</string>
+    <string>Regular game</string>
+   </property>
+  </action>
+  <action name="actionGame_from_FEN">
+   <property name="text">
+    <string>Game from FEN</string>
    </property>
   </action>
  </widget>

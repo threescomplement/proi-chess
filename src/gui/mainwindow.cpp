@@ -10,6 +10,11 @@
 #include "pieces/Piece.h"
 #include "pieces/PieceType.h"
 #include <vector>
+#include <QDialog>
+#include <QInputDialog>
+#include <QDir>
+#include "ChessExceptions.h"
+#include <QMessageBox>
 
 
 /**
@@ -157,7 +162,6 @@ void MainWindow::changePickedField(GameField *const new_picked) {
         // mark the previously picked field as not marked anymore
         emit updateFieldPiece(pickedField->getX(), pickedField->getY(), pickedField->getPiece());
         emit updateFieldMark(pickedField->getX(), pickedField->getY(), false);
-        // TODO: create a function updating all marks/highlights here
 
     }
     if (new_picked != nullptr) { // if the new picked is a field
@@ -165,7 +169,6 @@ void MainWindow::changePickedField(GameField *const new_picked) {
         // update the mark of the newly picked field
         emit updateFieldPiece(new_picked->getX(), new_picked->getY(), new_picked->getPiece());
         emit updateFieldMark(new_picked->getX(), new_picked->getY(), true);
-        // TODO: create a function resetting all marks/highlights here
     } else {
         validMoves.clear();
     }
@@ -194,7 +197,55 @@ void MainWindow::newGame(bool botGame, std::string whiteName, std::string blackN
 
 }
 
-void MainWindow::on_actionstart_new_pvp_game_triggered() {
+void MainWindow::on_actionRegular_game_triggered() {
     newGame(false);
+}
+
+void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string whiteName, std::string blackName,
+                            Color bot_color) {
+    //newGame(botGame, whiteName, blackName, bot_color);
+    Game* new_game = nullptr;
+    try {
+        new_game = new Game(Game::fromFEN(fenNotation));
+        game = new_game;
+        // TODO: handle bot
+        updateBoardDisplay();
+
+    } catch (FenException){
+        // incorrect fen notation
+        delete new_game;
+        QMessageBox::warning(
+                this,
+                tr("Invalid FEN notation"),
+                tr("Failed to initialise game from given FEN notation. \n") );
+
+    }
+    delete new_game;
+//     catch (std::invalid_argument){
+//        // incorrect fen notation
+//        QMessageBox::warning(
+//                this,
+//                tr("Invalid FEN notation"),
+//                tr("Failed to initialise game from given FEN notation. \n") );
+//
+//
+//    }
+
+}
+
+
+void MainWindow::on_actionGame_from_FEN_triggered()
+{
+    bool ok;
+
+    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                         tr("User name:"), QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+
+    if (ok){
+        newFenGame(false, text.toStdString());
+    }
+
+
 }
 

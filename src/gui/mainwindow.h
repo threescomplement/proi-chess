@@ -57,6 +57,8 @@ public:
 
     void newGame(bool botGame, std::string whiteName = "Player 1", std::string blackName = "Player 2",
                  Color bot_color = Color::BLACK);
+    void newFenGame(bool botGame, std::string fenNotation ,std::string whiteName = "Player 1", std::string blackName = "Player 2",
+                    Color bot_color = Color::BLACK);
 
     //keep the positions or pointers to labels where a move starts and finishes
     // when a user clicks on an unmarked label, all other labels must be unmarked
@@ -99,7 +101,9 @@ private slots:
 
     void on_newGameButton_clicked();
 
-    void on_actionstart_new_pvp_game_triggered();
+    void on_actionRegular_game_triggered();
+
+    void on_actionGame_from_FEN_triggered();
 
 private:
     Ui::MainWindow *ui;
