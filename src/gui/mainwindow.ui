@@ -71,6 +71,7 @@
     <property name="title">
      <string>nynynyny</string>
     </property>
+    <addaction name="actionstart_new_pvp_game"/>
    </widget>
    <addaction name="menupogg"/>
   </widget>
@@ -78,6 +79,11 @@
   <action name="actionnynyny">
    <property name="text">
     <string>nynyny</string>
+   </property>
+  </action>
+  <action name="actionstart_new_pvp_game">
+   <property name="text">
+    <string>start new pvp game</string>
    </property>
   </action>
  </widget>

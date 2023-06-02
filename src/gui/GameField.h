@@ -35,7 +35,7 @@ private:
 public:
     GameField(const QString &text, int x, int y, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
 
-    void setPiece(std::string new_piece);
+    void setPiece(PieceType type);
 
     void mousePressEvent(QMouseEvent *event) override;
 
@@ -47,6 +47,7 @@ public:
 
 public slots:
 
+    void reset();
     void updateCalled(int called_x, int called_y, PieceType type = PieceType::NONE, bool mark = false);
 
 signals:

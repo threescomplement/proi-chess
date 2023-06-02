@@ -38,7 +38,7 @@ void GameField::updateCalled(int called_x, int called_y, PieceType type, bool ma
     if (called_x == x && called_y == y) {
         clicked = !clicked;
         marked = mark;
-        setPiece(pieceChars[type]);
+        setPiece(type);
     }
 }
 
@@ -49,10 +49,9 @@ void GameField::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void GameField::setPiece(std::string new_piece) {
-    QString new_text = QString::fromStdString(new_piece);
+void GameField::setPiece(PieceType type) {
+    QString new_text = QString::fromStdString(pieceChars[type]);
     this->setText(new_text);
-
 }
 
 int GameField::getX() const {
@@ -65,4 +64,11 @@ int GameField::getY() const {
 
 const PieceType &GameField::getPiece() const {
     return piece;
+}
+
+void GameField::reset() {
+    setPiece(PieceType::NONE);
+    clicked = false;
+    marked = false;
+    // update the label containing the mark overlay
 }

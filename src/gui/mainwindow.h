@@ -8,6 +8,7 @@
 #include <vector>
 #include "Move.h"
 #include "GameField.h"
+#include "Color.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -19,7 +20,7 @@ QT_END_NAMESPACE
  * @class MainWindow
  * Qt window which handles the creation of almost the entire program
  * Connects to @class GameField fields on the board via
- * update_field() (outgoing)
+ * updateField() (outgoing)
  * handleFieldClick() (incoming)
  *
  * handles keeping the state of the window and the internal game the same
@@ -37,7 +38,7 @@ private:
     Game *game;
     GameField *pickedField; // currently selected field
     std::vector<Move> validMoves; // moves possible from that field
-
+    bool botGame;
 
 
     void updateBoardDisplay();
@@ -46,6 +47,7 @@ private:
 
     void changePickedField(GameField *const new_picked);
 
+
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
 
@@ -53,6 +55,7 @@ public:
 
     void makeMove(Move const move);
 
+    void newGame(bool botGame, std::string whiteName = "Player 1", std::string blackName = "Player 2", Color bot_color = Color::BLACK);
 
     //keep the positions or pointers to labels where a move starts and finishes
     // when a user clicks on an unmarked label, all other labels must be unmarked
@@ -80,14 +83,19 @@ public slots:
 
     void handleFieldClick(GameField *field);
 
+
 signals:
 
-    void update_field(int x, int y, PieceType type = PieceType::NONE, bool mark = false);
+    void updateField(int x, int y, PieceType type = PieceType::NONE, bool mark = false);
+
+    void callReset();
 
 private slots:
 
 
     void on_newGameButton_clicked();
+
+    void on_actionstart_new_pvp_game_triggered();
 
 private:
     Ui::MainWindow *ui;
