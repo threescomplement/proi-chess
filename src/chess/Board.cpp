@@ -203,7 +203,7 @@ Board *Board::fromFEN(const std::string &FENDescription) {
                     break;
                 }
                 default:
-                    throw std::invalid_argument("Invalid FEN literal in string.");
+                    throw FenException("Invalid FEN representation of Game");
             }
             board->allPieces.push_back(piece);
             board->fields[row][col]->setPiece(piece);
