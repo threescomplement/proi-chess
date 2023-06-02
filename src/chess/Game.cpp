@@ -60,7 +60,6 @@ bool Game::isCheck() const {
 }
 
 void Game::makeMove(Move move) {
-    this->board->makeMove(move);
 
     if (this->currentPlayer->getColor() == Color::BLACK) {
         this->fullmoveNumber++;
@@ -74,8 +73,9 @@ void Game::makeMove(Move move) {
     if (this->enPassantTargetPosition != nullptr) {
         refreshEnPassant();
     };
-
     this->refreshCastlingPossibilites(move);
+
+    this->board->makeMove(move);
 
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
@@ -284,7 +284,7 @@ void Game::refreshEnPassant() {
 }
 
 void Game::refreshCastlingPossibilites(const Move &move) {
-    if (move.getPiece()->getType() != PieceType::KING) {
+    if (move.getPiece()->getType() == PieceType::KING) {
         if (move.getPiece()->getColor() == Color::WHITE) {
             canWhiteKingsideCastle = false;
             canWhiteQueensideCastle = false;
@@ -293,7 +293,7 @@ void Game::refreshCastlingPossibilites(const Move &move) {
             canBlackQueensideCastle = false;
         }
 
-    } else if (move.getPiece()->getType() != PieceType::ROOK) {
+    } else if (move.getPiece()->getType() == PieceType::ROOK) {
         if (move.getPiece()->getColor() == Color::WHITE) {
             if (move.getFrom().getCol() == 1) {
                 canWhiteQueensideCastle = false;
@@ -340,8 +340,8 @@ bool Game::possibleKingsideCastlingThisRound() const {
 }
 
 bool Game::possibleQueensideCastlingThisRound() const {
-    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteKingsideCastle ||
-        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackKingsideCastle) {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteQueensideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackQueensideCastle) {
         return false;
     }
     int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
