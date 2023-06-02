@@ -26,7 +26,7 @@
 MainWindow::MainWindow(Game *game, QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr) {
     ui->setupUi(this);
-    QPixmap board_map(":/resources/Empty_Board.jpg");
+    QPixmap board_map(":/resources/symmetrical_empty_board.jpg");
     ui->GameBoard->setPixmap(board_map);
 
     for (int row = 1; row <= 8; row++) {
@@ -36,7 +36,7 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
             QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
             QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
             field->setAlignment(Qt::AlignLeft);
-            field->setGeometry(50 * column-30, 50 * row-20, 50, 50);
+            field->setGeometry(50 * column-27, 50 * row-21, 50, 50);
             field->show();
         }
     }
