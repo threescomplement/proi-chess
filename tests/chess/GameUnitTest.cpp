@@ -77,6 +77,23 @@ namespace GameUnitTest {
         //ASSERT_EQ(pos("b4"), onlyMove.getTo());
     }
 
+    TEST(Game, EnPassantDeleteCaptured) {
+        auto game = Game::fromFEN("rnbqkbnr/ppppp1pp/5p2/1P6/8/8/P1PPPPPP/RNBQKBNR b KQkq - 0 2");
+        Move pawnMove = Move(pos("a7"), pos("a5"), game.getPiece(pos("a7")));
+        game.makeMove(pawnMove);
+
+
+        Move enPassantTake = Move(pos("b5"), pos("a6"), game.getPiece(pos("b5")), game.getPiece(pos("a5")) );
+
+
+        std::vector<Move> legalMoves = game.getMovesFrom(pos("b5"));
+        ASSERT_TRUE(std::find(legalMoves.begin(), legalMoves.end(), enPassantTake) != legalMoves.end()); // is that move available
+        game.makeMove(enPassantTake);
+        ASSERT_EQ(game.toFEN(), "rnbqkbnr/1pppp1pp/P4p2/8/8/8/P1PPPPPP/RNBQKBNR b KQkq - 0 3");
+
+        //ASSERT_EQ(pos("b4"), onlyMove.getTo());
+    }
+
 
     TEST(Game, fromFENStartingGame) {
         auto game = Game::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
