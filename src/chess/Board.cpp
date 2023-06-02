@@ -216,25 +216,26 @@ Board *Board::fromFEN(const std::string &FENDescription) {
 void Board::makeMove(Move move) {
     auto targetField = this->getField(move.getTo());
     auto sourceField = this->getField(move.getFrom());
-    auto targetPiece = targetField->getPiece();
+    auto pieceOnTargetField = targetField->getPiece();
     auto sourcePiece = sourceField->getPiece();
+    auto capturedPiece = move.getCapturedPiece();
 
     if (sourceField->isEmpty()) {
         throw IllegalMoveException("Cannot move from empty field");
     }
 
-    if (!targetField->isEmpty() && targetPiece->getColor() == sourcePiece->getColor()) {
+    if (!targetField->isEmpty() && pieceOnTargetField->getColor() == sourcePiece->getColor()) {
         throw IllegalMoveException("Player cannot capture his own piece");
     }
 
+    if (capturedPiece != nullptr) {
+        capturedPiece->getField()->setPiece(nullptr);
+        capturedPiece->takeOffField();
+    }
 
     targetField->setPiece(sourcePiece);
     sourceField->setPiece(nullptr);
-
     sourcePiece->setField(targetField);
-    if (targetPiece != nullptr) {
-        targetPiece->setField(nullptr);
-    }
 }
 
 const std::vector<Piece *> &Board::getAllPieces() const {
