@@ -26,14 +26,8 @@ GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::Win
     this->x = x;
     this->y = y;
     overlay = new QLabel(this);
-    //overlay->setGeometry(this->geometry());
-    int width = this->width();
-    int height = this->height();
-    overlay->setPixmap(
-            QPixmap(":/resources/orange_frame_overlay.png").scaled(50, 50,
-                                                                   Qt::AspectRatioMode::KeepAspectRatio));
-
-    //overlay->setPixmap(QPixmap());
+    // Can't figure out how to get dimensions of GameField, all methods return weird 30X100 dimensions
+    overlay->setGeometry(0, 0, 50, 50);
     overlay->show();
     overlay->raise();
     setMark(false);
