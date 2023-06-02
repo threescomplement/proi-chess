@@ -210,18 +210,31 @@ namespace GameUnitTest {
         auto blackQueensideRook = game.getPiece(pos("a8"));
         auto whiteLightBishop = game.getPiece(pos("d5"));
         auto blackDarkBishop = game.getPiece(pos("d4"));
+        auto blackLightBishop = game.getPiece(pos("e4"));
         auto whiteKingsideCastle = Move(pos("e1"), pos("g1"), whiteKing, nullptr);
         auto blackKingsideCastle = Move(pos("e8"), pos("g8"), blackKing, nullptr);
         auto whiteQueensideCastle = Move(pos("e1"), pos("c1"), whiteKing, nullptr);
         auto blackQueensideCastle = Move(pos("e8"), pos("c8"), blackKing, nullptr);
 
-        game.makeMove(Move(pos("d5"), pos("a8"), whiteLightBishop, blackQueensideRook));
+        auto whiteKingMoves = game.getMovesFrom(pos("e1"));
+        ASSERT_TRUE(in(whiteKingMoves, whiteQueensideCastle));
+        ASSERT_TRUE(in(whiteKingMoves, whiteKingsideCastle));
+
+        game.makeMove(Move(pos("d5"), pos("c6"), whiteLightBishop, nullptr));
         auto blackKingMoves = game.getMovesFrom(pos("e8"));
+        ASSERT_TRUE(in(blackKingMoves, blackKingsideCastle));
+        ASSERT_TRUE(in(blackKingMoves, blackQueensideCastle));
+
+        game.makeMove(Move(pos("e4"), pos("f3"), blackLightBishop, nullptr));
+
+
+        game.makeMove(Move(pos("c6"), pos("a8"), whiteLightBishop, blackQueensideRook));
+        blackKingMoves = game.getMovesFrom(pos("e8"));
         ASSERT_TRUE(in(blackKingMoves, blackKingsideCastle));
         ASSERT_FALSE(in(blackKingMoves, blackQueensideCastle));
 
-        game.makeMove(Move(pos("e4"), pos("h1"), blackDarkBishop, whiteKingsideRook));
-        auto whiteKingMoves = game.getMovesFrom(pos("e1"));
+        game.makeMove(Move(pos("f3"), pos("h1"), blackDarkBishop, whiteKingsideRook));
+        whiteKingMoves = game.getMovesFrom(pos("e1"));
         ASSERT_TRUE(in(whiteKingMoves, whiteQueensideCastle));
         ASSERT_FALSE(in(whiteKingMoves, whiteKingsideCastle));
     }
