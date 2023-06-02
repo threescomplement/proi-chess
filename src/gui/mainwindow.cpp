@@ -25,6 +25,8 @@
  */
 MainWindow::MainWindow(Game *game, QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr) {
+
+
     ui->setupUi(this);
     QPixmap board_map(":/resources/symmetrical_empty_board.jpg");
     ui->GameBoard->setPixmap(board_map);
@@ -89,13 +91,13 @@ void MainWindow::updateBoardDisplay() {
  * @param field
  */
 void MainWindow::handleFieldClick(GameField *field) {
-
+    game->toFEN() == "rnbqkbnr/ppp1p1pp/8/3p1p2/3P4/3Q4/PPP1PPPP/RNB1KBNR w KQkq - 0 1";
     if (field != pickedField) {
 
         // check if there is a move to the chosen position
         Move *correspondingMove = findMove(validMoves, field);
         if (correspondingMove != nullptr) {
-            makeMove(*correspondingMove);
+            makeMove(correspondingMove);
             changePickedField(nullptr);
         } else {    // if not, pick the clicked field as the starting one
             changePickedField(field);
@@ -132,8 +134,8 @@ Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *fiel
 
 }
 
-void MainWindow::makeMove(Move const move) {
-    game->makeMove(move);
+void MainWindow::makeMove(Move const *move) {
+    game->makeMove(*move);
     updateBoardDisplay();
     if (game->isMate()) {
         // what happens when mate?
@@ -154,7 +156,7 @@ void MainWindow::changePickedField(GameField *const new_picked) {
     if (pickedField != nullptr) {
         // mark the previously picked field as not marked anymore
         emit updateFieldPiece(pickedField->getX(), pickedField->getY(), pickedField->getPiece());
-        emit updateFieldMark(pickedField->getX(), pickedField->getY(),false);
+        emit updateFieldMark(pickedField->getX(), pickedField->getY(), false);
         // TODO: create a function updating all marks/highlights here
 
     }
@@ -170,10 +172,10 @@ void MainWindow::changePickedField(GameField *const new_picked) {
     emit callReset();
 
     pickedField = new_picked;
-    if (pickedField != nullptr){
+    if (pickedField != nullptr) {
         emit updateFieldMark(pickedField->getX(), pickedField->getY(), true);
     }
-    for (auto move: validMoves){
+    for (auto move: validMoves) {
         int dest_x = move.getTo().getCol();
         int dest_y = move.getTo().getRow();
         emit updateFieldMark(dest_x, dest_y, true);

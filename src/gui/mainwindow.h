@@ -53,7 +53,7 @@ public:
 
     ~MainWindow();
 
-    void makeMove(Move const move);
+    void makeMove(Move const *move);
 
     void newGame(bool botGame, std::string whiteName = "Player 1", std::string blackName = "Player 2",
                  Color bot_color = Color::BLACK);
