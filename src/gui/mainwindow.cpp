@@ -17,6 +17,8 @@
 #include <QMessageBox>
 #include "Player.h"
 
+#define BOARD_HEIGHT 8
+#define BOARD_WIDTH 8
 
 /**
  * displays the image of a board,
@@ -37,8 +39,8 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
     QPixmap board_map(":/resources/symmetrical_empty_board.jpg");
     ui->GameBoard->setPixmap(board_map);
 
-    for (int row = 1; row <= 8; row++) {
-        for (int column = 1; column <= 8; column++) {
+    for (int row = 1; row <= BOARD_HEIGHT; row++) {
+        for (int column = 1; column <= BOARD_WIDTH; column++) {
             auto *field = new GameField(QString("Nie kliknięte"), column, 9 - row, ui->GameBoard);
             QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
             QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
