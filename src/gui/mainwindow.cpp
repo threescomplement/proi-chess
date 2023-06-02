@@ -28,7 +28,7 @@
  *
  * @param game - the game that will be played and displayed in the window
  * @param parent
- */
+ **/
 MainWindow::MainWindow(Game *game, QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr) {
 
@@ -74,7 +74,7 @@ void MainWindow::on_newGameButton_clicked() {
  * to the state of the internal game
  *
  * TODO: change it so that it passes a color and piece type or the filename of the new icon instead of just piece Type
- */
+ **/
 void MainWindow::updateBoardDisplay() {
     for (int row = 1; row <= BOARD_SIZE; row++) {
         for (int col = 1; col <= BOARD_SIZE; col++) {
@@ -86,16 +86,16 @@ void MainWindow::updateBoardDisplay() {
 }
 
 /**
- * activated by emitting a "fieldClicked" signal by a connected @class GameField
- * handles everything related to picking a piece and making moves
+ * Activated by emitting a "fieldClicked" signal by a connected @class GameField.
+ * Handles everything related to picking a piece and making moves.
  *
- * if there is no field selected, it will select that field
- * if a field is selected:
- *          - if the clicked field is one where a piece from the selected field can move, make that move
+ * If there is no field selected, it will select that field.
+ * If a field is selected:
+ *          - if the clicked field is one where a piece from the selected field can move, make that move,
  *          - if not, check if that field can be selected (must be a pawn of current player)
  *
  * @param field
- */
+ **/
 void MainWindow::handleFieldClick(GameField *field) {
 
     if (field != pickedField) {
@@ -135,7 +135,7 @@ void MainWindow::handleFieldClick(GameField *field) {
  * @param moves
  * @param field
  * @return the move with an endpoint at the given field, or nullptr if such a move is not found
- */
+ **/
 Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *field) {
     Move *foundMove = nullptr;
     for (auto move: moves) {
@@ -169,7 +169,7 @@ void MainWindow::makeMove(Move const *move) {
  * Makes sure that the state of all fields is consistent after de-selecting a piece (ex. after a move)
  * or selecting a new one
  * @param new_picked - the field that is now supposed to be considered for moves etc.
- */
+ **/
 void MainWindow::changePickedField(GameField *const new_picked) {
 
     if (pickedField != nullptr) {
