@@ -31,12 +31,12 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 
     for (int row = 1; row <= 8; row++) {
         for (int column = 1; column <= 8; column++) {
-            auto *field = new GameField(QString("Nie kliknięte"), column, 9-row, this);
+            auto *field = new GameField(QString("Nie kliknięte"), column, 9-row, ui->GameBoard);
             QObject::connect(this, &MainWindow::updateField, field, &GameField::updateCalled);
             QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
             QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
             field->setAlignment(Qt::AlignLeft);
-            field->setGeometry(50 * column - 20, 50 * row + 20, 50, 50);
+            field->setGeometry(50 * column-30, 50 * row-20, 50, 50);
             field->show();
         }
     }
