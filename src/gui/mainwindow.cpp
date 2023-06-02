@@ -132,19 +132,13 @@ void MainWindow::handleFieldClick(GameField *field) {
  * @return the move with an endpoint at the given field, or nullptr if such a move is not found
  **/
 Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *field) {
-    Move *foundMove = nullptr;
     for (auto move: moves) {
         Position goal = move.getTo();
         if (goal.getCol() == field->getX() && goal.getRow() == field->getY()) {
-            foundMove = &move;
-            break;
+            return new Move(move);
         }
     }
-    if (foundMove != nullptr) {
-        return new Move(*foundMove);
-    } else {
-        return nullptr;
-    }
+    return nullptr;
 
 }
 
