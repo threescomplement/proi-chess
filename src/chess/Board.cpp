@@ -230,15 +230,14 @@ void Board::makeMove(Move move) {
         throw IllegalMoveException("Player cannot capture his own piece");
     }
 
-
-    targetField->setPiece(sourcePiece);
-    sourceField->setPiece(nullptr);
-
-    sourcePiece->setField(targetField);
     if (capturedPiece != nullptr) {
         capturedPiece->getField()->setPiece(nullptr);
         capturedPiece->takeOffField();
     }
+
+    targetField->setPiece(sourcePiece);
+    sourceField->setPiece(nullptr);
+    sourcePiece->setField(targetField);
 }
 
 const std::vector<Piece *> &Board::getAllPieces() const {
