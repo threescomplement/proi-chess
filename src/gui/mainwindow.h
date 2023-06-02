@@ -82,7 +82,6 @@ public:
 public slots:
 
 
-    void highlightNeighbours(int origin_x, int origin_y);
 
     void handleFieldClick(GameField *field);
 

@@ -57,13 +57,6 @@ MainWindow::~MainWindow() {
     delete game;
 }
 
-void MainWindow::highlightNeighbours(int origin_x, int origin_y) {
-    emit updateFieldPiece(origin_x - 1, origin_y, PieceType::PAWN);
-    emit updateFieldPiece(origin_x, origin_y - 1, PieceType::PAWN);
-    emit updateFieldPiece(origin_x + 1, origin_y, PieceType::PAWN);
-    emit updateFieldPiece(origin_x, origin_y + 1, PieceType::PAWN);
-}
-
 
 void MainWindow::on_newGameButton_clicked() {
     newGame(false);
