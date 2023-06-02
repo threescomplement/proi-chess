@@ -82,6 +82,6 @@ Move Move::generateCastlingComplement(Piece *castlingRook) {
 }
 
 bool Move::isLongCastle() const {
-    return (isCastling() && getTo().getRow() == 3);
+    return (isCastling() && getTo().getCol() == 3);
 }
 
