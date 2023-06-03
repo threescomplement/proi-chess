@@ -24,6 +24,8 @@ public:
     Move(Position from, Position to, Piece *moved) :
             from(from), to(to), movedPiece(moved), capturedPiece(nullptr) {};
 
+    Move(const Move &move): from(move.getFrom()), to(move.getTo()), movedPiece(move.getPiece()), capturedPiece(move.getCapturedPiece()){};
+
 
     const Position &getFrom() const;
 

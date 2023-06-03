@@ -1,5 +1,20 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/Empty_Board.jpg</file>
+        <file>resources/symmetrical_empty_board.jpg</file>
+        <file>resources/orange_frame_overlay.png</file>
+        <file>resources/Black_king.png</file>
+        <file>resources/Black_bishop.png</file>
+        <file>resources/Black_knight.png</file>
+        <file>resources/Black_pawn.png</file>
+        <file>resources/Black_queen.png</file>
+        <file>resources/Black_rook.png</file>
+        <file>resources/White_king.png</file>
+        <file>resources/White_bishop.png</file>
+        <file>resources/White_knight.png</file>
+        <file>resources/White_pawn.png</file>
+        <file>resources/White_queen.png</file>
+        <file>resources/White_rook.png</file>
+
     </qresource>
 </RCC>

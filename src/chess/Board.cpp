@@ -37,23 +37,21 @@ Board::~Board() {
 
 std::string Board::toString() const {
     std::stringstream ss;
-    auto empty = " ";
-    auto separator = "  ";
+    auto blackSquare = "■";
+    auto whiteSquare = "□";
 
-    for (int row = BOARD_SIZE - 1; row >= 0; --row) {
-        ss << row + 1 << separator;
+    for (int row = 0; row < BOARD_SIZE; ++row) {
         for (int col = 0; col < BOARD_SIZE; ++col) {
             auto field = fields[row][col];
             if (!field->isEmpty()) {
-                ss << field->getPiece()->getUnicodeSymbol() << separator;
+                ss << field->getPiece()->getUnicodeSymbol();
             } else {
-                ss << empty << separator;
+                auto symbol = ((row + col) % 2 == 0) ? blackSquare : whiteSquare;
+                ss << symbol;
             }
         }
         ss << std::endl;
     }
-    ss << empty << separator << "A" << separator << "B" << separator << "C" << separator << "D" << separator << "E"
-       << separator << "F" << separator << "G" << separator << "H" << separator << "" << std::endl;
 
     return ss.str();
 }
@@ -205,7 +203,7 @@ Board *Board::fromFEN(const std::string &FENDescription) {
                     break;
                 }
                 default:
-                    throw std::invalid_argument("Invalid FEN literal in string.");
+                    throw FenException("Invalid FEN representation of Game");
             }
             board->allPieces.push_back(piece);
             board->fields[row][col]->setPiece(piece);

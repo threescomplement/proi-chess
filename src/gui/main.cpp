@@ -1,12 +1,11 @@
 #include "mainwindow.h"
+#include "Game.h"
 #include <QApplication>
-#include "../chess//Game.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-//    Game *game = new Game("bialy", "czarny");
-//    delete game;
-    MainWindow w;
+    auto game = new Game("bialy", "czarny");
+    auto  w = MainWindow(game);
     w.show();
     return a.exec();
 }

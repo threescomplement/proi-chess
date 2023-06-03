@@ -4,7 +4,9 @@ set(GUI_SOURCES
         mainwindow.cpp
         mainwindow.ui
         sources.qrc
-        clickable_label.cpp)
+        ClickableLabel.cpp
+        GameField.cpp
+        GameField.h)
 
 add_executable(gui ${GUI_SOURCES})
 target_include_directories(gui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

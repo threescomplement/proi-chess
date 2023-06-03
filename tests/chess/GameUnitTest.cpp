@@ -51,6 +51,50 @@ namespace GameUnitTest {
         ASSERT_THROW(capturedPawn->getPosition(), PieceNotOnBoardException);
     }
 
+    TEST(Game, makeMoveCaptureFriendly) {
+        auto game = Game::fromFEN("rnbqkbnr/ppp1pppp/8/3p4/2P5/1P6/P2PPPPP/RNBQKBNR w KQkq - 0 1");
+
+        std::vector<Move> legalMoves = game.getMovesFrom(pos("b3"));
+        ASSERT_EQ(legalMoves.size(), 1);
+        Move onlyMove = legalMoves[0];
+        ASSERT_EQ(pos("b4"), onlyMove.getTo());
+    }
+
+    TEST(Game, makeMoveCaptureWhileEnPassant) {
+        auto game = Game::fromFEN("rnbqkbnr/ppp1pppp/8/3p4/3P4/3Q4/PPP1PPPP/RNB1KBNR b KQkq - 0 2");
+        Move pawnMove = Move(pos("f7"), pos("f5"), game.getPiece(pos("f7")));
+        game.makeMove(pawnMove);
+
+
+        Move problematic_move = Move(pos("d3"), pos("f5"), game.getPiece(pos("d3")), game.getPiece(pos("f5")) );
+
+
+        std::vector<Move> legalMoves = game.getMovesFrom(pos("d3"));
+        ASSERT_TRUE(std::find(legalMoves.begin(), legalMoves.end(), problematic_move) != legalMoves.end());
+        game.makeMove(problematic_move);
+        ASSERT_EQ(game.toFEN(), "rnbqkbnr/ppp1p1pp/8/3p1Q2/3P4/8/PPP1PPPP/RNB1KBNR b KQkq - 0 3");
+
+        //ASSERT_EQ(pos("b4"), onlyMove.getTo());
+    }
+
+    TEST(Game, EnPassantDeleteCaptured) {
+        auto game = Game::fromFEN("rnbqkbnr/ppppp1pp/5p2/1P6/8/8/P1PPPPPP/RNBQKBNR b KQkq - 0 2");
+        Move pawnMove = Move(pos("a7"), pos("a5"), game.getPiece(pos("a7")));
+        game.makeMove(pawnMove);
+
+
+        Move enPassantTake = Move(pos("b5"), pos("a6"), game.getPiece(pos("b5")), game.getPiece(pos("a5")) );
+
+
+        std::vector<Move> legalMoves = game.getMovesFrom(pos("b5"));
+        ASSERT_TRUE(std::find(legalMoves.begin(), legalMoves.end(), enPassantTake) != legalMoves.end()); // is that move available
+        game.makeMove(enPassantTake);
+        ASSERT_EQ(game.toFEN(), "rnbqkbnr/1pppp1pp/P4p2/8/8/8/P1PPPPPP/RNBQKBNR b KQkq - 0 3");
+
+        //ASSERT_EQ(pos("b4"), onlyMove.getTo());
+    }
+
+
     TEST(Game, fromFENStartingGame) {
         auto game = Game::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         auto newGame = Game();
@@ -107,6 +151,7 @@ namespace GameUnitTest {
         };
         ASSERT_TRUE(isPermutation(expected, moves));
     }
+
 
     TEST(Game, fromFENCastling) {
         FAIL();
