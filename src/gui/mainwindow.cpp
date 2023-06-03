@@ -41,7 +41,7 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 
     for (int row = 1; row <= BOARD_HEIGHT; row++) {
         for (int column = 1; column <= BOARD_WIDTH; column++) {
-            auto *field = new GameField(QString("Nie kliknięte"), column, 9 - row, ui->GameBoard);
+            auto *field = new GameField(QString(), column, 9 - row, ui->GameBoard);
             QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
             QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
             QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
@@ -231,8 +231,8 @@ void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string w
 void MainWindow::on_actionGame_from_FEN_triggered() {
     bool ok;
 
-    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-                                         tr("User name:"), QLineEdit::Normal,
+    QString text = QInputDialog::getText(this, tr("New Fen notation game"),
+                                         tr("Enter the FEN notation:"), QLineEdit::Normal,
                                          QDir::home().dirName(), &ok);
 
     if (ok) {
