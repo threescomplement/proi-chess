@@ -295,15 +295,15 @@ void Game::refreshCastlingPossibilites(const Move &move) {
 
     } else if (move.getPiece()->getType() == PieceType::ROOK) {
         if (move.getPiece()->getColor() == Color::WHITE) {
-            if (move.getFrom().getCol() == 1) {
+            if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 1) {
                 canWhiteQueensideCastle = false;
-            } else {
+            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8){
                 canWhiteKingsideCastle = false;
             }
         } else {
-            if (move.getFrom().getCol() == 1) {
+            if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 1) {
                 canBlackQueensideCastle = false;
-            } else {
+            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8){
                 canBlackKingsideCastle = false;
             }
         }
