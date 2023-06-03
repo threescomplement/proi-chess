@@ -4,6 +4,7 @@
 
 #include <QPixmap>
 #include <string>
+#include <map>
 
 class ChessIcons {
 public:

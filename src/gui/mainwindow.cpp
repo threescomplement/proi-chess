@@ -37,19 +37,7 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
     ui->setupUi(this);
     QPixmap board_map(":/resources/empty_board_white_perspective.png");
     ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
-
-    for (int row = 1; row <= BOARD_HEIGHT; row++) {
-        for (int column = 1; column <= BOARD_WIDTH; column++) {
-            auto *field = new GameField(QString(), column, 9 - row, ui->GameBoard);
-            QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
-            QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
-            QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
-            QObject::connect(this, &MainWindow::updateFieldMark, field, &GameField::markUpdateCalled);
-            field->setAlignment(Qt::AlignLeft);
-            field->setGeometry(50 * (column-1), 50 * row-20, 50, 50);
-            field->show();
-        }
-    }
+    createBoard();
 
 
     updateBoardDisplay();
@@ -58,6 +46,28 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 MainWindow::~MainWindow() {
     delete ui;
     delete game;
+}
+
+
+void MainWindow::createBoard(Color side) {
+    for (int row = 1; row <= BOARD_HEIGHT; row++) {
+        for (int column = 1; column <= BOARD_WIDTH; column++) {
+            int fieldRow;
+            if (side == Color::WHITE) {
+                fieldRow = 9 - row;
+            } else {
+                fieldRow = row;
+            }
+            auto *field = new GameField(QString(), column, fieldRow, ui->GameBoard);
+            QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
+            QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
+            QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
+            QObject::connect(this, &MainWindow::updateFieldMark, field, &GameField::markUpdateCalled);
+            field->setAlignment(Qt::AlignLeft);
+            field->setGeometry(50 * (column - 1), 50 * row - 20, 50, 50);
+            field->show();
+        }
+    }
 }
 
 
@@ -116,7 +126,7 @@ void MainWindow::handleFieldClick(GameField *field) {
             }
 
         }
-        if (!validChoice){
+        if (!validChoice) {
             changePickedField(nullptr);
         }
     }
@@ -207,6 +217,8 @@ void MainWindow::on_actionRegular_game_triggered() {
 
 void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string whiteName, std::string blackName,
                             Color bot_color) {
+
+
     //newGame(botGame, whiteName, blackName, bot_color);
     Game *new_game = nullptr;
     try {
@@ -240,6 +252,22 @@ void MainWindow::on_actionGame_from_FEN_triggered() {
         newFenGame(false, text.toStdString());
     }
 
+
+}
+
+
+void MainWindow::on_actionNew_classic_bot_game_triggered() {
+
+}
+
+
+void MainWindow::on_actionNew_bot_game_from_FEN_triggered() {
+//    QString text = QInputDialog::getText(this, tr("New Fen notation game"),
+//                                         tr("Enter the FEN notation:"), QLineEdit::Normal,
+//                                         QDir::home().dirName(), &ok);
+    QStringList colorPicker = {"White", "Black"};
+    QString color = QInputDialog::getItem(this, tr("Choose your color"), tr("Choose your color:"), colorPicker, 0,
+                                          false);
 
 }
 

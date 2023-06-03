@@ -9,6 +9,8 @@
 #include "Move.h"
 #include "GameField.h"
 #include "Color.h"
+#include "../bot/StockfishBot.h"
+#include "Color.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -51,6 +53,7 @@ private:
     GameField *pickedField; // currently selected field
     std::vector<Move> validMoves; // moves possible from that field
     bool botGame;
+    StockfishBot *stockfishBot;
 
 
     void updateBoardDisplay();
@@ -59,6 +62,7 @@ private:
 
     void changePickedField(GameField *const new_picked);
 
+    void createBoard(Color side = Color::WHITE);
 
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
@@ -69,12 +73,13 @@ public:
 
     void newGame(bool botGame, std::string whiteName = "Player 1", std::string blackName = "Player 2",
                  Color bot_color = Color::BLACK);
-    void newFenGame(bool botGame, std::string fenNotation ,std::string whiteName = "Player 1", std::string blackName = "Player 2",
+
+    void newFenGame(bool botGame, std::string fenNotation, std::string whiteName = "Player 1",
+                    std::string blackName = "Player 2",
                     Color bot_color = Color::BLACK);
 
 
 public slots:
-
 
 
     void handleFieldClick(GameField *field);
@@ -97,6 +102,10 @@ private slots:
     void on_actionRegular_game_triggered();
 
     void on_actionGame_from_FEN_triggered();
+
+    void on_actionNew_classic_bot_game_triggered();
+
+    void on_actionNew_bot_game_from_FEN_triggered();
 
 private:
     Ui::MainWindow *ui;
