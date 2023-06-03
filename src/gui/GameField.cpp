@@ -1,10 +1,14 @@
 
 #include "GameField.h"
+#include "Color.h"
 #include "pieces/PieceType.h"
 #include <QMouseEvent>
 #include <map>
 #include <string>
+#include <QColor>
+#include <QDebug>
 
+static int fieldSize = 50;
 
 std::map<PieceType, std::string> pieceChars{
         {PieceType::NONE,   ""},
@@ -27,7 +31,7 @@ GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::Win
     this->y = y;
     overlay = new QLabel(this);
     // Can't figure out how to get dimensions of GameField, all methods return weird 30X100 dimensions
-    overlay->setGeometry(0, 0, 50, 50);
+    overlay->setGeometry(0, 0, fieldSize, fieldSize);
     overlay->show();
     overlay->raise();
     setMark(false);
@@ -47,9 +51,9 @@ GameField::~GameField() noexcept {
  * @param type - SUBJECT TO CHANGE: the type of piece it's supposed to now hold
  * @param mark - the new state of being marked, false by default
  **/
-void GameField::updatePieceCalled(int called_x, int called_y, PieceType type) {
+void GameField::updatePieceCalled(int called_x, int called_y, PieceType type, Color color) {
     if (called_x == x && called_y == y) {
-        setPiece(type);
+        setPiece(type, color);
     }
 }
 
@@ -61,9 +65,44 @@ void GameField::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void GameField::setPiece(PieceType type) {
+void GameField::setPiece(PieceType type, Color color) {
+    QPixmap pixmap;
+    std::string fileName = ":/resources/";
+
+    if (color == Color::WHITE) {
+        fileName += "White_";
+    } else {
+        fileName += "Black_";
+    }
+    switch (type) {
+        case PieceType::NONE:
+            break;
+        case PieceType::KING:
+            fileName += "king";
+            break;
+        case PieceType::KNIGHT:
+            fileName += "knight";
+            break;
+        case PieceType::PAWN:
+            fileName += "pawn";
+            // qDebug() << "Changed pixmap!";
+            break;
+        case PieceType::QUEEN:
+            fileName += "queen";
+            break;
+        case PieceType::ROOK:
+            fileName += "rook";
+            break;
+        case PieceType::BISHOP:
+            fileName += "bishop";
+    }
+    fileName += ".png";
+    pixmap.load(QString().fromStdString(fileName));
+
     QString new_text = QString::fromStdString(pieceChars[type]);
     this->setText(new_text);
+    this->setPixmap(pixmap.scaled(fieldSize, fieldSize, Qt::AspectRatioMode::KeepAspectRatio));
+
 }
 
 int GameField::getX() const {
@@ -79,7 +118,7 @@ const PieceType &GameField::getPiece() const {
 }
 
 void GameField::reset() {
-    setPiece(PieceType::NONE);
+    setPiece(PieceType::NONE, Color::WHITE);
     clicked = false;
     setMark(false);
 }
@@ -89,7 +128,8 @@ void GameField::setMark(bool new_mark) {
     marked = new_mark;
     if (marked) {
         overlay->setPixmap(
-                QPixmap(":/resources/orange_frame_overlay.png").scaled(50, 50, Qt::AspectRatioMode::KeepAspectRatio));
+                QPixmap(":/resources/orange_frame_overlay.png").scaled(fieldSize, fieldSize,
+                                                                       Qt::AspectRatioMode::KeepAspectRatio));
     } else {
         overlay->setPixmap(QPixmap());
     }

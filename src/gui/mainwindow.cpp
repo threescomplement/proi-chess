@@ -75,7 +75,8 @@ void MainWindow::updateBoardDisplay() {
         for (int col = 1; col <= BOARD_SIZE; col++) {
             auto piece = this->game->getPiece(Position(row, col));
             auto type = (piece != nullptr) ? piece->getType() : PieceType::NONE;
-            emit updateFieldPiece(col, row, type);
+            auto color = (piece != nullptr) ? piece->getColor() : Color::WHITE;
+            emit updateFieldPiece(col, row, type, color);
         }
     }
 }
@@ -163,14 +164,13 @@ void MainWindow::changePickedField(GameField *const new_picked) {
 
     if (pickedField != nullptr) {
         // mark the previously picked field as not marked anymore
-        emit updateFieldPiece(pickedField->getX(), pickedField->getY(), pickedField->getPiece());
         emit updateFieldMark(pickedField->getX(), pickedField->getY(), false);
 
     }
     if (new_picked != nullptr) { // if the new picked is a field
         validMoves = game->getMovesFrom(Position(new_picked->getY(), new_picked->getX()));
         // update the mark of the newly picked field
-        emit updateFieldPiece(new_picked->getX(), new_picked->getY(), new_picked->getPiece());
+        //emit updateFieldPiece(new_picked->getX(), new_picked->getY(), new_picked->getPiece());
         emit updateFieldMark(new_picked->getX(), new_picked->getY(), true);
     } else {
         validMoves.clear();

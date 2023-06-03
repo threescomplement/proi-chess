@@ -4,6 +4,7 @@
 
 #include "ClickableLabel.h"
 #include "pieces/PieceType.h"
+#include "Color.h"
 
 
 /**
@@ -38,7 +39,7 @@ public:
 
     ~GameField();
 
-    void setPiece(PieceType type);
+    void setPiece(PieceType type, Color color);
 
     void mousePressEvent(QMouseEvent *event) override;
 
@@ -54,7 +55,7 @@ public slots:
 
     void reset();
 
-    void updatePieceCalled(int called_x, int called_y, PieceType type = PieceType::NONE);
+    void updatePieceCalled(int called_x, int called_y, PieceType type = PieceType::NONE, Color color = Color::WHITE);
 
     void markUpdateCalled(int called_x, int called_y, bool new_mark);
 

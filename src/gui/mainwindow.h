@@ -2,10 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "./ClickableLabel.h"
+#include <vector>
+#include "ClickableLabel.h"
 #include "Game.h"
 #include "pieces/PieceType.h"
-#include <vector>
 #include "Move.h"
 #include "GameField.h"
 #include "Color.h"
@@ -82,7 +82,7 @@ public slots:
 
 signals:
 
-    void updateFieldPiece(int x, int y, PieceType type = PieceType::NONE);
+    void updateFieldPiece(int x, int y, PieceType type = PieceType::NONE, Color color = Color::WHITE);
 
     void updateFieldMark(int x, int y, bool newMark);
 
