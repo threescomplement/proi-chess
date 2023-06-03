@@ -36,8 +36,8 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 
 
     ui->setupUi(this);
-    QPixmap board_map(":/resources/symmetrical_empty_board.jpg");
-    ui->GameBoard->setPixmap(board_map);
+    QPixmap board_map(":/resources/empty_board_white_perspective.png");
+    ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
 
     for (int row = 1; row <= BOARD_HEIGHT; row++) {
         for (int column = 1; column <= BOARD_WIDTH; column++) {

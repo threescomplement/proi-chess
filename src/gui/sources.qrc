@@ -1,7 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/Empty_Board.jpg</file>
-        <file>resources/symmetrical_empty_board.jpg</file>
+        <file>resources/empty_board_white_perspective.png</file>
+        <file>resources/empty_board_black_perspective.png</file>
         <file>resources/orange_frame_overlay.png</file>
         <file>resources/Black_king.png</file>
         <file>resources/Black_bishop.png</file>
@@ -15,6 +16,12 @@
         <file>resources/White_pawn.png</file>
         <file>resources/White_queen.png</file>
         <file>resources/White_rook.png</file>
+        <file>resources/blue_selection_mask_rectangular.png</file>
+        <file>resources/green_selection_mask_circular.png</file>
+        <file>resources/green_selection_mask_rectangular.png</file>
+
+
+
 
     </qresource>
 </RCC>
