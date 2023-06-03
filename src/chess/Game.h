@@ -12,6 +12,7 @@ class Piece;
 class Position;
 class King;
 class Pawn;
+class Move;
 
 class Game {
 private:
@@ -38,6 +39,28 @@ private:
     std::string castlingAvailabilityFEN() const;
 
     void refreshEnPassant();
+
+    /**
+     * If king move, disable castling in both directions for moving player. If rook move, disable castling
+     * in its direction. If move is a rook capture and the rook has not moved yet, disable possibility of castling
+     * in its direction.
+     **/
+    void refreshCastlingPossibilites(const Move &move);
+    void refreshCastlingAfterRookCapture(const Piece *takenRook);
+
+    /**
+     * Utilites for checking whether the current player can castle - whether the flags are true and
+     * there are no pieces between the king and rook
+     * */
+    bool possibleKingsideCastlingThisRound() const;
+    bool possibleQueensideCastlingThisRound() const;
+    bool noPiecesBetweenKingAndRook(const Piece* king, const Piece* rook) const;
+
+    /**
+     *Generate a move object for a castle in a given direction based on the currentPlayer parameter
+     * */
+    Move generateKingSideCastle() const;
+    Move generateQueenSideCastle() const;
 
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");

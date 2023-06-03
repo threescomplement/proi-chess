@@ -1,3 +1,4 @@
+#include <map>
 #include "Game.h"
 #include "Board.h"
 #include "Color.h"
@@ -5,6 +6,7 @@
 #include "pieces/PieceType.h"
 #include "ChessExceptions.h"
 #include "pieces/Pawn.h"
+#include "pieces/PieceType.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -58,10 +60,6 @@ bool Game::isCheck() const {
 }
 
 void Game::makeMove(Move move) {
-    if (this->enPassantTargetPosition != nullptr) {
-        refreshEnPassant();
-    };
-    this->board->makeMove(move);
 
     if (this->currentPlayer->getColor() == Color::BLACK) {
         this->fullmoveNumber++;
@@ -72,8 +70,12 @@ void Game::makeMove(Move move) {
         this->halfmoveClock = 0;
     }
 
+    if (this->enPassantTargetPosition != nullptr) {
+        refreshEnPassant();
+    };
+    this->refreshCastlingPossibilites(move);
 
-
+    this->board->makeMove(move);
 
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
@@ -236,10 +238,20 @@ std::vector<Move> Game::getMovesFrom(Position position) const {
     if (piece == nullptr || piece->getColor() != currentPlayer->getColor()) {
         return {};
     }
-    return piece->getMoves();
+    auto movesForPiece = piece->getMoves();
+    if (piece->getType() == PieceType::KING) {
+        if (possibleKingsideCastlingThisRound()) {
+            movesForPiece.push_back(generateKingSideCastle());
+        }
+        if (possibleQueensideCastlingThisRound()) {
+            movesForPiece.push_back(generateQueenSideCastle());
+        }
+    }
+    return movesForPiece;
 }
 
 std::vector<Move> Game::getAllPlayerMoves(Player &player) const {
+    // todo - refactor to calculate from position to include castling
     std::vector<Move> moves = {};
     for (auto piece: player.getPieces()) {
         auto pieceMoves = piece->getMoves();
@@ -269,6 +281,105 @@ void Game::refreshEnPassant() {
     oldEnPassantTarget->setIsEnPassantTarget(false);
     delete this->enPassantTargetPosition;
     this->enPassantTargetPosition = nullptr;
+}
+
+void Game::refreshCastlingPossibilites(const Move &move) {
+    if (move.getPiece()->getType() == PieceType::KING) {
+        if (move.getPiece()->getColor() == Color::WHITE) {
+            canWhiteKingsideCastle = false;
+            canWhiteQueensideCastle = false;
+        } else {
+            canBlackKingsideCastle = false;
+            canBlackQueensideCastle = false;
+        }
+
+    } else if (move.getPiece()->getType() == PieceType::ROOK) {
+        if (move.getPiece()->getColor() == Color::WHITE) {
+            if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 1) {
+                canWhiteQueensideCastle = false;
+            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8){
+                canWhiteKingsideCastle = false;
+            }
+        } else {
+            if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 1) {
+                canBlackQueensideCastle = false;
+            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8){
+                canBlackKingsideCastle = false;
+            }
+        }
+    }
+    if (move.isCapture() && move.getCapturedPiece()->getType() == PieceType::ROOK) {
+        refreshCastlingAfterRookCapture(move.getCapturedPiece());
+    }
+}
+
+void Game::refreshCastlingAfterRookCapture(const Piece *takenRook) {
+    if (takenRook->getPosition() == Position(1, 1)) {
+        canWhiteQueensideCastle = false;
+    } else if (takenRook->getPosition() == Position(1, 8)) {
+        canWhiteKingsideCastle = false;
+    }
+    if (takenRook->getPosition() == Position(8, 1)) {
+        canBlackQueensideCastle = false;
+    } else if (takenRook->getPosition() == Position(8, 8)) {
+        canBlackKingsideCastle = false;
+    }
+}
+
+bool Game::possibleKingsideCastlingThisRound() const {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteKingsideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackKingsideCastle) {
+        return false;
+    }
+    int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
+    auto kingSideRook = getPiece(Position(currentPlayerBackRank, 8));
+    auto king = getPiece(Position(currentPlayerBackRank, 5));
+
+    bool canCastle = (noPiecesBetweenKingAndRook(king, kingSideRook));
+    return canCastle;
+}
+
+bool Game::possibleQueensideCastlingThisRound() const {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteQueensideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackQueensideCastle) {
+        return false;
+    }
+    int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
+    auto queenSideRook = getPiece(Position(currentPlayerBackRank, 1));
+    auto king = getPiece(Position(currentPlayerBackRank, 5));
+
+    bool canCastle = (noPiecesBetweenKingAndRook(king, queenSideRook));
+    return canCastle;
+}
+
+bool Game::noPiecesBetweenKingAndRook(const Piece *king, const Piece *rook) const {
+    if (king->getPosition().getRow() != rook->getPosition().getRow())
+        throw std::invalid_argument("King and rook can't be in different rows!");
+
+    auto row = king->getPosition().getRow();
+    auto lowestColToCheck = std::min(king->getPosition().getCol(), rook->getPosition().getCol()) + 1;
+    auto upperLimit = std::max(king->getPosition().getCol(), rook->getPosition().getCol());
+
+    for (int currentCol = lowestColToCheck; currentCol < upperLimit; currentCol++) {
+        auto currentPosition = Position(row, currentCol);
+        if (getPiece(currentPosition) != nullptr)
+            return false;
+    }
+    return true;
+}
+
+Move Game::generateKingSideCastle() const {
+    int castlingRank = (currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
+    auto fromPosition = Position(castlingRank, 5);
+    auto toPosition = Position(castlingRank, 7);
+    return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
+}
+
+Move Game::generateQueenSideCastle() const {
+    int castlingRank = (currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
+    auto fromPosition = Position(castlingRank, 5);
+    auto toPosition = Position(castlingRank, 3);
+    return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
 }
 
 std::vector<std::string> split(const std::string &txt, char ch) {
