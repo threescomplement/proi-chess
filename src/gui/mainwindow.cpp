@@ -47,7 +47,7 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
             QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
             QObject::connect(this, &MainWindow::updateFieldMark, field, &GameField::markUpdateCalled);
             field->setAlignment(Qt::AlignLeft);
-            field->setGeometry(50 * column - 27, 50 * row - 21, 50, 50);
+            field->setGeometry(50 * (column-1), 50 * row-20, 50, 50);
             field->show();
         }
     }
