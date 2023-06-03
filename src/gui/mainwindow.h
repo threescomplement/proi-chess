@@ -53,7 +53,7 @@ private:
     GameField *pickedField; // currently selected field
     std::vector<Move> validMoves; // moves possible from that field
     bool botGame;
-    StockfishBot *stockfishBot;
+    ChessBot *stockfishBot;
     Color botColor;
 
 

@@ -16,3 +16,4 @@ target_link_libraries(gui
         Qt::Gui
         Qt::Widgets
         )
+target_link_libraries(chess bot)

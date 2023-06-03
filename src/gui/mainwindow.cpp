@@ -15,6 +15,7 @@
 #include "pieces/PieceType.h"
 #include "ChessExceptions.h"
 #include "Player.h"
+#include "../bot/StockfishBot.h"
 
 #define BOARD_HEIGHT 8
 #define BOARD_WIDTH 8
@@ -31,7 +32,8 @@
  * @param parent
  **/
 MainWindow::MainWindow(Game *game, QWidget *parent)
-        : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr) {
+        : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr), botGame(false), stockfishBot(
+        nullptr), botColor(Color::BLACK) {
 
 
     ui->setupUi(this);
@@ -54,7 +56,7 @@ void MainWindow::createBoard(Color side) {
     } else {
         board_map = QPixmap(":/resources/empty_board_black_perspective.png");
     }
-    for (auto child: ui->GameBoard->children()){
+    for (auto child: ui->GameBoard->children()) {
         delete child;
     }
     ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
@@ -67,7 +69,7 @@ void MainWindow::createBoard(Color side) {
                 fieldColumn = column;
             } else {
                 fieldRow = row;
-                fieldColumn =  9 - column;
+                fieldColumn = 9 - column;
             }
             auto *field = new GameField(QString(), fieldColumn, fieldRow, ui->GameBoard);
             QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
@@ -217,16 +219,31 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
     }
     if (botGame) {
         createBoard((botColor == Color::WHITE) ? Color::BLACK : Color::WHITE);
+    } else {
+        changePickedField(nullptr);
     }
 
-    changePickedField(nullptr);
+    delete stockfishBot;
+
 
     delete game;
     game = newGame;
+    if (botGame) {
+        stockfishBot = new StockfishBot(*game);
+        // if bot color == white, make first move
+        if (botColor == Color::WHITE) {
+            try{
+                Move botMove = stockfishBot->getBestNextMove();
+                game->makeMove(botMove);
+            }
+            catch (...){
+            }
+
+        }
+    }
     this->botGame = botGame;
     this->botColor = botColor;
 
-    // if bot color == white, make first move
     updateBoardDisplay();
 
 
@@ -267,7 +284,14 @@ void MainWindow::on_actionGame_from_FEN_triggered() {
 
 
 void MainWindow::on_actionNew_classic_bot_game_triggered() {
+    bool ok;
+    QStringList colorPicker = {"White", "Black"};
+    QString pickedColor = QInputDialog::getItem(this, tr("Choose your color"), tr("Choose your color:"), colorPicker, 0,
+                                                false, &ok);
 
+    if (ok) {
+        newGame(true, (pickedColor == "White") ? Color::BLACK : Color::WHITE);
+    }
 }
 
 void MainWindow::on_actionRegular_game_triggered() {
