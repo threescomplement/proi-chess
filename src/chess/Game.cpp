@@ -58,6 +58,9 @@ bool Game::isCheck() const {
 }
 
 void Game::makeMove(Move move) {
+    if (this->enPassantTargetPosition != nullptr) {
+        refreshEnPassant();
+    };
     this->board->makeMove(move);
 
     if (this->currentPlayer->getColor() == Color::BLACK) {
@@ -69,9 +72,7 @@ void Game::makeMove(Move move) {
         this->halfmoveClock = 0;
     }
 
-    if (this->enPassantTargetPosition != nullptr) {
-        refreshEnPassant();
-    };
+
 
 
     if (move.isDoublePawnMove()) {

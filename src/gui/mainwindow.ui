@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>663</width>
-    <height>530</height>
+    <width>937</width>
+    <height>634</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,7 +32,7 @@
       <x>10</x>
       <y>10</y>
       <width>621</width>
-      <height>471</height>
+      <height>491</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="GameLayout">
@@ -48,6 +48,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="newGameButton">
+       <property name="text">
+        <string>Start new game</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -56,7 +63,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>663</width>
+     <width>937</width>
      <height>22</height>
     </rect>
    </property>
@@ -64,6 +71,14 @@
     <property name="title">
      <string>nynynyny</string>
     </property>
+    <widget class="QMenu" name="menunew_pvp_game">
+     <property name="title">
+      <string>new pvp game</string>
+     </property>
+     <addaction name="actionRegular_game"/>
+     <addaction name="actionGame_from_FEN"/>
+    </widget>
+    <addaction name="menunew_pvp_game"/>
    </widget>
    <addaction name="menupogg"/>
   </widget>
@@ -71,6 +86,16 @@
   <action name="actionnynyny">
    <property name="text">
     <string>nynyny</string>
+   </property>
+  </action>
+  <action name="actionRegular_game">
+   <property name="text">
+    <string>Regular game</string>
+   </property>
+  </action>
+  <action name="actionGame_from_FEN">
+   <property name="text">
+    <string>Game from FEN</string>
    </property>
   </action>
  </widget>
