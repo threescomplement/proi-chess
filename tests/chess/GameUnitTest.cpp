@@ -344,4 +344,47 @@ namespace GameUnitTest {
         ASSERT_EQ(game.getCurrentPlayer()->getColor(), Color::WHITE);
     }
 
+    TEST(Game, castlingBugWhenFlagTakenDownByWrongRook) {
+        auto game = Game::fromFEN("4k2r/r7/8/8/8/8/7R/R3K3 w Qk - 0 1");
+        auto whiteKing = game.getPiece(pos("e1"));
+        auto blackKing = game.getPiece(pos("e8"));
+        auto whiteKingsideRook = game.getPiece(pos("h2"));
+        auto blackQueensideRook = game.getPiece(pos("a7"));
+
+        auto whiteKingsideCastle = Move(pos("e1"), pos("g1"), whiteKing, nullptr);
+        auto blackKingsideCastle = Move(pos("e8"), pos("g8"), blackKing, nullptr);
+        auto whiteQueensideCastle = Move(pos("e1"), pos("c1"), whiteKing, nullptr);
+        auto blackQueensideCastle = Move(pos("e8"), pos("c8"), blackKing, nullptr);
+
+
+        auto whiteKingMoves = game.getMovesFrom(pos("e1"));
+        ASSERT_FALSE(in(whiteKingMoves, whiteKingsideCastle));
+        ASSERT_TRUE(in(whiteKingMoves, whiteQueensideCastle));
+
+        game.makeMove(Move(pos("h2"), pos("a2"), whiteKingsideRook, nullptr));
+        auto blackKingMoves = game.getMovesFrom(pos("e8"));
+        ASSERT_TRUE(in(blackKingMoves, blackKingsideCastle));
+        ASSERT_FALSE(in(blackKingMoves, blackQueensideCastle));
+
+        game.makeMove(Move(pos("a7"), pos("h7"), blackQueensideRook, nullptr));
+        whiteKingMoves = game.getMovesFrom(pos("e1"));
+        ASSERT_FALSE(in(whiteKingMoves, whiteKingsideCastle));
+        ASSERT_TRUE(in(whiteKingMoves, whiteQueensideCastle));
+
+        game.makeMove(Move(pos("a2"), pos("h2"), whiteKingsideRook, nullptr));
+        blackKingMoves = game.getMovesFrom(pos("e8"));
+        ASSERT_TRUE(in(blackKingMoves, blackKingsideCastle));
+        ASSERT_FALSE(in(blackKingMoves, blackQueensideCastle));
+
+        game.makeMove(Move(pos("h7"), pos("a7"), blackQueensideRook, nullptr));
+        whiteKingMoves = game.getMovesFrom(pos("e1"));
+        ASSERT_FALSE(in(whiteKingMoves, whiteKingsideCastle));
+        ASSERT_TRUE(in(whiteKingMoves, whiteQueensideCastle));
+
+        game.makeMove(Move(pos("h2"), pos("h1"), whiteKingsideRook, nullptr));
+        blackKingMoves = game.getMovesFrom(pos("e8"));
+        ASSERT_TRUE(in(blackKingMoves, blackKingsideCastle));
+        ASSERT_FALSE(in(blackKingMoves, blackQueensideCastle));
+    }
+
 }
