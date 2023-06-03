@@ -54,6 +54,7 @@ private:
     std::vector<Move> validMoves; // moves possible from that field
     bool botGame;
     StockfishBot *stockfishBot;
+    Color botColor;
 
 
     void updateBoardDisplay();
@@ -71,12 +72,9 @@ public:
 
     void makeMove(Move const *move);
 
-    void newGame(bool botGame, std::string whiteName = "Player 1", std::string blackName = "Player 2",
-                 Color bot_color = Color::BLACK);
+    void newGame(bool botGame, Color bot_color = Color::BLACK, std::string fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-    void newFenGame(bool botGame, std::string fenNotation, std::string whiteName = "Player 1",
-                    std::string blackName = "Player 2",
-                    Color bot_color = Color::BLACK);
+    void newFenGame(bool botGame, Color bot_color = Color::BLACK);
 
 
 public slots:

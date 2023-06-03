@@ -11,7 +11,6 @@
 #include <QDebug>
 
 
-
 static int fieldSize = 50;
 
 std::map<PieceType, std::string> pieceChars{
@@ -23,9 +22,6 @@ std::map<PieceType, std::string> pieceChars{
         {PieceType::KING,   "♚"},
         {PieceType::QUEEN,  "♛"},
 };
-
-
-
 
 
 GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::WindowFlags f) :

@@ -35,10 +35,8 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 
 
     ui->setupUi(this);
-    QPixmap board_map(":/resources/empty_board_white_perspective.png");
-    ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
-    createBoard();
 
+    createBoard();
 
     updateBoardDisplay();
 }
@@ -50,15 +48,28 @@ MainWindow::~MainWindow() {
 
 
 void MainWindow::createBoard(Color side) {
+    QPixmap board_map;
+    if (side == Color::WHITE) {
+        board_map = QPixmap(":/resources/empty_board_white_perspective.png");
+    } else {
+        board_map = QPixmap(":/resources/empty_board_black_perspective.png");
+    }
+    for (auto child: ui->GameBoard->children()){
+        delete child;
+    }
+    ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
     for (int row = 1; row <= BOARD_HEIGHT; row++) {
         for (int column = 1; column <= BOARD_WIDTH; column++) {
             int fieldRow;
+            int fieldColumn;
             if (side == Color::WHITE) {
                 fieldRow = 9 - row;
+                fieldColumn = column;
             } else {
                 fieldRow = row;
+                fieldColumn =  9 - column;
             }
-            auto *field = new GameField(QString(), column, fieldRow, ui->GameBoard);
+            auto *field = new GameField(QString(), fieldColumn, fieldRow, ui->GameBoard);
             QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
             QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
             QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
@@ -71,15 +82,11 @@ void MainWindow::createBoard(Color side) {
 }
 
 
-void MainWindow::on_newGameButton_clicked() {
-    newGame(false);
-}
-
 /**
  * updates the state of fields in the window
  * to the state of the internal game
  *
- * TODO: change it so that it passes a color and piece type or the filename of the new icon instead of just piece Type
+ *
  **/
 void MainWindow::updateBoardDisplay() {
     for (int row = 1; row <= BOARD_SIZE; row++) {
@@ -105,6 +112,7 @@ void MainWindow::updateBoardDisplay() {
  **/
 void MainWindow::handleFieldClick(GameField *field) {
 
+    // TODO - Could be cleaned up a bit
     if (field != pickedField) {
         bool validChoice = false;
         // check if there is a move to the chosen position
@@ -199,59 +207,61 @@ void MainWindow::changePickedField(GameField *const new_picked) {
     }
 }
 
-void MainWindow::newGame(bool botGame, std::string whiteName, std::string blackName, Color botColor) {
+void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) {
+    Game *newGame = nullptr;
+    try {
+        newGame = new Game(Game::fromFEN(fenNotation));
+    } catch (FenException e) {
+        delete newGame;
+        throw FenException("Incorrect Fen");
+    }
+    if (botGame) {
+        createBoard((botColor == Color::WHITE) ? Color::BLACK : Color::WHITE);
+    }
+
     changePickedField(nullptr);
-    emit callReset();
+
     delete game;
-    game = new Game(whiteName, blackName);
+    game = newGame;
     this->botGame = botGame;
+    this->botColor = botColor;
+
     // if bot color == white, make first move
     updateBoardDisplay();
 
 
 }
 
-void MainWindow::on_actionRegular_game_triggered() {
-    newGame(false);
-}
 
-void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string whiteName, std::string blackName,
-                            Color bot_color) {
+void MainWindow::newFenGame(bool botGame, Color bot_color) {
 
+    bool ok;
 
+    QString fenNotation = QInputDialog::getText(this, tr("New Fen notation game"),
+                                                tr("Enter the FEN notation:"), QLineEdit::Normal,
+                                                QDir::home().dirName(), &ok);
     //newGame(botGame, whiteName, blackName, bot_color);
-    Game *new_game = nullptr;
-    try {
-        new_game = new Game(Game::fromFEN(fenNotation));
-        game = new_game;
-        // TODO: handle bot
-        updateBoardDisplay();
+    if (ok) {
+        try {
+            newGame(botGame, bot_color, fenNotation.toStdString());
+        } catch (FenException) {
+            // incorrect fen notation
+            // display warning pop-up
+            QMessageBox::warning(
+                    this,
+                    tr("Invalid FEN notation"),
+                    tr("Failed to initialise game from given FEN notation. \n"));
 
-    } catch (FenException) {
-        // incorrect fen notation
-        delete new_game;
-        // display warning pop-up
-        QMessageBox::warning(
-                this,
-                tr("Invalid FEN notation"),
-                tr("Failed to initialise game from given FEN notation. \n"));
-
+        }
     }
-    delete new_game;
+
 }
 
 
 void MainWindow::on_actionGame_from_FEN_triggered() {
-    bool ok;
 
-    QString text = QInputDialog::getText(this, tr("New Fen notation game"),
-                                         tr("Enter the FEN notation:"), QLineEdit::Normal,
-                                         QDir::home().dirName(), &ok);
 
-    if (ok) {
-        newFenGame(false, text.toStdString());
-    }
-
+    newFenGame(false);
 
 }
 
@@ -260,14 +270,26 @@ void MainWindow::on_actionNew_classic_bot_game_triggered() {
 
 }
 
+void MainWindow::on_actionRegular_game_triggered() {
+    newGame(false);
+}
+
+
+void MainWindow::on_newGameButton_clicked() {
+    newGame(false);
+}
+
 
 void MainWindow::on_actionNew_bot_game_from_FEN_triggered() {
-//    QString text = QInputDialog::getText(this, tr("New Fen notation game"),
-//                                         tr("Enter the FEN notation:"), QLineEdit::Normal,
-//                                         QDir::home().dirName(), &ok);
+    bool ok;
     QStringList colorPicker = {"White", "Black"};
-    QString color = QInputDialog::getItem(this, tr("Choose your color"), tr("Choose your color:"), colorPicker, 0,
-                                          false);
+    QString pickedColor = QInputDialog::getItem(this, tr("Choose your color"), tr("Choose your color:"), colorPicker, 0,
+                                                false, &ok);
+
+    if (ok) {
+        newFenGame(true, (pickedColor == "White") ? Color::BLACK : Color::WHITE);
+    }
+
 
 }
 
