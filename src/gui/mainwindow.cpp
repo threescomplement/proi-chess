@@ -1,20 +1,19 @@
+
+#include <QPixmap>
+#include <vector>
+#include <QDialog>
+#include <QInputDialog>
+#include <QDir>
+#include <QMessageBox>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QPixmap>
-#include "ClickableLabel.h"
 #include "GameField.h"
-#include "../chess/Game.h"
 #include "constants.h"
 #include "Position.h"
 #include "Move.h"
 #include "pieces/Piece.h"
 #include "pieces/PieceType.h"
-#include <vector>
-#include <QDialog>
-#include <QInputDialog>
-#include <QDir>
 #include "ChessExceptions.h"
-#include <QMessageBox>
 #include "Player.h"
 
 #define BOARD_HEIGHT 8
@@ -51,6 +50,8 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
             field->show();
         }
     }
+
+
     updateBoardDisplay();
 }
 

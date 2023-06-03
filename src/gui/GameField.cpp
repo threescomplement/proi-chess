@@ -2,11 +2,15 @@
 #include "GameField.h"
 #include "Color.h"
 #include "pieces/PieceType.h"
+#include "mainwindow.h"
+#include "ChessIcons.h"
 #include <QMouseEvent>
 #include <map>
 #include <string>
 #include <QColor>
 #include <QDebug>
+
+
 
 static int fieldSize = 50;
 
@@ -19,6 +23,9 @@ std::map<PieceType, std::string> pieceChars{
         {PieceType::KING,   "♚"},
         {PieceType::QUEEN,  "♛"},
 };
+
+
+
 
 
 GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::WindowFlags f) :
@@ -67,7 +74,7 @@ void GameField::mousePressEvent(QMouseEvent *event) {
 
 void GameField::setPiece(PieceType type, Color color) {
     QPixmap pixmap;
-    std::string fileName = ":/resources/";
+    std::string fileName = ""; //= ":/resources/";
 
     if (color == Color::WHITE) {
         fileName += "White_";
@@ -96,9 +103,9 @@ void GameField::setPiece(PieceType type, Color color) {
         case PieceType::BISHOP:
             fileName += "bishop";
     }
-    fileName += ".png";
-    pixmap.load(QString().fromStdString(fileName));
-
+    //fileName += ".png";
+    //pixmap.load(QString().fromStdString(fileName));
+    pixmap = icons.pieceImgs[fileName];
     QString new_text = QString::fromStdString(pieceChars[type]);
     this->setText(new_text);
     this->setPixmap(pixmap.scaled(fieldSize, fieldSize, Qt::AspectRatioMode::KeepAspectRatio));

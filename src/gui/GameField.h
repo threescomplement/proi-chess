@@ -5,6 +5,7 @@
 #include "ClickableLabel.h"
 #include "pieces/PieceType.h"
 #include "Color.h"
+#include "ChessIcons.h"
 
 
 /**
@@ -33,6 +34,8 @@ private:
     int x;
     int y;
     QLabel *overlay;
+    ChessIcons icons;
+
 
 public:
     GameField(const QString &text, int x, int y, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
