@@ -3,7 +3,7 @@
 #include "../Color.h"
 #include "../Board.h"
 #include "Pawn.h"
-// TODO: Promotion mechanics, en passant
+// TODO: Promotion mechanics
 
 Pawn::Pawn(Color color, Field *field) : Piece(color, field) {
     this->moveDirection = (color == Color::WHITE) ? 1 : -1;
