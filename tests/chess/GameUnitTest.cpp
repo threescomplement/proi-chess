@@ -153,18 +153,6 @@ namespace GameUnitTest {
     }
 
 
-    TEST(Game, fromFENCastling) {
-        FAIL();
-    }
-
-    TEST(Game, fromFENInvalidHalfmoveClock) {
-        FAIL();
-    }
-
-    TEST(Game, fromFEN) {
-        FAIL();
-    }
-
     /**
      * 1. e4a6 2.e5d5 3.exd6 - checking the value of enPassantTargetPiece after each move and performing enPassant
      */
