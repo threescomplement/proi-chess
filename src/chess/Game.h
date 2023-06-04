@@ -13,6 +13,7 @@ class Position;
 class King;
 class Pawn;
 class Move;
+enum class Color;
 
 class Game {
 private:
@@ -39,6 +40,7 @@ private:
     std::string castlingAvailabilityFEN() const;
 
     void refreshEnPassant();
+    bool isCastlingObscuredByOpponent(Move &move) const;
 
     /**
      * If king move, disable castling in both directions for moving player. If rook move, disable castling
@@ -85,19 +87,44 @@ public:
 
     void makeMove(Move move);
 
+    /**
+     * Creates a deep copy of the board and makes a given move on it.
+     * */
     Game afterMove(Move move) const;
 
+    /**
+     * All possible moves from a field, taking neither the current turn nor the
+     * checks and pins into consideration.
+     * */
     std::vector<Move> getMovesFrom(Position position) const;
 
-    std::vector<Move> getAllPlayerMoves(Player &player) const;
+    /**
+     * All possibles moves from a player's field, not taking checks, pins and turns into account. getMovesFrom for
+     * all of the locations controlled by his pieces combined.
+     **/
+    std::vector<Move> getAllMovesForPlayer(Player *player) const;
+
+    /**
+     * All legal moves from a field. Takes checks, pins and turns into consideration.
+     * */
+    std::vector<Move> getLegalMovesFrom(Position position) const;
+
+    /**
+     * All possible moves for a player. getLegalMovesFrom for all of the fields controlled by his pieces combined.
+     * */
+    std::vector<Move> getLegalMovesForPlayer(Player *player) const;
 
     bool isMate() const;
 
-    bool isCheck() const;
+    bool isStalemate() const;
+
+    bool isCheck(Color colorOfCheckedKing) const;
+
+    bool isFieldControlledByPlayer(const Position &pos, Color colorOfPlayer) const;
 
     /**
      * Get the pawn threatened by en passant based on enPassantTargetLocation
-     * @throws std::bas_cast if the piece is not a pawn or there is no piece
+     * @throws std::bad_cast if the piece is not a pawn or there is no piece
      */
     Pawn *getEnPassantTargetPiece() const;
 

@@ -1,4 +1,5 @@
 #include <map>
+#include <algorithm>
 #include "Game.h"
 #include "Board.h"
 #include "Color.h"
@@ -52,11 +53,11 @@ std::vector<Move> &Game::getMoveHistory() {
 }
 
 bool Game::isMate() const {
-    return false;  //TODO
+    return (isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
 }
 
-bool Game::isCheck() const {
-    return false;  // TODO
+bool Game::isStalemate() const {
+    return (!isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
 }
 
 void Game::makeMove(Move move) {
@@ -233,11 +234,13 @@ Game::Game(
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber) {}
 
+
+
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
-    if (piece == nullptr || piece->getColor() != currentPlayer->getColor()) {
+    if (piece == nullptr)
         return {};
-    }
+
     auto movesForPiece = piece->getMoves();
     if (piece->getType() == PieceType::KING) {
         if (possibleKingsideCastlingThisRound()) {
@@ -250,14 +253,47 @@ std::vector<Move> Game::getMovesFrom(Position position) const {
     return movesForPiece;
 }
 
-std::vector<Move> Game::getAllPlayerMoves(Player &player) const {
-    // todo - refactor to calculate from position to include castling
-    std::vector<Move> moves = {};
-    for (auto piece: player.getPieces()) {
-        auto pieceMoves = piece->getMoves();
+std::vector<Move> Game::getAllMovesForPlayer(Player *player) const {
+    std::vector<Move> moves;
+    for (auto piece: player->getPieces()) {
+        auto pieceMoves = getMovesFrom(piece->getPosition());
         moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
     }
+    return moves;
+}
 
+std::vector<Move> Game::getLegalMovesFrom(Position position) const {
+    auto piece = this->getPiece(position);
+    if (piece == nullptr || piece->getColor() != currentPlayer->getColor())
+        return {};
+
+    auto pieceColor = piece->getColor();
+    auto movesForPiece = getMovesFrom(position);
+    movesForPiece.erase(
+            std::remove_if(movesForPiece.begin(), movesForPiece.end(), [pieceColor, this](Move m) {
+                auto deepCopy = this->afterMove(m);
+                return deepCopy.isCheck(pieceColor);
+            }),
+            movesForPiece.end());
+
+    if (piece->getType() == PieceType::KING) {
+        // remove moves which are impossible to perform due to opponent's pieces controlling the square between
+        // king and rook
+        movesForPiece.erase(std::remove_if(movesForPiece.begin(), movesForPiece.end(),
+                                           [this](Move &move) {
+                                               return this->isCastlingObscuredByOpponent(move);
+                                           }),
+                            movesForPiece.end());
+    }
+    return movesForPiece;
+}
+
+std::vector<Move> Game::getLegalMovesForPlayer(Player *player) const {
+    std::vector<Move> moves = {};
+    for (auto piece: player->getPieces()) {
+        auto pieceMoves = getLegalMovesFrom(piece->getPosition());
+        moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
+    }
     return moves;
 }
 
@@ -297,13 +333,13 @@ void Game::refreshCastlingPossibilites(const Move &move) {
         if (move.getPiece()->getColor() == Color::WHITE) {
             if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 1) {
                 canWhiteQueensideCastle = false;
-            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8){
+            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8) {
                 canWhiteKingsideCastle = false;
             }
         } else {
             if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 1) {
                 canBlackQueensideCastle = false;
-            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8){
+            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8) {
                 canBlackKingsideCastle = false;
             }
         }
@@ -381,6 +417,74 @@ Move Game::generateQueenSideCastle() const {
     auto toPosition = Position(castlingRank, 3);
     return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
 }
+
+bool Game::isFieldControlledByPlayer(const Position &pos, Color colorOfPlayer) const {
+    Player *playerThatCouldControlTheField = (colorOfPlayer == Color::WHITE) ? whitePlayer : blackPlayer;
+    auto movesForControllingPlayer = getAllMovesForPlayer(playerThatCouldControlTheField);
+    auto controlsByNonPawns = std::any_of(movesForControllingPlayer.begin(),
+                                          movesForControllingPlayer.end(),
+                                          [pos](const Move &m) {
+                                              // pawns control different fields than the ones they can move to if they can't capture
+                                              return m.getTo() == pos && m.getPiece()->getType() != PieceType::PAWN;
+                                          });
+
+    // iterate through all pawns, cast them to pawns and if they are one, check whether any of the controlled
+    // fields matches the one we're comparing with
+    auto controlsByPawns = std::any_of(playerThatCouldControlTheField->getPieces().begin(),
+                                       playerThatCouldControlTheField->getPieces().end(),
+                                       [pos](Piece *piece) {
+                                           auto castToPawn = dynamic_cast<Pawn *>(piece);
+                                           if (castToPawn != nullptr) {
+                                               auto positionsControlled = castToPawn->attackedPositions();
+                                               return std::any_of(
+                                                       positionsControlled.begin(),
+                                                       positionsControlled.end(),
+                                                       [pos](Position attackedPos) { return pos == attackedPos; });
+                                           } else return false;
+                                       });
+    return controlsByNonPawns || controlsByPawns;
+}
+
+
+bool Game::isCheck(Color colorOfCheckedKing) const {
+    auto possiblyCheckedKing = (colorOfCheckedKing == Color::WHITE) ? board->getWhiteKing() : board->getBlackKing();
+    Player *possiblyCheckingPlayer = (colorOfCheckedKing == Color::WHITE) ? blackPlayer : whitePlayer;
+    auto movesForCheckingPlayer = getAllMovesForPlayer(possiblyCheckingPlayer);
+    if (std::any_of(movesForCheckingPlayer.begin(),
+                    movesForCheckingPlayer.end(),
+                    [possiblyCheckedKing](const Move &m) {
+                        return m.getCapturedPiece() == possiblyCheckedKing;
+                    }))
+        return true;
+    return false;
+}
+
+Game Game::afterMove(Move move) const {
+    auto deepCopy = Game::fromFEN(this->toFEN());
+    auto sourcePiece = deepCopy.getPiece(move.getFrom());
+
+    Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : deepCopy.getPiece(
+            move.getCapturedPiece()->getPosition());
+    auto moveEquivalentForDeepCopy = Move(move.getFrom(), move.getTo(), sourcePiece, takenPiece);
+    deepCopy.makeMove(moveEquivalentForDeepCopy);
+    return deepCopy;
+}
+
+bool Game::isCastlingObscuredByOpponent(Move &move) const {
+    if (isCheck(move.getPiece()->getColor()))
+        return true;
+
+    auto row = move.getTo().getRow();
+    auto lowestColToCheck = std::min(move.getTo().getCol(), move.getFrom().getCol()) + 1;
+    auto upperLimit = std::max(move.getTo().getCol(), move.getFrom().getCol());
+    auto opponentColor = (move.getPiece()->getColor() == Color::WHITE) ? Color::BLACK : Color::WHITE;
+    for (auto col = lowestColToCheck; col < upperLimit; col++) {
+        if (isFieldControlledByPlayer(Position(row, col), opponentColor))
+            return true;
+    }
+    return false;
+}
+
 
 std::vector<std::string> split(const std::string &txt, char ch) {
     std::vector<std::string> strings;

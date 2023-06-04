@@ -218,7 +218,7 @@ void MainWindow::changePickedField(GameField *const new_picked) {
 
     }
     if (new_picked != nullptr) { // if the new picked is a field
-        validMoves = game->getMovesFrom(Position(new_picked->getY(), new_picked->getX()));
+        validMoves = game->getLegalMovesFrom(Position(new_picked->getY(), new_picked->getX()));
         // update the mark of the newly picked field
         //emit updateFieldPiece(new_picked->getX(), new_picked->getY(), new_picked->getPiece());
         emit updateFieldMark(new_picked->getX(), new_picked->getY(), true);

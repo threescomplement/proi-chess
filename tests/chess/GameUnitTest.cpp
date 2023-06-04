@@ -66,7 +66,7 @@ namespace GameUnitTest {
         game.makeMove(pawnMove);
 
 
-        Move problematic_move = Move(pos("d3"), pos("f5"), game.getPiece(pos("d3")), game.getPiece(pos("f5")) );
+        Move problematic_move = Move(pos("d3"), pos("f5"), game.getPiece(pos("d3")), game.getPiece(pos("f5")));
 
 
         std::vector<Move> legalMoves = game.getMovesFrom(pos("d3"));
@@ -83,10 +83,11 @@ namespace GameUnitTest {
         game.makeMove(pawnMove);
 
 
-        Move enPassantTake = Move(pos("b5"), pos("a6"), game.getPiece(pos("b5")), game.getPiece(pos("a5")) );
+        Move enPassantTake = Move(pos("b5"), pos("a6"), game.getPiece(pos("b5")), game.getPiece(pos("a5")));
         std::vector<Move> legalMoves = game.getMovesFrom(pos("b5"));
 
-        ASSERT_TRUE(std::find(legalMoves.begin(), legalMoves.end(), enPassantTake) != legalMoves.end()); // is that move available
+        ASSERT_TRUE(std::find(legalMoves.begin(), legalMoves.end(), enPassantTake) !=
+                    legalMoves.end()); // is that move available
         game.makeMove(enPassantTake);
         ASSERT_EQ(game.toFEN(), "rnbqkbnr/1pppp1pp/P4p2/8/8/8/P1PPPPPP/RNBQKBNR b KQkq - 0 3");
 
@@ -152,31 +153,19 @@ namespace GameUnitTest {
     }
 
 
-    TEST(Game, fromFENCastling) {
-        FAIL();
-    }
-
-    TEST(Game, fromFENInvalidHalfmoveClock) {
-        FAIL();
-    }
-
-    TEST(Game, fromFEN) {
-        FAIL();
-    }
-
     /**
      * 1. e4a6 2.e5d5 3.exd6 - checking the value of enPassantTargetPiece after each move and performing enPassant
      */
     TEST(Game, staticEnPassantMechanics) {
         auto game = Game();
-        auto whiteEPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("e2"))->getPiece());
-        auto blackAPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("a7"))->getPiece());
-        auto blackDPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("d7"))->getPiece());
+        auto whiteEPawn = dynamic_cast<Pawn *>(game.getBoard()->getField(pos("e2"))->getPiece());
+        auto blackAPawn = dynamic_cast<Pawn *>(game.getBoard()->getField(pos("a7"))->getPiece());
+        auto blackDPawn = dynamic_cast<Pawn *>(game.getBoard()->getField(pos("d7"))->getPiece());
 
         ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
         // e4
         game.makeMove(Move(pos("e2"), pos("e4"), whiteEPawn, nullptr));
-        ASSERT_EQ(game.getEnPassantTargetPiece(), dynamic_cast<Pawn*>(whiteEPawn));
+        ASSERT_EQ(game.getEnPassantTargetPiece(), dynamic_cast<Pawn *>(whiteEPawn));
         // a6
         game.makeMove(Move(pos("a7"), pos("a6"), blackAPawn, nullptr));
         ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
@@ -199,9 +188,9 @@ namespace GameUnitTest {
     TEST(Game, enforceCurrentPlayerTurn) {
         auto game = Game();
         ASSERT_EQ(game.getCurrentPlayer()->getColor(), Color::WHITE);
-        ASSERT_EQ(game.getMovesFrom(pos("e7")).size(), 0);
+        ASSERT_EQ(game.getLegalMovesFrom(pos("e7")).size(), 0);
 
-        auto whiteEPawn = dynamic_cast<Pawn*>(game.getBoard()->getField(pos("e2"))->getPiece());
+        auto whiteEPawn = dynamic_cast<Pawn *>(game.getBoard()->getField(pos("e2"))->getPiece());
         game.makeMove(Move(pos("e2"), pos("e4"), whiteEPawn, nullptr));
         ASSERT_EQ(game.getCurrentPlayer()->getColor(), Color::BLACK);
         ASSERT_EQ(game.getMovesFrom(pos("e7")).size(), 2);
@@ -388,6 +377,26 @@ namespace GameUnitTest {
         ASSERT_EQ(game.getCurrentPlayer()->getColor(), Color::WHITE);
     }
 
+    TEST(Game, fromFENCastling) {
+        auto game = Game::fromFEN("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1");
+        auto whiteKing = game.getPiece(pos("e1"));
+        auto blackKing = game.getPiece(pos("e8"));
+        auto whiteKingsideCastle = Move(pos("e1"), pos("g1"), whiteKing, nullptr);
+        auto blackKingsideCastle = Move(pos("e8"), pos("g8"), blackKing, nullptr);
+        auto whiteQueensideCastle = Move(pos("e1"), pos("c1"), whiteKing, nullptr);
+        auto blackQueensideCastle = Move(pos("e8"), pos("c8"), blackKing, nullptr);
+
+        auto whiteKingMoves = game.getMovesFrom(pos("e1"));
+        auto blackKingMoves = game.getMovesFrom(pos("e8"));
+
+        ASSERT_FALSE(in(blackKingMoves, blackKingsideCastle));
+        ASSERT_FALSE(in(blackKingMoves, blackQueensideCastle));
+        ASSERT_FALSE(in(whiteKingMoves, whiteKingsideCastle));
+        ASSERT_FALSE(in(whiteKingMoves, whiteQueensideCastle));
+        ASSERT_EQ(whiteKingMoves.size(), 2);
+        ASSERT_EQ(blackKingMoves.size(), 2);
+    }
+
     TEST(Game, castlingBugWhenFlagTakenDownByWrongRook) {
         auto game = Game::fromFEN("4k2r/r7/8/8/8/8/7R/R3K3 w Qk - 0 1");
         auto whiteKing = game.getPiece(pos("e1"));
@@ -431,4 +440,130 @@ namespace GameUnitTest {
         ASSERT_FALSE(in(blackKingMoves, blackQueensideCastle));
     }
 
+    TEST(Game, queenCheck) {
+        auto game = Game::fromFEN("rnb1kbnr/ppppqppp/8/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1");
+        ASSERT_TRUE(game.isCheck(Color::WHITE));
+        ASSERT_FALSE(game.isCheck(Color::BLACK));
+    }
+
+    TEST(Game, pawnCheck) {
+        auto game = Game::fromFEN("rnbqkbn1/pppppPpp/8/8/8/8/PPPPPPPP/RNBQK1NR w KQq - 0 1");
+        ASSERT_TRUE(game.isCheck(Color::BLACK));
+        ASSERT_FALSE(game.isCheck(Color::WHITE));
+    }
+
+    TEST(Game, rookCheck) {
+        auto game = Game::fromFEN("rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKrNR w KQq - 0 1");
+        ASSERT_TRUE(game.isCheck(Color::WHITE));
+        ASSERT_FALSE(game.isCheck(Color::BLACK));
+    }
+
+    TEST(Game, bishopCheck) {
+        auto game = Game::fromFEN("rnbqkbnr/pp2pppp/2Bp4/8/8/5N2/PPPPPPPP/RNBQK2R w KQkq - 0 1");
+        ASSERT_FALSE(game.isCheck(Color::WHITE));
+        ASSERT_TRUE(game.isCheck(Color::BLACK));
+    }
+
+    TEST(Game, knightCheck) {
+        auto game2 = Game::fromFEN("rnbqkbnr/pppppppp/5N2/8/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1");
+        ASSERT_FALSE(game2.isCheck(Color::WHITE));
+        ASSERT_TRUE(game2.isCheck(Color::BLACK));
+    }
+
+    TEST(Game, afterMove1) {
+        auto game = Game::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        auto e4 = Move(pos("e2"), pos("e4"), game.getPiece(pos("e2")), nullptr);
+        auto copy = game.afterMove(e4);
+
+        ASSERT_TRUE(game.getPiece(pos("e2")) != nullptr);
+        ASSERT_TRUE(game.getPiece(pos("e4")) == nullptr);
+
+        ASSERT_TRUE(copy.getPiece(pos("e2")) == nullptr);
+        ASSERT_TRUE(copy.getPiece(pos("e4")) != nullptr);
+    }
+
+    TEST(Game, afterMove2) {
+        auto game = Game::fromFEN("rnbqkbnr/ppppp2p/6p1/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3");
+        auto exf6 = Move(pos("e5"), pos("f6"), game.getPiece(pos("e5")), game.getPiece(pos("f5")));
+        auto copy = game.afterMove(exf6);
+
+        ASSERT_TRUE(game.getPiece(pos("e5")) != nullptr);
+        ASSERT_TRUE(game.getPiece(pos("f5")) != nullptr);
+        ASSERT_TRUE(game.getPiece(pos("f6")) == nullptr);
+
+        ASSERT_TRUE(copy.getPiece(pos("e5")) == nullptr);
+        ASSERT_TRUE(copy.getPiece(pos("f5")) == nullptr);
+        ASSERT_TRUE(copy.getPiece(pos("f6")) != nullptr);
+    }
+
+    TEST(Game, availableMovesUnderCheck) {
+        auto game = Game::fromFEN("k7/8/8/8/8/6b1/3PP3/3PKP2 w - - 0 1");
+        auto onlyMove = Move(pos("f1"), pos("f2"), game.getPiece(pos("f1")), nullptr);
+        auto movesForWhite = game.getLegalMovesForPlayer(game.getWhitePlayer());
+
+        ASSERT_TRUE(in(movesForWhite, onlyMove));
+        ASSERT_EQ(movesForWhite.size(), 1);
+    }
+
+    TEST(Game, pinnedPieceCanOnlyCapturePinner) {
+        auto game = Game::fromFEN("3k4/8/8/8/8/5q2/4B3/3K4 w - - 0 1");
+        auto onlyMove = Move(pos("e2"), pos("f3"), game.getPiece(pos("e2")), game.getPiece(pos("f3")));
+        auto movesForWhiteBishop = game.getLegalMovesFrom(pos("e2"));
+
+        ASSERT_TRUE(in(movesForWhiteBishop, onlyMove));
+        ASSERT_EQ(movesForWhiteBishop.size(), 1);
+    }
+
+    TEST(Game, cantCastleUnderCheck) {
+        auto game = Game::fromFEN("rnbqk2r/ppppQppp/3n2N1/8/8/8/PPPP1PPP/RNB1KB1R b KQkq - 0 1");
+        auto onlyMove = Move(pos("d8"), pos("e7"), game.getPiece(pos("d8")), game.getPiece(pos("e7")));
+        auto movesForBlack = game.getLegalMovesForPlayer(game.getBlackPlayer());
+
+        ASSERT_TRUE(in(movesForBlack, onlyMove));
+        ASSERT_EQ(movesForBlack.size(), 1);
+    }
+
+    TEST(Game, cantCastleThroughCheck) {
+        auto game = Game::fromFEN("rnbqk2r/pppp2pp/3n2N1/8/8/5Q2/PPPP1PPP/RNB1KB1R b KQkq - 0 1");
+        auto movesForBlackKing = game.getLegalMovesFrom(pos("e8"));
+        ASSERT_TRUE(movesForBlackKing.empty());
+    }
+
+    TEST(Game, cantCastleThroughPawnsControlOfAField) {
+        auto game = Game::fromFEN("rnbqkbnr/ppppppp1/8/8/8/8/PPpPPPPP/R3KBNR w KQkq - 0 1");
+        auto movesForWhiteKing = game.getLegalMovesFrom(pos("e1"));
+        ASSERT_TRUE(movesForWhiteKing.empty());
+    }
+
+    TEST(Game, isMate1) {
+        auto game = Game::fromFEN("r1bqkbnr/pppp1Qp1/2n4p/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1");
+        ASSERT_TRUE(game.isMate());
+    }
+
+    TEST(Game, isMate2) {
+        auto game = Game::fromFEN("r1bqkb1r/pppp1Qp1/2nn3p/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1");
+        ASSERT_FALSE(game.isMate());
+    }
+
+    TEST(Game, isMate3) {
+        auto game = Game::fromFEN("r1b1k2r/ppppqppp/8/8/1PP2Bn1/3n1N2/1P1NPPPP/R2QKB1R w KQkq - 0 1");
+        ASSERT_TRUE(game.isMate());
+    }
+
+    TEST(Game, isMate4) {
+        auto game = Game::fromFEN("rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/R3K2r w Qq - 0 1");
+        auto isCheck = game.isCheck(Color::WHITE);
+        auto moves = game.getLegalMovesForPlayer(game.getWhitePlayer());
+        ASSERT_TRUE(game.isMate());
+    }
+
+    TEST(Game, isStalemate1) {
+        auto game = Game::fromFEN("1k6/8/8/8/8/8/2q5/K7 w - - 0 1");
+        ASSERT_TRUE(game.isStalemate());
+    }
+
+    TEST(Game, isStalemate2) {
+        auto game = Game::fromFEN("1k6/4R3/8/8/R7/8/8/K1Q5 b - - 0 1");
+        ASSERT_TRUE(game.isStalemate());
+    }
 }
