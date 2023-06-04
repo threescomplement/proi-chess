@@ -84,14 +84,13 @@ namespace GameUnitTest {
 
 
         Move enPassantTake = Move(pos("b5"), pos("a6"), game.getPiece(pos("b5")), game.getPiece(pos("a5")) );
-
-
         std::vector<Move> legalMoves = game.getMovesFrom(pos("b5"));
+
         ASSERT_TRUE(std::find(legalMoves.begin(), legalMoves.end(), enPassantTake) != legalMoves.end()); // is that move available
         game.makeMove(enPassantTake);
         ASSERT_EQ(game.toFEN(), "rnbqkbnr/1pppp1pp/P4p2/8/8/8/P1PPPPPP/RNBQKBNR b KQkq - 0 3");
 
-        //ASSERT_EQ(pos("b4"), onlyMove.getTo());
+//        ASSERT_EQ(pos("b4"), onlyMove.getTo());
     }
 
 
