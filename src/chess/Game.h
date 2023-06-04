@@ -87,6 +87,9 @@ public:
 
     void makeMove(Move move);
 
+    /**
+     * Creates a deep copy of the board and makes a given move on it.
+     * */
     Game afterMove(Move move) const;
 
     /**
