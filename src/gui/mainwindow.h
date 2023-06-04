@@ -99,8 +99,6 @@ signals:
 private slots:
 
 
-    void on_newGameButton_clicked();
-
     void on_actionRegular_game_triggered();
 
     void on_actionGame_from_FEN_triggered();

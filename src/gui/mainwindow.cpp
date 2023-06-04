@@ -317,11 +317,6 @@ void MainWindow::on_actionRegular_game_triggered() {
 }
 
 
-void MainWindow::on_newGameButton_clicked() {
-    newGame(false);
-}
-
-
 void MainWindow::on_actionNew_bot_game_from_FEN_triggered() {
     bool ok;
     QStringList colorPicker = {"White", "Black"};
