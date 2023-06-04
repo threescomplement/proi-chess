@@ -197,7 +197,7 @@ void MainWindow::makeMove(Move const *move) {
     checkIfMate();
     //make potential bot move
 
-    //handleBotMove();
+    handleBotMove();
     checkIfMate();
 
     updateBoardDisplay();
@@ -251,18 +251,19 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
         changePickedField(nullptr);
     }
 
-//    delete stockfishBot;
+    delete stockfishBot;
 
 
     delete game;
     game = newGame;
-    if (botGame) {
+    this->botGame = botGame;
+    this->botColor = botColor;
+    if (this->botGame) {
         stockfishBot = new StockfishBot(*game);
 
     }
     handleBotMove();
-    this->botGame = botGame;
-    this->botColor = botColor;
+
 
     updateBoardDisplay();
 
