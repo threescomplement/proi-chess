@@ -418,6 +418,34 @@ Move Game::generateQueenSideCastle() const {
     return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
 }
 
+bool Game::isFieldControlledByPlayer(const Position &pos, Color colorOfPlayer) const {
+    Player *playerThatCouldControlTheField = (colorOfPlayer == Color::WHITE) ? whitePlayer : blackPlayer;
+    auto movesForControllingPlayer = getAllMovesForPlayer(playerThatCouldControlTheField);
+    auto controlsByNonPawns = std::any_of(movesForControllingPlayer.begin(),
+                                          movesForControllingPlayer.end(),
+                                          [pos](const Move &m) {
+                                              // pawns control different fields than the ones they can move to if they can't capture
+                                              return m.getTo() == pos && m.getPiece()->getType() != PieceType::PAWN;
+                                          });
+
+    // iterate through all pawns, cast them to pawns and if they are one, check whether any of the controlled
+    // fields matches the one we're comparing with
+    auto controlsByPawns = std::any_of(playerThatCouldControlTheField->getPieces().begin(),
+                                       playerThatCouldControlTheField->getPieces().end(),
+                                       [pos](Piece *piece) {
+                                           auto castToPawn = dynamic_cast<Pawn *>(piece);
+                                           if (castToPawn != nullptr) {
+                                               auto positionsControlled = castToPawn->attackedPositions();
+                                               return std::any_of(
+                                                       positionsControlled.begin(),
+                                                       positionsControlled.end(),
+                                                       [pos](Position attackedPos) { return pos == attackedPos; });
+                                           } else return false;
+                                       });
+    return controlsByNonPawns || controlsByPawns;
+}
+
+
 bool Game::isCheck(Color colorOfCheckedKing) const {
     auto possiblyCheckedKing = (colorOfCheckedKing == Color::WHITE) ? board->getWhiteKing() : board->getBlackKing();
     Player *possiblyCheckingPlayer = (colorOfCheckedKing == Color::WHITE) ? blackPlayer : whitePlayer;
@@ -440,6 +468,18 @@ Game Game::afterMove(Move move) const {
     auto moveEquivalentForDeepCopy = Move(move.getFrom(), move.getTo(), sourcePiece, takenPiece);
     deepCopy.makeMove(moveEquivalentForDeepCopy);
     return deepCopy;
+}
+
+bool Game::isCastlingObscuredByOpponent(Move &move) const {
+    auto row = move.getTo().getRow();
+    auto lowestColToCheck = std::min(move.getTo().getCol(), move.getFrom().getCol()) + 1;
+    auto upperLimit = std::max(move.getTo().getCol(), move.getFrom().getCol());
+    auto opponentColor = (move.getPiece()->getColor() == Color::WHITE) ? Color::BLACK : Color::WHITE;
+    for (auto col = lowestColToCheck; col < upperLimit; col++) {
+        if (isFieldControlledByPlayer(Position(row, col), opponentColor))
+            return true;
+    }
+    return false;
 }
 
 
