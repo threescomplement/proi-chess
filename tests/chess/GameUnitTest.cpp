@@ -487,4 +487,13 @@ namespace GameUnitTest {
         ASSERT_TRUE(copy.getPiece(pos("f5")) == nullptr);
         ASSERT_TRUE(copy.getPiece(pos("f6")) != nullptr);
     }
+
+    TEST(Game, hasToAvoidCheck1) {
+        auto game = Game::fromFEN("k7/8/8/8/8/6b1/3PP3/3PKP2 w - - 0 1");
+        auto onlyMove = Move(pos("f1"), pos("f2"), game.getPiece(pos("f1")), nullptr);
+        auto movesForWhite = game.getLegalMovesForPlayer(game.getWhitePlayer());
+
+        ASSERT_TRUE(in(movesForWhite, onlyMove));
+        ASSERT_EQ(movesForWhite.size(), 1);
+    }
 }
