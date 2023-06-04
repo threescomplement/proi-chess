@@ -1,4 +1,5 @@
 #include <map>
+#include <algorithm>
 #include "Game.h"
 #include "Board.h"
 #include "Color.h"
@@ -251,15 +252,15 @@ std::vector<Move> Game::getAllMovesFrom(Position position) const {
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
-    if (piece != nullptr && piece->getColor() == getCurrentPlayer()->getColor()){
+    if (piece != nullptr && piece->getColor() == getCurrentPlayer()->getColor()) {
         return getAllMovesFrom(position);
     }
     return {};
 }
 
-std::vector<Move> Game::getAllPlayerMoves(Player &player) const {
+std::vector<Move> Game::getAllPlayerMoves(Player *player) const {
     std::vector<Move> moves = {};
-    for (auto piece: player.getPieces()) {
+    for (auto piece: player->getPieces()) {
         auto pieceMoves = getAllMovesFrom(piece->getPosition());
         moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
     }
@@ -302,13 +303,13 @@ void Game::refreshCastlingPossibilites(const Move &move) {
         if (move.getPiece()->getColor() == Color::WHITE) {
             if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 1) {
                 canWhiteQueensideCastle = false;
-            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8){
+            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8) {
                 canWhiteKingsideCastle = false;
             }
         } else {
             if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 1) {
                 canBlackQueensideCastle = false;
-            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8){
+            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8) {
                 canBlackKingsideCastle = false;
             }
         }
@@ -386,6 +387,20 @@ Move Game::generateQueenSideCastle() const {
     auto toPosition = Position(castlingRank, 3);
     return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
 }
+
+bool Game::isCheck(Color colorOfCheckedKing) const {
+    auto possiblyCheckedKing = (colorOfCheckedKing == Color::WHITE) ? board->getWhiteKing() : board->getBlackKing();
+    Player *possiblyCheckingPlayer = (colorOfCheckedKing == Color::WHITE) ? blackPlayer : whitePlayer;
+    auto movesForCheckingPlayer = getAllPlayerMoves(possiblyCheckingPlayer);
+    if (std::any_of(movesForCheckingPlayer.begin(),
+                    movesForCheckingPlayer.end(),
+                    [possiblyCheckedKing](const Move &m) {
+                        return m.getCapturedPiece() == possiblyCheckedKing;
+                    }))
+        return true;
+    return false;
+}
+
 
 std::vector<std::string> split(const std::string &txt, char ch) {
     std::vector<std::string> strings;

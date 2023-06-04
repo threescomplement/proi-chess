@@ -13,6 +13,7 @@ class Position;
 class King;
 class Pawn;
 class Move;
+enum class Color;
 
 class Game {
 private:
@@ -102,10 +103,11 @@ public:
      * All possible moves for a player not taking the current turn into account.
      * Like getAllMovesFrom for all pieces in one vector.
      * */
-    std::vector<Move> getAllPlayerMoves(Player &player) const;
+    std::vector<Move> getAllPlayerMoves(Player *player) const;
 
     bool isMate() const;
 
+    bool isCheck(Color colorOfCheckedKing) const;
 
     /**
      * Get the pawn threatened by en passant based on enPassantTargetLocation
