@@ -131,7 +131,7 @@ void GameField::setMark(bool new_mark) {
     marked = new_mark;
     if (marked) {
         overlay->setPixmap(
-                QPixmap(":/resources/orange_frame_overlay.png").scaled(fieldSize, fieldSize,
+                QPixmap(":/resources/green_selection_mask_rectangular.png").scaled(fieldSize, fieldSize,
                                                                        Qt::AspectRatioMode::KeepAspectRatio));
     } else {
         overlay->setPixmap(QPixmap());
