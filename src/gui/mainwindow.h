@@ -69,6 +69,8 @@ private:
 
     void checkIfMate();
 
+    //void checkIfStalemate();
+
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
 

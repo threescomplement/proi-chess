@@ -58,11 +58,12 @@ void MainWindow::createBoard(Color side) {
     for (auto child: ui->GameBoard->children()) {
         delete child;
     }
-    ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
+
     //ui->GameBoard->setScaledContents(true);
+    ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
     ui->GameBoard->setAlignment(Qt::AlignLeft);
-    //ui->GameBoard->setAlignment(Qt::AlignTop);
-    for (int row = 1; row <= BOARD_HEIGHT; row++) {
+
+    for(int row = 1; row <= BOARD_HEIGHT; row++) {
         for (int column = 1; column <= BOARD_WIDTH; column++) {
             int fieldRow;
             int fieldColumn;
@@ -266,8 +267,6 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
 
 
     updateBoardDisplay();
-
-
 }
 
 
@@ -366,7 +365,16 @@ void MainWindow::on_actionCopy_FEN_to_clipboard_triggered() {
     }
 
 #if defined(Q_OS_LINUX)
-    QThread::msleep(1); //workaround for copied text not being available...
+    QThread::msleep(1); //workaround copying on linux not working properly
 #endif
 }
+
+//void MainWindow::checkIfStalemate() {
+//    if (game->isStalemate()) {
+//        QMessageBox::warning(
+//                this,
+//                tr("Game Over"),
+//                tr("Stalemate!"));
+//    }
+//}
 
