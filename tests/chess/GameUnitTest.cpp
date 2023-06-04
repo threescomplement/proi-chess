@@ -520,4 +520,10 @@ namespace GameUnitTest {
         auto movesForBlackKing = game.getLegalMovesFrom(pos("e8"));
         ASSERT_TRUE(movesForBlackKing.empty());
     }
+
+    TEST(Game, cantCastleThroughPawnsControlOfAField) {
+        auto game = Game::fromFEN("rnbqkbnr/ppppppp1/8/8/8/8/PPpPPPPP/R3KBNR w KQkq - 0 1");
+        auto movesForWhiteKing = game.getLegalMovesFrom(pos("e1"));
+        ASSERT_TRUE(movesForWhiteKing.empty());
+    }
 }
