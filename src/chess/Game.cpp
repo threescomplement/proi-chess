@@ -233,11 +233,10 @@ Game::Game(
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber) {}
 
-std::vector<Move> Game::getMovesFrom(Position position) const {
+std::vector<Move> Game::getAllMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
-    if (piece == nullptr || piece->getColor() != currentPlayer->getColor()) {
-        return {};
-    }
+//    if (piece == nullptr)
+//        return {}; todo: do we need it?
     auto movesForPiece = piece->getMoves();
     if (piece->getType() == PieceType::KING) {
         if (possibleKingsideCastlingThisRound()) {
@@ -250,14 +249,20 @@ std::vector<Move> Game::getMovesFrom(Position position) const {
     return movesForPiece;
 }
 
+std::vector<Move> Game::getMovesFrom(Position position) const {
+    auto piece = this->getPiece(position);
+    if (piece != nullptr && piece->getColor() == getCurrentPlayer()->getColor()){
+        return getAllMovesFrom(position);
+    }
+    return {};
+}
+
 std::vector<Move> Game::getAllPlayerMoves(Player &player) const {
-    // todo - refactor to calculate from position to include castling
     std::vector<Move> moves = {};
     for (auto piece: player.getPieces()) {
-        auto pieceMoves = piece->getMoves();
+        auto pieceMoves = getAllMovesFrom(piece->getPosition());
         moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
     }
-
     return moves;
 }
 

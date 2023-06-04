@@ -87,17 +87,29 @@ public:
 
     Game afterMove(Move move) const;
 
+    /**
+     * All possible moves from a field during current turn.
+     * */
     std::vector<Move> getMovesFrom(Position position) const;
 
+    /**
+     * All possible moves from a field not taking the current turn into account - if there is a piece on it, it returns
+     * its moves.
+     * */
+    std::vector<Move> getAllMovesFrom(Position position) const;
+
+    /**
+     * All possible moves for a player not taking the current turn into account.
+     * Like getAllMovesFrom for all pieces in one vector.
+     * */
     std::vector<Move> getAllPlayerMoves(Player &player) const;
 
     bool isMate() const;
 
-    bool isCheck() const;
 
     /**
      * Get the pawn threatened by en passant based on enPassantTargetLocation
-     * @throws std::bas_cast if the piece is not a pawn or there is no piece
+     * @throws std::bad_cast if the piece is not a pawn or there is no piece
      */
     Pawn *getEnPassantTargetPiece() const;
 
