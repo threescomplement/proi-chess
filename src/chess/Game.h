@@ -40,6 +40,7 @@ private:
     std::string castlingAvailabilityFEN() const;
 
     void refreshEnPassant();
+    bool isCastlingObscuredByOpponent(Move &move) const;
 
     /**
      * If king move, disable castling in both directions for moving player. If rook move, disable castling
@@ -113,6 +114,8 @@ public:
     bool isMate() const;
 
     bool isCheck(Color colorOfCheckedKing) const;
+
+    bool isFieldControlledByPlayer(const Position &pos, Color colorOfPlayer) const;
 
     /**
      * Get the pawn threatened by en passant based on enPassantTargetLocation

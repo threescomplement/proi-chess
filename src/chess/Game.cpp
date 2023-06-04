@@ -263,7 +263,6 @@ std::vector<Move> Game::getAllMovesForPlayer(Player *player) const {
 }
 
 std::vector<Move> Game::getLegalMovesFrom(Position position) const {
-    //todo: castling out of check and through check
     auto piece = this->getPiece(position);
     if (piece == nullptr || piece->getColor() != currentPlayer->getColor())
         return {};
@@ -277,6 +276,15 @@ std::vector<Move> Game::getLegalMovesFrom(Position position) const {
             }),
             movesForPiece.end());
 
+    if (piece->getType() == PieceType::KING) {
+        // remove moves which are impossible to perform due to opponent's pieces controlling the square between
+        // king and rook
+        movesForPiece.erase(std::remove_if(movesForPiece.begin(), movesForPiece.end(),
+                                           [this](Move &move) {
+                                               return this->isCastlingObscuredByOpponent(move);
+                                           }),
+                            movesForPiece.end());
+    }
     return movesForPiece;
 }
 
