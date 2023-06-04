@@ -488,12 +488,36 @@ namespace GameUnitTest {
         ASSERT_TRUE(copy.getPiece(pos("f6")) != nullptr);
     }
 
-    TEST(Game, hasToAvoidCheck1) {
+    TEST(Game, availableMovesUnderCheck) {
         auto game = Game::fromFEN("k7/8/8/8/8/6b1/3PP3/3PKP2 w - - 0 1");
         auto onlyMove = Move(pos("f1"), pos("f2"), game.getPiece(pos("f1")), nullptr);
         auto movesForWhite = game.getLegalMovesForPlayer(game.getWhitePlayer());
 
         ASSERT_TRUE(in(movesForWhite, onlyMove));
         ASSERT_EQ(movesForWhite.size(), 1);
+    }
+
+    TEST(Game, pinnedPieceCanOnlyCapturePinner) {
+        auto game = Game::fromFEN("3k4/8/8/8/8/5q2/4B3/3K4 w - - 0 1");
+        auto onlyMove = Move(pos("e2"), pos("f3"), game.getPiece(pos("e2")), game.getPiece(pos("f3")));
+        auto movesForWhiteBishop = game.getLegalMovesFrom(pos("e2"));
+
+        ASSERT_TRUE(in(movesForWhiteBishop, onlyMove));
+        ASSERT_EQ(movesForWhiteBishop.size(), 1);
+    }
+
+    TEST(Game, cantCastleUnderCheck) {
+        auto game = Game::fromFEN("rnbqk2r/ppppQppp/3n2N1/8/8/8/PPPP1PPP/RNB1KB1R b KQkq - 0 1");
+        auto onlyMove = Move(pos("d8"), pos("e7"), game.getPiece(pos("d8")), game.getPiece(pos("e7")));
+        auto movesForBlack = game.getLegalMovesForPlayer(game.getBlackPlayer());
+
+        ASSERT_TRUE(in(movesForBlack, onlyMove));
+        ASSERT_EQ(movesForBlack.size(), 1);
+    }
+
+    TEST(Game, cantCastleThroughCheck) {
+        auto game = Game::fromFEN("rnbqk2r/pppp2pp/3n2N1/8/8/5Q2/PPPP1PPP/RNB1KB1R b KQkq - 0 1");
+        auto movesForBlackKing = game.getLegalMovesFrom(pos("e8"));
+        ASSERT_TRUE(movesForBlackKing.empty());
     }
 }
