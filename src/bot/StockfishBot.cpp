@@ -8,7 +8,7 @@
 
 const std::string StockfishBot::stockfishProgramName = "stockfish";
 
-QString StockfishBot::getStockfishOutput(const char *command) {
+QString StockfishBot::getStockfishOutput(const char *positionCmd, const char *goCmd) {
     // Create a QtProcess object
     QProcess stockfish;
 
@@ -24,8 +24,8 @@ QString StockfishBot::getStockfishOutput(const char *command) {
     // Write commands to Stockfish's stdin
     stockfish.write("uci\n"); // Initialize UCI mode
     stockfish.write("ucinewgame\n"); // Start a new game
-    stockfish.write(command); // Set the chessboard position in FEN notation
-    stockfish.write("go depth 10\n"); // Ask Stockfish to calculate the best move with depth 10
+    stockfish.write(positionCmd); // Set the chessboard position in FEN notation
+    stockfish.write(goCmd); // Ask Stockfish to calculate the best move with given depth
 
     while (true) {
         stockfish.waitForReadyRead();
@@ -40,20 +40,23 @@ QString StockfishBot::getStockfishOutput(const char *command) {
     return "";
 }
 
-QString StockfishBot::getStockfishOutput(std::string fen) {
-    std::stringstream ss;
-    ss << "position fen " << fen << "\n";
-    return StockfishBot::getStockfishOutput(ss.str().c_str());
+QString StockfishBot::getStockfishOutput(const std::string &fen) const {
+    std::stringstream positionCmd;
+    positionCmd << "position fen " << fen << "\n";
+    std::stringstream goCmd;
+    goCmd << "go depth " << this->getDepth() << "\n";
+
+    return StockfishBot::getStockfishOutput(positionCmd.str().c_str(), goCmd.str().c_str());
 }
 
-std::string StockfishBot::extractMove(QString stockfishOutput) {
+std::string StockfishBot::extractMove(const QString &stockfishOutput) {
     std::string str = stockfishOutput.toStdString();
     std::string pattern = "bestmove ";
     auto idx = str.find(pattern);
     return str.substr(idx + pattern.size(), 4);
 }
 
-Move StockfishBot::getMoveFromStockfish(std::string gameFEN) const {
+Move StockfishBot::getMoveFromStockfish(const std::string &gameFEN) const {
     auto moveStr = extractMove(getStockfishOutput(gameFEN));
     auto sourcePosition = Position::fromString(moveStr.substr(0, 2));
     auto targetPosition = Position::fromString(moveStr.substr(2, 2));
@@ -68,3 +71,5 @@ Move StockfishBot::getMoveFromStockfish(std::string gameFEN) const {
 Move StockfishBot::getBestNextMove() const {
     return this->getMoveFromStockfish(game.toFEN());
 }
+
+StockfishBot::StockfishBot(const Game &game, int depth) : ChessBot(game, depth) {}

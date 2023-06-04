@@ -11,18 +11,18 @@
  */
 class StockfishBot : public ChessBot {
 private:
-    Move getMoveFromStockfish(std::string gameFEN) const;
+    Move getMoveFromStockfish(const std::string& gameFEN) const;
 
     static const std::string stockfishProgramName;
 
-    static QString getStockfishOutput(const char *command);
+    QString getStockfishOutput(const std::string& fen) const;
 
-    static QString getStockfishOutput(std::string fen);
+    static QString getStockfishOutput(const char *positionCmd, const char *goCmd);
 
-    static std::string extractMove(QString stockfishOutput);
+    static std::string extractMove(const QString& stockfishOutput);
 
 public:
-    using ChessBot::ChessBot;
+    explicit StockfishBot(const Game &game, int depth = 10);
 
     Move getBestNextMove() const override;
 };
