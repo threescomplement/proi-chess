@@ -76,7 +76,8 @@ public:
 
     void makeMove(Move const *move);
 
-    void newGame(bool botGame, Color bot_color = Color::BLACK, std::string fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    void newGame(bool botGame, Color bot_color = Color::BLACK,
+                 std::string fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     void newFenGame(bool botGame, Color bot_color = Color::BLACK);
 
@@ -106,6 +107,8 @@ private slots:
     void on_actionNew_classic_bot_game_triggered();
 
     void on_actionNew_bot_game_from_FEN_triggered();
+
+    void on_actionCopy_FEN_to_clipboard_triggered();
 
 private:
     Ui::MainWindow *ui;

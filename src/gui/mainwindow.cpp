@@ -5,6 +5,7 @@
 #include <QInputDialog>
 #include <QDir>
 #include <QMessageBox>
+#include <QClipboard>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "GameField.h"
@@ -42,6 +43,7 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 
     updateBoardDisplay();
 }
+
 
 MainWindow::~MainWindow() {
     delete ui;
@@ -352,4 +354,18 @@ void MainWindow::checkIfMate() {
     }
 }
 
+
+void MainWindow::on_actionCopy_FEN_to_clipboard_triggered() {
+    QClipboard *clipboard = QApplication::clipboard();
+    QString text = QString::fromStdString(game->toFEN());
+    clipboard->setText(text, QClipboard::Clipboard);
+
+    if (clipboard->supportsSelection()) {
+        clipboard->setText(text, QClipboard::Selection);
+    }
+
+#if defined(Q_OS_LINUX)
+    QThread::msleep(1); //workaround for copied text not being available...
+#endif
+}
 

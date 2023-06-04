@@ -74,6 +74,7 @@
     </widget>
     <addaction name="menunew_pvp_game"/>
     <addaction name="menu_Bot_game"/>
+    <addaction name="actionCopy_FEN_to_clipboard"/>
    </widget>
    <addaction name="menupogg"/>
   </widget>
@@ -101,6 +102,11 @@
   <action name="actionNew_bot_game_from_FEN">
    <property name="text">
     <string>New game from FEN</string>
+   </property>
+  </action>
+  <action name="actionCopy_FEN_to_clipboard">
+   <property name="text">
+    <string>Copy FEN to clipboard</string>
    </property>
   </action>
  </widget>
