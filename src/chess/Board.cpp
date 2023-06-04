@@ -237,7 +237,15 @@ void Board::makeMove(Move move) {
 
     targetField->setPiece(sourcePiece);
     sourceField->setPiece(nullptr);
+
     sourcePiece->setField(targetField);
+
+    if (move.isCastling()) {
+        auto rookCol = (move.isLongCastle()) ? 1 : 8;
+        auto row = (move.getTo().getRow());
+        auto castledRook = getField(Position(row, rookCol))->getPiece();
+        makeMove(Move::generateCastlingComplement(castledRook));
+    }
 }
 
 const std::vector<Piece *> &Board::getAllPieces() const {

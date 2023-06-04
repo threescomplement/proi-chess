@@ -46,6 +46,16 @@ public:
     std::string toStockfishNotation() const; // TODO: rename
 
     bool isDoublePawnMove() const;
+
+    bool isCastling() const;
+
+    /**
+     * Generates a rook move to complement the internal move representation of castling which only directly moves
+     * the king.
+     **/
+    static Move generateCastlingComplement(Piece *CastlingRook);
+
+    bool isLongCastle() const;
 };
 
 

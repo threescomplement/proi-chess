@@ -17,6 +17,8 @@
 #include <QMessageBox>
 #include "Player.h"
 
+#define BOARD_HEIGHT 8
+#define BOARD_WIDTH 8
 
 /**
  * displays the image of a board,
@@ -28,24 +30,24 @@
  *
  * @param game - the game that will be played and displayed in the window
  * @param parent
- */
+ **/
 MainWindow::MainWindow(Game *game, QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr) {
 
 
     ui->setupUi(this);
-    QPixmap board_map(":/resources/symmetrical_empty_board.jpg");
-    ui->GameBoard->setPixmap(board_map);
+    QPixmap board_map(":/resources/empty_board_white_perspective.png");
+    ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
 
-    for (int row = 1; row <= 8; row++) {
-        for (int column = 1; column <= 8; column++) {
-            auto *field = new GameField(QString("Nie kliknięte"), column, 9 - row, ui->GameBoard);
+    for (int row = 1; row <= BOARD_HEIGHT; row++) {
+        for (int column = 1; column <= BOARD_WIDTH; column++) {
+            auto *field = new GameField(QString(), column, 9 - row, ui->GameBoard);
             QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
             QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
             QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
             QObject::connect(this, &MainWindow::updateFieldMark, field, &GameField::markUpdateCalled);
             field->setAlignment(Qt::AlignLeft);
-            field->setGeometry(50 * column - 27, 50 * row - 21, 50, 50);
+            field->setGeometry(50 * (column-1), 50 * row-20, 50, 50);
             field->show();
         }
     }
@@ -55,13 +57,6 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 MainWindow::~MainWindow() {
     delete ui;
     delete game;
-}
-
-void MainWindow::highlightNeighbours(int origin_x, int origin_y) {
-    emit updateFieldPiece(origin_x - 1, origin_y, PieceType::PAWN);
-    emit updateFieldPiece(origin_x, origin_y - 1, PieceType::PAWN);
-    emit updateFieldPiece(origin_x + 1, origin_y, PieceType::PAWN);
-    emit updateFieldPiece(origin_x, origin_y + 1, PieceType::PAWN);
 }
 
 
@@ -74,7 +69,7 @@ void MainWindow::on_newGameButton_clicked() {
  * to the state of the internal game
  *
  * TODO: change it so that it passes a color and piece type or the filename of the new icon instead of just piece Type
- */
+ **/
 void MainWindow::updateBoardDisplay() {
     for (int row = 1; row <= BOARD_SIZE; row++) {
         for (int col = 1; col <= BOARD_SIZE; col++) {
@@ -86,16 +81,16 @@ void MainWindow::updateBoardDisplay() {
 }
 
 /**
- * activated by emitting a "fieldClicked" signal by a connected @class GameField
- * handles everything related to picking a piece and making moves
+ * Activated by emitting a "fieldClicked" signal by a connected @class GameField.
+ * Handles everything related to picking a piece and making moves.
  *
- * if there is no field selected, it will select that field
- * if a field is selected:
- *          - if the clicked field is one where a piece from the selected field can move, make that move
+ * If there is no field selected, it will select that field.
+ * If a field is selected:
+ *          - if the clicked field is one where a piece from the selected field can move, make that move,
  *          - if not, check if that field can be selected (must be a pawn of current player)
  *
  * @param field
- */
+ **/
 void MainWindow::handleFieldClick(GameField *field) {
 
     if (field != pickedField) {
@@ -135,21 +130,15 @@ void MainWindow::handleFieldClick(GameField *field) {
  * @param moves
  * @param field
  * @return the move with an endpoint at the given field, or nullptr if such a move is not found
- */
+ **/
 Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *field) {
-    Move *foundMove = nullptr;
     for (auto move: moves) {
         Position goal = move.getTo();
         if (goal.getCol() == field->getX() && goal.getRow() == field->getY()) {
-            foundMove = &move;
-            break;
+            return new Move(move);
         }
     }
-    if (foundMove != nullptr) {
-        return new Move(*foundMove);
-    } else {
-        return nullptr;
-    }
+    return nullptr;
 
 }
 
@@ -169,7 +158,7 @@ void MainWindow::makeMove(Move const *move) {
  * Makes sure that the state of all fields is consistent after de-selecting a piece (ex. after a move)
  * or selecting a new one
  * @param new_picked - the field that is now supposed to be considered for moves etc.
- */
+ **/
 void MainWindow::changePickedField(GameField *const new_picked) {
 
     if (pickedField != nullptr) {
@@ -228,6 +217,7 @@ void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string w
     } catch (FenException) {
         // incorrect fen notation
         delete new_game;
+        // display warning pop-up
         QMessageBox::warning(
                 this,
                 tr("Invalid FEN notation"),
@@ -235,24 +225,14 @@ void MainWindow::newFenGame(bool botGame, std::string fenNotation, std::string w
 
     }
     delete new_game;
-//     catch (std::invalid_argument){
-//        // incorrect fen notation
-//        QMessageBox::warning(
-//                this,
-//                tr("Invalid FEN notation"),
-//                tr("Failed to initialise game from given FEN notation. \n") );
-//
-//
-//    }
-
 }
 
 
 void MainWindow::on_actionGame_from_FEN_triggered() {
     bool ok;
 
-    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-                                         tr("User name:"), QLineEdit::Normal,
+    QString text = QInputDialog::getText(this, tr("New Fen notation game"),
+                                         tr("Enter the FEN notation:"), QLineEdit::Normal,
                                          QDir::home().dirName(), &ok);
 
     if (ok) {
