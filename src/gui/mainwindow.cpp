@@ -50,12 +50,9 @@ MainWindow::~MainWindow() {
 
 
 void MainWindow::createBoard(Color side) {
-    QPixmap board_map;
-    if (side == Color::WHITE) {
-        board_map = QPixmap(":/resources/empty_board_white_perspective.png");
-    } else {
-        board_map = QPixmap(":/resources/empty_board_black_perspective.png");
-    }
+    QPixmap board_map = ((side == Color::WHITE) ? QPixmap(":/resources/empty_board_white_perspective.png") : QPixmap(
+            ":/resources/empty_board_black_perspective.png"));
+
     for (auto child: ui->GameBoard->children()) {
         delete child;
     }
@@ -166,6 +163,31 @@ Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *fiel
 
 void MainWindow::makeMove(Move const *move) {
     game->makeMove(*move);
+    //not implemented in game logic yet :
+//    if (game.promotionFlag){
+//        bool ok;
+//        PieceType pickedType = PieceType::NONE;
+//        QStringList colorPicker = {"Rook", "Knight", "Bishop", "Queen"};
+//        QString pickedPiece = QInputDialog::getItem(this, tr("Promotion"), tr("Choose piece to promote to:"), colorPicker, 0,
+//                                                    false, &ok);
+//        if (ok){
+//            switch (pickedPiece) {
+//                case "Rook":
+//                    pickedType = PieceType::ROOK;
+//                    break;
+//                case "Knight":
+//                    pickedType = PieceType::KNIGHT;
+//                    break;
+//                case "Bishop":
+//                    pickedType = PieceType::BISHOP;
+//                    break;
+//                case "Queen":
+//                    pickedType = PieceType::QUEEN;
+//                    break;
+//            }
+//        }
+//        game.promote(pickedType);
+//    }
     updateBoardDisplay();
     if (game->isMate()) {
         // what happens when mate?
@@ -223,24 +245,24 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
         changePickedField(nullptr);
     }
 
-    delete stockfishBot;
+//    delete stockfishBot;
 
 
     delete game;
     game = newGame;
-    if (botGame) {
-        stockfishBot = new StockfishBot(*game);
-        // if bot color == white, make first move
-        if (botColor == Color::WHITE) {
-            try{
-                Move botMove = stockfishBot->getBestNextMove();
-                game->makeMove(botMove);
-            }
-            catch (...){
-            }
-
-        }
-    }
+//    if (botGame) {
+//        stockfishBot = new StockfishBot(*game);
+//        // if bot color == white, make first move
+//        if (botColor == Color::WHITE) {
+//            try {
+//                Move botMove = stockfishBot->getBestNextMove();
+//                game->makeMove(botMove);
+//            }
+//            catch (...) {
+//            }
+//
+//        }
+//    }
     this->botGame = botGame;
     this->botColor = botColor;
 

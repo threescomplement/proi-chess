@@ -69,7 +69,7 @@ void GameField::mousePressEvent(QMouseEvent *event) {
 }
 
 void GameField::setPiece(PieceType type, Color color) {
-    QPixmap pixmap;
+
     std::string fileName = ""; //= ":/resources/";
 
     if (color == Color::WHITE) {
@@ -101,7 +101,7 @@ void GameField::setPiece(PieceType type, Color color) {
     }
     //fileName += ".png";
     //pixmap.load(QString().fromStdString(fileName));
-    pixmap = icons.pieceImgs[fileName];
+    QPixmap pixmap = icons.pieceImgs[fileName];
     QString new_text = QString::fromStdString(pieceChars[type]);
     this->setText(new_text);
     this->setPixmap(pixmap.scaled(fieldSize, fieldSize, Qt::AspectRatioMode::KeepAspectRatio));
