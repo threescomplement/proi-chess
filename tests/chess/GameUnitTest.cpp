@@ -534,4 +534,26 @@ namespace GameUnitTest {
         auto movesForWhiteKing = game.getLegalMovesFrom(pos("e1"));
         ASSERT_TRUE(movesForWhiteKing.empty());
     }
+
+    TEST(Game, isMate1) {
+        auto game = Game::fromFEN("r1bqkbnr/pppp1Qp1/2n4p/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1");
+        ASSERT_TRUE(game.isMate());
+    }
+
+    TEST(Game, isMate2) {
+        auto game = Game::fromFEN("r1bqkb1r/pppp1Qp1/2nn3p/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1");
+        ASSERT_FALSE(game.isMate());
+    }
+
+    TEST(Game, isMate3) {
+        auto game = Game::fromFEN("r1b1k2r/ppppqppp/8/8/1PP2Bn1/3n1N2/1P1NPPPP/R2QKB1R w KQkq - 0 1");
+        ASSERT_TRUE(game.isMate());
+    }
+
+    TEST(Game, isMate4) {
+        auto game = Game::fromFEN("rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/R3K2r w Qq - 0 1");
+        auto isCheck = game.isCheck(Color::WHITE);
+        auto moves = game.getLegalMovesForPlayer(game.getWhitePlayer());
+        ASSERT_TRUE(game.isMate());
+    }
 }
