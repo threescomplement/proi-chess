@@ -200,7 +200,7 @@ namespace GameUnitTest {
     TEST(Game, enforceCurrentPlayerTurn) {
         auto game = Game();
         ASSERT_EQ(game.getCurrentPlayer()->getColor(), Color::WHITE);
-        ASSERT_EQ(game.getMovesFrom(pos("e7")).size(), 0);
+        ASSERT_EQ(game.getLegalMovesFrom(pos("e7")).size(), 0);
 
         auto whiteEPawn = dynamic_cast<Pawn *>(game.getBoard()->getField(pos("e2"))->getPiece());
         game.makeMove(Move(pos("e2"), pos("e4"), whiteEPawn, nullptr));

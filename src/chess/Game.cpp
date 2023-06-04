@@ -234,10 +234,13 @@ Game::Game(
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber) {}
 
-std::vector<Move> Game::getAllMovesFrom(Position position) const {
+
+
+std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
-//    if (piece == nullptr)
-//        return {}; todo: do we need it?
+    if (piece == nullptr)
+        return {};
+
     auto movesForPiece = piece->getMoves();
     if (piece->getType() == PieceType::KING) {
         if (possibleKingsideCastlingThisRound()) {
@@ -250,18 +253,37 @@ std::vector<Move> Game::getAllMovesFrom(Position position) const {
     return movesForPiece;
 }
 
-std::vector<Move> Game::getMovesFrom(Position position) const {
-    auto piece = this->getPiece(position);
-    if (piece != nullptr && piece->getColor() == getCurrentPlayer()->getColor()) {
-        return getAllMovesFrom(position);
+std::vector<Move> Game::getAllMovesForPlayer(Player *player) const {
+    std::vector<Move> moves;
+    for (auto piece: player->getPieces()) {
+        auto pieceMoves = getMovesFrom(piece->getPosition());
+        moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
     }
-    return {};
+    return moves;
 }
 
-std::vector<Move> Game::getAllPlayerMoves(Player *player) const {
+std::vector<Move> Game::getLegalMovesFrom(Position position) const {
+    //todo: castling out of check and through check
+    auto piece = this->getPiece(position);
+    if (piece == nullptr || piece->getColor() != currentPlayer->getColor())
+        return {};
+
+    auto pieceColor = piece->getColor();
+    auto movesForPiece = getMovesFrom(position);
+    movesForPiece.erase(
+            std::remove_if(movesForPiece.begin(), movesForPiece.end(), [pieceColor, this](Move m) {
+                auto deepCopy = this->afterMove(m);
+                return deepCopy.isCheck(pieceColor);
+            }),
+            movesForPiece.end());
+
+    return movesForPiece;
+}
+
+std::vector<Move> Game::getLegalMovesForPlayer(Player *player) const {
     std::vector<Move> moves = {};
     for (auto piece: player->getPieces()) {
-        auto pieceMoves = getAllMovesFrom(piece->getPosition());
+        auto pieceMoves = getLegalMovesFrom(piece->getPosition());
         moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
     }
     return moves;
@@ -391,7 +413,7 @@ Move Game::generateQueenSideCastle() const {
 bool Game::isCheck(Color colorOfCheckedKing) const {
     auto possiblyCheckedKing = (colorOfCheckedKing == Color::WHITE) ? board->getWhiteKing() : board->getBlackKing();
     Player *possiblyCheckingPlayer = (colorOfCheckedKing == Color::WHITE) ? blackPlayer : whitePlayer;
-    auto movesForCheckingPlayer = getAllPlayerMoves(possiblyCheckingPlayer);
+    auto movesForCheckingPlayer = getAllMovesForPlayer(possiblyCheckingPlayer);
     if (std::any_of(movesForCheckingPlayer.begin(),
                     movesForCheckingPlayer.end(),
                     [possiblyCheckedKing](const Move &m) {

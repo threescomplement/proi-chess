@@ -89,21 +89,26 @@ public:
     Game afterMove(Move move) const;
 
     /**
-     * All possible moves from a field during current turn.
+     * All possible moves from a field, taking neither the current turn nor the
+     * checks and pins into consideration.
      * */
     std::vector<Move> getMovesFrom(Position position) const;
 
     /**
-     * All possible moves from a field not taking the current turn into account - if there is a piece on it, it returns
-     * its moves.
-     * */
-    std::vector<Move> getAllMovesFrom(Position position) const;
+     * All possibles moves from a player's field, not taking checks, pins and turns into account. getMovesFrom for
+     * all of the locations controlled by his pieces combined.
+     **/
+    std::vector<Move> getAllMovesForPlayer(Player *player) const;
 
     /**
-     * All possible moves for a player not taking the current turn into account.
-     * Like getAllMovesFrom for all pieces in one vector.
+     * All legal moves from a field. Takes checks, pins and turns into consideration.
      * */
-    std::vector<Move> getAllPlayerMoves(Player *player) const;
+    std::vector<Move> getLegalMovesFrom(Position position) const;
+
+    /**
+     * All possible moves for a player. getLegalMovesFrom for all of the fields controlled by his pieces combined.
+     * */
+    std::vector<Move> getLegalMovesForPlayer(Player *player) const;
 
     bool isMate() const;
 
