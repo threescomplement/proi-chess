@@ -113,6 +113,8 @@ public:
 
     bool isMate() const;
 
+    bool isStalemate() const;
+
     bool isCheck(Color colorOfCheckedKing) const;
 
     bool isFieldControlledByPlayer(const Position &pos, Color colorOfPlayer) const;

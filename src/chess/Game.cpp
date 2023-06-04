@@ -53,7 +53,7 @@ std::vector<Move> &Game::getMoveHistory() {
 }
 
 bool Game::isMate() const {
-    return false;  //TODO
+    return (isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
 }
 
 //bool Game::isCheck() const {
@@ -471,6 +471,9 @@ Game Game::afterMove(Move move) const {
 }
 
 bool Game::isCastlingObscuredByOpponent(Move &move) const {
+    if (isCheck(move.getPiece()->getColor()))
+        return true;
+
     auto row = move.getTo().getRow();
     auto lowestColToCheck = std::min(move.getTo().getCol(), move.getFrom().getCol()) + 1;
     auto upperLimit = std::max(move.getTo().getCol(), move.getFrom().getCol());
