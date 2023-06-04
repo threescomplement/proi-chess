@@ -461,4 +461,30 @@ namespace GameUnitTest {
         ASSERT_FALSE(game2.isCheck(Color::WHITE));
         ASSERT_TRUE(game2.isCheck(Color::BLACK));
     }
+
+    TEST(Game, afterMove1) {
+        auto game = Game::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        auto e4 = Move(pos("e2"), pos("e4"), game.getPiece(pos("e2")), nullptr);
+        auto copy = game.afterMove(e4);
+
+        ASSERT_TRUE(game.getPiece(pos("e2")) != nullptr);
+        ASSERT_TRUE(game.getPiece(pos("e4")) == nullptr);
+
+        ASSERT_TRUE(copy.getPiece(pos("e2")) == nullptr);
+        ASSERT_TRUE(copy.getPiece(pos("e4")) != nullptr);
+    }
+
+    TEST(Game, afterMove2) {
+        auto game = Game::fromFEN("rnbqkbnr/ppppp2p/6p1/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3");
+        auto exf6 = Move(pos("e5"), pos("f6"), game.getPiece(pos("e5")), game.getPiece(pos("f5")));
+        auto copy = game.afterMove(exf6);
+
+        ASSERT_TRUE(game.getPiece(pos("e5")) != nullptr);
+        ASSERT_TRUE(game.getPiece(pos("f5")) != nullptr);
+        ASSERT_TRUE(game.getPiece(pos("f6")) == nullptr);
+
+        ASSERT_TRUE(copy.getPiece(pos("e5")) == nullptr);
+        ASSERT_TRUE(copy.getPiece(pos("f5")) == nullptr);
+        ASSERT_TRUE(copy.getPiece(pos("f6")) != nullptr);
+    }
 }

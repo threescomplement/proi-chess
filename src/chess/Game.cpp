@@ -401,6 +401,17 @@ bool Game::isCheck(Color colorOfCheckedKing) const {
     return false;
 }
 
+Game Game::afterMove(Move move) const {
+    auto deepCopy = Game::fromFEN(this->toFEN());
+    auto sourcePiece = deepCopy.getPiece(move.getFrom());
+
+    Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : deepCopy.getPiece(
+            move.getCapturedPiece()->getPosition());
+    auto moveEquivalentForDeepCopy = Move(move.getFrom(), move.getTo(), sourcePiece, takenPiece);
+    deepCopy.makeMove(moveEquivalentForDeepCopy);
+    return deepCopy;
+}
+
 
 std::vector<std::string> split(const std::string &txt, char ch) {
     std::vector<std::string> strings;
