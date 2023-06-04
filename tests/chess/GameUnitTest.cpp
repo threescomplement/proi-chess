@@ -556,4 +556,14 @@ namespace GameUnitTest {
         auto moves = game.getLegalMovesForPlayer(game.getWhitePlayer());
         ASSERT_TRUE(game.isMate());
     }
+
+    TEST(Game, isStalemate1) {
+        auto game = Game::fromFEN("1k6/8/8/8/8/8/2q5/K7 w - - 0 1");
+        ASSERT_TRUE(game.isStalemate());
+    }
+
+    TEST(Game, isStalemate2) {
+        auto game = Game::fromFEN("1k6/4R3/8/8/R7/8/8/K1Q5 b - - 0 1");
+        ASSERT_TRUE(game.isStalemate());
+    }
 }

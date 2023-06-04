@@ -56,9 +56,9 @@ bool Game::isMate() const {
     return (isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
 }
 
-//bool Game::isCheck() const {
-//    return false;  // TODO
-//}
+bool Game::isStalemate() const {
+    return (!isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
+}
 
 void Game::makeMove(Move move) {
 
