@@ -57,6 +57,9 @@ void MainWindow::createBoard(Color side) {
         delete child;
     }
     ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
+    //ui->GameBoard->setScaledContents(true);
+    ui->GameBoard->setAlignment(Qt::AlignLeft);
+    //ui->GameBoard->setAlignment(Qt::AlignTop);
     for (int row = 1; row <= BOARD_HEIGHT; row++) {
         for (int column = 1; column <= BOARD_WIDTH; column++) {
             int fieldRow;
@@ -74,7 +77,7 @@ void MainWindow::createBoard(Color side) {
             QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
             QObject::connect(this, &MainWindow::updateFieldMark, field, &GameField::markUpdateCalled);
             field->setAlignment(Qt::AlignLeft);
-            field->setGeometry(50 * (column - 1), 50 * row - 20, 50, 50);
+            field->setGeometry(50 * (column - 1), 50 * (row - 1), 50, 50);
             field->show();
         }
     }
@@ -342,6 +345,7 @@ void MainWindow::handleBotMove() {
 
     }
 }
+
 void MainWindow::checkIfMate() {
     if (game->isMate()) {
         std::string winner = ((game->getCurrentPlayer()->getColor() == Color::WHITE) ? "Black" : "White");
