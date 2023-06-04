@@ -62,7 +62,7 @@
    </property>
    <widget class="QMenu" name="menupogg">
     <property name="title">
-     <string>nynynyny</string>
+     <string>Options</string>
     </property>
     <widget class="QMenu" name="menunew_pvp_game">
      <property name="title">
