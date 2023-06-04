@@ -46,11 +46,17 @@ public:
 
     std::string getUnicodeSymbol() const override;
 
-    std::vector<Move> enPassantMoves() const;
     /**
      * Returns vector of possible en passant moves or empty if there are none.
      * Validates the board situation except checks and pins.
      * */
+    std::vector<Move> enPassantMoves() const;
+
+    /**
+     * Utility used when examined whether a king can castle - we need to check if a pawn attacks squares
+     * to castle through.
+     * */
+    std::vector<Position> attackedPositions() const;
 
     void setIsEnPassantTarget(bool valToSet);
     // TODO: delete this later, used for test purposes before implementing actual move mechanics

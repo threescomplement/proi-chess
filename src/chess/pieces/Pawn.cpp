@@ -133,3 +133,9 @@ void Pawn::setIsEnPassantTarget(bool valToSet) {
     isEnPassantTarget = valToSet;
 }
 
+std::vector<Position> Pawn::attackedPositions() const {
+    std::vector<std::pair<int, int>> offsetsOfAttackedFields = {{moveDirection, 1},
+                                                                {moveDirection, -1}};
+    return getAllowedPositionsFromOffsets(offsetsOfAttackedFields);
+}
+
