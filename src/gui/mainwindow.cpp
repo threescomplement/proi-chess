@@ -189,11 +189,12 @@ void MainWindow::makeMove(Move const *move) {
 //        game.promote(pickedType);
 //    }
     updateBoardDisplay();
-    if (game->isMate()) {
-        // what happens when mate?
-    } else if (botGame) {
-        //make bot move
-    };
+    checkIfMate();
+    //make potential bot move
+
+    //handleBotMove();
+    checkIfMate();
+
     updateBoardDisplay();
 }
 
@@ -250,19 +251,11 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
 
     delete game;
     game = newGame;
-//    if (botGame) {
-//        stockfishBot = new StockfishBot(*game);
-//        // if bot color == white, make first move
-//        if (botColor == Color::WHITE) {
-//            try {
-//                Move botMove = stockfishBot->getBestNextMove();
-//                game->makeMove(botMove);
-//            }
-//            catch (...) {
-//            }
-//
-//        }
-//    }
+    if (botGame) {
+        stockfishBot = new StockfishBot(*game);
+
+    }
+    handleBotMove();
     this->botGame = botGame;
     this->botColor = botColor;
 
@@ -338,4 +331,26 @@ void MainWindow::on_actionNew_bot_game_from_FEN_triggered() {
 
 
 }
+
+
+void MainWindow::handleBotMove() {
+    if (botGame && botColor == game->getCurrentPlayer()->getColor()) {
+
+        Move botMove = stockfishBot->getBestNextMove();
+        game->makeMove(botMove);
+
+
+    }
+}
+void MainWindow::checkIfMate() {
+    if (game->isMate()) {
+        std::string winner = ((game->getCurrentPlayer()->getColor() == Color::WHITE) ? "Black" : "White");
+        winner += "is the winner!";
+        QMessageBox::warning(
+                this,
+                tr("Game Over"),
+                QString::fromStdString(winner));
+    }
+}
+
 

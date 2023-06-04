@@ -65,6 +65,10 @@ private:
 
     void createBoard(Color side = Color::WHITE);
 
+    void handleBotMove();
+
+    void checkIfMate();
+
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
 
