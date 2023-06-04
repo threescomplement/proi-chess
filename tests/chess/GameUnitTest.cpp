@@ -377,6 +377,26 @@ namespace GameUnitTest {
         ASSERT_EQ(game.getCurrentPlayer()->getColor(), Color::WHITE);
     }
 
+    TEST(Game, fromFENCastling) {
+        auto game = Game::fromFEN("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1");
+        auto whiteKing = game.getPiece(pos("e1"));
+        auto blackKing = game.getPiece(pos("e8"));
+        auto whiteKingsideCastle = Move(pos("e1"), pos("g1"), whiteKing, nullptr);
+        auto blackKingsideCastle = Move(pos("e8"), pos("g8"), blackKing, nullptr);
+        auto whiteQueensideCastle = Move(pos("e1"), pos("c1"), whiteKing, nullptr);
+        auto blackQueensideCastle = Move(pos("e8"), pos("c8"), blackKing, nullptr);
+
+        auto whiteKingMoves = game.getMovesFrom(pos("e1"));
+        auto blackKingMoves = game.getMovesFrom(pos("e8"));
+
+        ASSERT_FALSE(in(blackKingMoves, blackKingsideCastle));
+        ASSERT_FALSE(in(blackKingMoves, blackQueensideCastle));
+        ASSERT_FALSE(in(whiteKingMoves, whiteKingsideCastle));
+        ASSERT_FALSE(in(whiteKingMoves, whiteQueensideCastle));
+        ASSERT_EQ(whiteKingMoves.size(), 2);
+        ASSERT_EQ(blackKingMoves.size(), 2);
+    }
+
     TEST(Game, castlingBugWhenFlagTakenDownByWrongRook) {
         auto game = Game::fromFEN("4k2r/r7/8/8/8/8/7R/R3K3 w Qk - 0 1");
         auto whiteKing = game.getPiece(pos("e1"));
