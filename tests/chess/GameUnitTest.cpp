@@ -431,4 +431,31 @@ namespace GameUnitTest {
         ASSERT_FALSE(in(blackKingMoves, blackQueensideCastle));
     }
 
+    TEST(Game, checkTests) {
+        // queen check
+        auto game = Game::fromFEN("rnb1kbnr/ppppqppp/8/8/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1");
+        ASSERT_TRUE(game.isCheck(Color::WHITE));
+        ASSERT_FALSE(game.isCheck(Color::BLACK));
+
+        // knight check
+        game = Game::fromFEN("rnbqkbnr/pppppppp/5N2/8/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1");
+        ASSERT_FALSE(game.isCheck(Color::WHITE));
+        ASSERT_TRUE(game.isCheck(Color::BLACK));
+
+        // bishop check
+        game = Game::fromFEN("rnbqk1nr/ppp1pppp/2Bp4/8/8/6b1/PPPPPPPP/RNBQK1NR w KQkq");
+        ASSERT_FALSE(game.isCheck(Color::WHITE));
+        ASSERT_TRUE(game.isCheck(Color::BLACK));
+
+        // rook check
+        game = Game::fromFEN("rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKrNR w KQq - 0 1");
+        ASSERT_TRUE(game.isCheck(Color::WHITE));
+        ASSERT_FALSE(game.isCheck(Color::BLACK));
+
+        // pawn check
+        game = Game::fromFEN("rnbqkbn1/pppppPpp/8/8/8/8/PPPPPPPP/RNBQK1NR w KQq - 0 1");
+        ASSERT_TRUE(game.isCheck(Color::BLACK));
+        ASSERT_FALSE(game.isCheck(Color::WHITE));
+    }
+
 }

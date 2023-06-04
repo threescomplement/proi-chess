@@ -56,9 +56,9 @@ bool Game::isMate() const {
     return false;  //TODO
 }
 
-bool Game::isCheck() const {
-    return false;  // TODO
-}
+//bool Game::isCheck() const {
+//    return false;  // TODO
+//}
 
 void Game::makeMove(Move move) {
 
