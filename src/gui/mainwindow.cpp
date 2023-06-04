@@ -123,8 +123,9 @@ void MainWindow::handleFieldClick(GameField *field) {
         // check if there is a move to the chosen position
         Move *correspondingMove = findMove(validMoves, field);
         if (correspondingMove != nullptr) {
-            makeMove(correspondingMove);
             changePickedField(nullptr);
+            makeMove(correspondingMove);
+
             validChoice = true;
             // check if the field exists or if its just being reset
         } else if (field != nullptr) {
@@ -194,14 +195,22 @@ void MainWindow::makeMove(Move const *move) {
 //        }
 //        game.promote(pickedType);
 //    }
-    updateBoardDisplay();
-    checkIfMate();
-    //make potential bot move
-
-    handleBotMove();
-    checkIfMate();
 
     updateBoardDisplay();
+    if(!(checkIfMate() || checkIfStalemate())){
+        //make bot move
+        handleBotMove();
+        updateBoardDisplay();
+        checkIfMate();
+        checkIfStalemate();
+
+    }
+
+
+
+
+
+
 }
 
 
@@ -220,7 +229,6 @@ void MainWindow::changePickedField(GameField *const new_picked) {
     if (new_picked != nullptr) { // if the new picked is a field
         validMoves = game->getLegalMovesFrom(Position(new_picked->getY(), new_picked->getX()));
         // update the mark of the newly picked field
-        //emit updateFieldPiece(new_picked->getX(), new_picked->getY(), new_picked->getPiece());
         emit updateFieldMark(new_picked->getX(), new_picked->getY(), true);
     } else {
         validMoves.clear();
@@ -343,7 +351,7 @@ void MainWindow::handleBotMove() {
     }
 }
 
-void MainWindow::checkIfMate() {
+bool MainWindow::checkIfMate() {
     if (game->isMate()) {
         std::string winner = ((game->getCurrentPlayer()->getColor() == Color::WHITE) ? "Black" : "White");
         winner += "is the winner!";
@@ -351,7 +359,9 @@ void MainWindow::checkIfMate() {
                 this,
                 tr("Game Over"),
                 QString::fromStdString(winner));
+
     }
+    return game->isMate();
 }
 
 
@@ -369,12 +379,13 @@ void MainWindow::on_actionCopy_FEN_to_clipboard_triggered() {
 #endif
 }
 
-//void MainWindow::checkIfStalemate() {
-//    if (game->isStalemate()) {
-//        QMessageBox::warning(
-//                this,
-//                tr("Game Over"),
-//                tr("Stalemate!"));
-//    }
-//}
+bool MainWindow::checkIfStalemate() {
+    if (game->isStalemate()) {
+        QMessageBox::warning(
+                this,
+                tr("Game Over"),
+                tr("Stalemate!"));
+    }
+    return game->isStalemate();
+}
 

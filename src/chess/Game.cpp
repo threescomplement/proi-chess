@@ -281,7 +281,7 @@ std::vector<Move> Game::getLegalMovesFrom(Position position) const {
         // king and rook
         movesForPiece.erase(std::remove_if(movesForPiece.begin(), movesForPiece.end(),
                                            [this](Move &move) {
-                                               return this->isCastlingObscuredByOpponent(move);
+                                               return this->isCastlingObscuredByOpponent(move) && move.isCastling();
                                            }),
                             movesForPiece.end());
     }

@@ -67,9 +67,9 @@ private:
 
     void handleBotMove();
 
-    void checkIfMate();
+    bool checkIfMate();
 
-    //void checkIfStalemate();
+    bool checkIfStalemate();
 
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
