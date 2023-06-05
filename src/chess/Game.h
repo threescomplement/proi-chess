@@ -99,7 +99,7 @@ public:
     std::vector<Move> getMovesFrom(Position position) const;
 
     /**
-     * All possibles moves from a player's field, not taking checks, pins and turns into account. getMovesFrom for
+     * All possible moves for a player, not taking checks, pins and turns into account. getMovesFrom for
      * all of the locations controlled by his pieces combined.
      **/
     std::vector<Move> getAllMovesForPlayer(Player *player) const;
