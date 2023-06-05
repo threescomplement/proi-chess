@@ -7,7 +7,7 @@
 #include "pieces/Piece.h"
 
 class Position;
-
+class Game;
 class Piece;
 
 class Move {
@@ -54,6 +54,8 @@ public:
      * the king.
      **/
     static Move generateCastlingComplement(Piece *CastlingRook);
+
+    static Move parseStockfishNotation(const std::string &moveStr, const Game &game);
 
     bool isLongCastle() const;
 };

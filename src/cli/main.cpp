@@ -28,29 +28,6 @@ std::string playerPrompt(const Game &game) {
            : "Black move > ";
 }
 
-Move parseMove(const std::string &moveStr, const Game &game) {
-    if (moveStr.size() != 4) {
-        throw InvalidPlayerInputException("Invalid representation of a move");
-    }
-
-    Position sourcePosition = Position::fromString(moveStr.substr(0, 2));
-    Position targetPosition = Position::fromString(moveStr.substr(2, 2));
-    auto enPassantTargetPos = game.getEnPassantTargetPosition();
-    auto movedPiece = game.getPiece(sourcePosition);
-    auto capturedPiece = (enPassantTargetPos != nullptr && (*enPassantTargetPos) == targetPosition)
-                         ? dynamic_cast<Piece *>(game.getEnPassantTargetPiece())
-                         : game.getPiece(targetPosition);
-
-    if (movedPiece == nullptr) {
-        throw InvalidPlayerInputException("Cannot move from empty field");
-    }
-
-    if (game.getCurrentPlayer()->getColor() != movedPiece->getColor()) {
-        throw InvalidPlayerInputException("Player can only move his own piece");
-    }
-
-    return {sourcePosition, targetPosition, movedPiece, capturedPiece};
-}
 
 void processPlayerTurn(Game &game) {
     while (true) {
@@ -64,7 +41,7 @@ void processPlayerTurn(Game &game) {
         }
 
         try {
-            auto move = parseMove(moveStr, game);
+            auto move = Move::parseStockfishNotation(moveStr, game);
             auto availableMoves = game.getMovesFrom(move.getFrom());
 
             if (std::find(availableMoves.begin(), availableMoves.end(), move) == availableMoves.end()) {

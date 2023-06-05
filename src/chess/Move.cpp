@@ -1,5 +1,9 @@
 #include "Move.h"
 #include "pieces/PieceType.h"
+#include "Game.h"
+#include "Player.h"
+#include "pieces/Pawn.h"
+#include "../cli/CLIExceptions.h"
 
 const Position &Move::getFrom() const {
     return from;
@@ -83,5 +87,29 @@ Move Move::generateCastlingComplement(Piece *castlingRook) {
 
 bool Move::isLongCastle() const {
     return (isCastling() && getTo().getCol() == 3);
+}
+
+Move Move::parseStockfishNotation(const std::string &moveStr, const Game &game) {
+    if (moveStr.size() != 4) {
+        throw InvalidPlayerInputException("Invalid representation of a move");
+    }
+
+    Position sourcePosition = Position::fromString(moveStr.substr(0, 2));
+    Position targetPosition = Position::fromString(moveStr.substr(2, 2));
+    auto enPassantTargetPos = game.getEnPassantTargetPosition();
+    auto movedPiece = game.getPiece(sourcePosition);
+    auto capturedPiece = (enPassantTargetPos != nullptr && (*enPassantTargetPos) == targetPosition)
+                         ? dynamic_cast<Piece *>(game.getEnPassantTargetPiece())
+                         : game.getPiece(targetPosition);
+
+    if (movedPiece == nullptr) {
+        throw InvalidPlayerInputException("Cannot move from empty field");
+    }
+
+    if (game.getCurrentPlayer()->getColor() != movedPiece->getColor()) {
+        throw InvalidPlayerInputException("Player can only move his own piece");
+    }
+
+    return {sourcePosition, targetPosition, movedPiece, capturedPiece};
 }
 
