@@ -25,7 +25,6 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
-    this->isOver = GameOver::NOT_OVER;
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -488,6 +487,55 @@ bool Game::isCastlingObscuredByOpponent(Move &move) const {
             return true;
     }
     return false;
+}
+
+GameOver Game::isOver() const {
+    if (isMate())
+        return GameOver::MATE;
+    else if (isStalemate())
+        return GameOver::STALEMATE;
+    else if (isDrawByInsufficientMaterial())
+        return GameOver::INSUFFICIENT_MATERIAL;
+    else if (isDrawByRepetition())
+        return GameOver::THREEFOLD_REPETITION;
+    else if (movesWithoutCaptureOrPawnMove >= 100)
+        return GameOver::FIFTY_MOVE_RULE;
+    else
+        return GameOver::NOT_OVER;
+    return GameOver::NOT_OVER;
+}
+
+bool Game::isDrawByInsufficientMaterial() const {
+    auto whitePieces = std::vector<Piece *>(whitePlayer->getPieces());
+    auto blackPieces = std::vector<Piece *>(blackPlayer->getPieces());
+
+    whitePieces.erase(std::remove_if(whitePieces.begin(), whitePieces.end(),
+                                     [](Piece *p) { return p->getType() == PieceType::KING; }), whitePieces.end());
+    blackPieces.erase(std::remove_if(blackPieces.begin(), blackPieces.end(),
+                                     [](Piece *p) { return p->getType() == PieceType::KING; }), blackPieces.end());
+
+    if (whitePieces.empty() && blackPieces.empty())
+        return true;
+    else if (whitePieces.size() == 1 && blackPieces.empty()) {
+        auto whitePiece = whitePieces[0];
+        if (whitePiece->getType() == PieceType::BISHOP || whitePiece->getType() == PieceType::KNIGHT)
+            return true;
+    } else if (whitePieces.empty() && blackPieces.size() == 1) {
+        auto blackPiece = blackPieces[0];
+        if (blackPiece->getType() == PieceType::BISHOP || blackPiece->getType() == PieceType::KNIGHT)
+            return true;
+    } else if (whitePieces.size() == 1 && blackPieces.size() == 1) {
+        auto whitePiece = whitePieces[0];
+        auto blackPiece = blackPieces[0];
+        if ((whitePiece->getType() == PieceType::BISHOP || whitePiece->getType() == PieceType::KNIGHT) &&
+            (blackPiece->getType() == PieceType::BISHOP || blackPiece->getType() == PieceType::KNIGHT))
+            return true;
+    }
+    return false;
+}
+
+bool Game::isDrawByRepetition() const {
+    return false; // TODO
 }
 
 

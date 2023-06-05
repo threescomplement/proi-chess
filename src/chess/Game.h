@@ -23,7 +23,6 @@ private:
     Player *blackPlayer;
     Player *currentPlayer;
     std::vector<Move> moveHistory;
-    GameOver isOver;
 
     int movesWithoutCaptureOrPawnMove;
     bool canWhiteKingsideCastle;
@@ -67,10 +66,16 @@ private:
     Move generateKingSideCastle() const;
     Move generateQueenSideCastle() const;
 
+    bool isDrawByInsufficientMaterial() const;
+    bool isDrawByRepetition() const;
+
+
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
 
     ~Game();
+
+    GameOver isOver() const;
 
     Board *getBoard() const;
 
