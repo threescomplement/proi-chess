@@ -93,6 +93,8 @@ void Game::makeMove(Move move) {
         player->removePiece(captured);
     }
 
+    movesWithoutCaptureOrPawnMove = (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) ? 0 :
+                                    movesWithoutCaptureOrPawnMove + 1;
     this->moveHistory.push_back(move);
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
 }
@@ -233,7 +235,6 @@ Game::Game(
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber) {}
-
 
 
 std::vector<Move> Game::getMovesFrom(Position position) const {

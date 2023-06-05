@@ -22,6 +22,7 @@ private:
     Player *blackPlayer;
     Player *currentPlayer;
     std::vector<Move> moveHistory;
+    int movesWithoutCaptureOrPawnMove;
 
     bool canWhiteKingsideCastle;
     bool canWhiteQueensideCastle;
