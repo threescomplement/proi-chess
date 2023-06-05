@@ -587,7 +587,7 @@ namespace GameUnitTest {
 
         ASSERT_TRUE(whitePawn->getField() == nullptr);
         ASSERT_EQ(game.getPiece(pos("h7")), nullptr);
-        ASSERT_EQ(game.getPiece(pos("h8"))->getType(), PieceType::QUEEN);
+        ASSERT_EQ(game.getPiece(pos("h8"))->getType(), PieceType::ROOK);
         ASSERT_EQ(game.getPiece(pos("h8"))->getField(), game.getBoard()->getField(pos("h8")));
 
     }
@@ -599,7 +599,7 @@ namespace GameUnitTest {
 
         ASSERT_TRUE(whitePawn->getField() == nullptr);
         ASSERT_EQ(game.getPiece(pos("b7")), nullptr);
-        ASSERT_EQ(game.getPiece(pos("b8"))->getType(), PieceType::ROOK);
+        ASSERT_EQ(game.getPiece(pos("b8"))->getType(), PieceType::QUEEN);
         ASSERT_EQ(game.getPiece(pos("b8"))->getField(), game.getBoard()->getField(pos("b8")));
     }
     TEST(Game, promoteToKnight) {
@@ -616,12 +616,12 @@ namespace GameUnitTest {
     TEST(Game, promoteToBishop) {
         auto game = Game::fromFEN("8/4PK2/3k4/8/8/8/6p1/8 w - - 0 1");
         auto whitePawn = game.getPiece(pos("e7"));
-        auto promotion = Move(pos("e7"), pos("e8"), whitePawn, PieceType::KNIGHT);
+        auto promotion = Move(pos("e7"), pos("e8"), whitePawn, PieceType::BISHOP);
         game.makeMove(promotion);
 
         ASSERT_TRUE(whitePawn->getField() == nullptr);
         ASSERT_EQ(game.getPiece(pos("e7")), nullptr);
-        ASSERT_EQ(game.getPiece(pos("e8"))->getType(), PieceType::ROOK);
+        ASSERT_EQ(game.getPiece(pos("e8"))->getType(), PieceType::BISHOP);
         ASSERT_EQ(game.getPiece(pos("e8"))->getField(), game.getBoard()->getField(pos("e8")));
     }
     TEST(Game, promoteWithCheck) {
@@ -632,7 +632,7 @@ namespace GameUnitTest {
 
         ASSERT_TRUE(whitePawn->getField() == nullptr);
         ASSERT_EQ(game.getPiece(pos("e7")), nullptr);
-        ASSERT_EQ(game.getPiece(pos("e8"))->getType(), PieceType::ROOK);
+        ASSERT_EQ(game.getPiece(pos("e8"))->getType(), PieceType::KNIGHT);
         ASSERT_EQ(game.getPiece(pos("e8"))->getField(), game.getBoard()->getField(pos("e8")));
         ASSERT_TRUE(game.isCheck(Color::BLACK));
         ASSERT_FALSE(game.isMate());
@@ -653,7 +653,7 @@ namespace GameUnitTest {
     }
 
     TEST(Game, promoteByTakingWithCheck) {
-        auto game = Game::fromFEN("8/4KP1k/8/8/8/1B6/1B6/2Q5 w - - 0 1");
+        auto game = Game::fromFEN("5r2/4P1k1/8/8/2K5/8/8/8 w - - 0 1");
         auto whitePawn = game.getPiece(pos("e7"));
         auto blackRook = game.getPiece(pos("f8"));
         auto promotion = Move(pos("e7"), pos("f8"), whitePawn, blackRook, PieceType::QUEEN);
@@ -665,7 +665,7 @@ namespace GameUnitTest {
 
         ASSERT_EQ(game.getPiece(pos("f8"))->getType(), PieceType::QUEEN);
         ASSERT_EQ(game.getPiece(pos("f8"))->getField(), game.getBoard()->getField(pos("f8")));
-        ASSERT_TRUE(game.getBlackPlayer()->getPieces().empty());
+        ASSERT_EQ(game.getBlackPlayer()->getPieces().size(), 1);
         ASSERT_TRUE(game.isCheck(Color::BLACK));
         ASSERT_FALSE(game.isMate());
 
