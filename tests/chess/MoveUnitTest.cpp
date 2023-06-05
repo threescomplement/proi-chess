@@ -4,6 +4,10 @@
 #include "../../src/chess/pieces/Pawn.h"
 #include "../../src/chess/pieces/Queen.h"
 #include "../../src/chess/Color.h"
+#include "Game.h"
+#include "common.h"
+
+using namespace ChessUnitTestCommon;
 
 namespace MoveUnitTest {
     TEST(Move, constructorNoCaptureImplicit) {
@@ -61,5 +65,26 @@ namespace MoveUnitTest {
         auto move = Move(Position(7, 2), Position(8, 1), new Pawn(Color::WHITE, nullptr),
                          new Queen(Color::BLACK, nullptr));
         ASSERT_EQ("bxa8", move.toString());
+    }
+
+    TEST(Move, parseSmithNotationPromotion) {
+        auto game = Game::fromFEN("rnbqkb1r/pppp2Pp/4pp1n/8/7p/8/PPPPPP2/RNBQKBNR w KQkq - 0 6");
+        auto move = Move::parseSmithNotation("g7g8q", game);
+        ASSERT_EQ(pos("g7"), move.getFrom());
+        ASSERT_EQ(pos("g8"), move.getTo());
+        ASSERT_EQ(game.getPiece(pos("g7")), move.getPiece());
+        ASSERT_EQ(nullptr, move.getCapturedPiece());
+        ASSERT_EQ(PieceType::QUEEN, move.getPromoteTo());
+    }
+
+    TEST(Move, parseSmithNotationNoPromotion) {
+        auto game = Game();
+        auto move = Move::parseSmithNotation("e2e4", game);
+        ASSERT_EQ(pos("e2"), move.getFrom());
+        ASSERT_EQ(pos("e4"), move.getTo());
+        ASSERT_EQ(game.getPiece(pos("e2")), move.getPiece());
+        ASSERT_EQ(nullptr, move.getCapturedPiece());
+        ASSERT_EQ(PieceType::NONE, move.getPromoteTo());
+
     }
 }
