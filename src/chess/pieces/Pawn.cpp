@@ -139,3 +139,7 @@ std::vector<Position> Pawn::attackedPositions() const {
     return getAllowedPositionsFromOffsets(offsetsOfAttackedFields);
 }
 
+int Pawn::getMoveDirection() const {
+    return moveDirection;
+}
+
