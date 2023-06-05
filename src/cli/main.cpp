@@ -49,7 +49,7 @@ void processPlayerTurn(Game &game) {
                 std::cout << "Illegal move " << moveStr
                           << ", moves allowed from " << move.getFrom().toString() << ":" << std::endl;
 
-                for (auto availableMove: availableMoves) {
+                for (const auto& availableMove: availableMoves) {
                     std::cout << availableMove.toSmithNotation() << " ";
                 }
                 std::cout << std::endl;
