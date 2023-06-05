@@ -8,6 +8,7 @@
 #include "ChessExceptions.h"
 #include "pieces/Pawn.h"
 #include "pieces/PieceType.h"
+#include "GameOver.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -24,6 +25,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
+    this->isOver = GameOver::NOT_OVER;
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -95,6 +97,7 @@ void Game::makeMove(Move move) {
 
     movesWithoutCaptureOrPawnMove = (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) ? 0 :
                                     movesWithoutCaptureOrPawnMove + 1;
+
     this->moveHistory.push_back(move);
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
 }
@@ -234,7 +237,8 @@ Game::Game(
         canBlackQueensideCastle(canBlackQueensideCastle),
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
-        fullmoveNumber(fullmoveNumber) {}
+        fullmoveNumber(fullmoveNumber),
+        isOver(GameOver::NOT_OVER){}
 
 
 std::vector<Move> Game::getMovesFrom(Position position) const {

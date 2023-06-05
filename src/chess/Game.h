@@ -14,6 +14,7 @@ class King;
 class Pawn;
 class Move;
 enum class Color;
+enum class GameOver;
 
 class Game {
 private:
@@ -22,8 +23,9 @@ private:
     Player *blackPlayer;
     Player *currentPlayer;
     std::vector<Move> moveHistory;
-    int movesWithoutCaptureOrPawnMove;
+    GameOver isOver;
 
+    int movesWithoutCaptureOrPawnMove;
     bool canWhiteKingsideCastle;
     bool canWhiteQueensideCastle;
     bool canBlackKingsideCastle;
