@@ -85,6 +85,15 @@ namespace MoveUnitTest {
         ASSERT_EQ(game.getPiece(pos("e2")), move.getPiece());
         ASSERT_EQ(nullptr, move.getCapturedPiece());
         ASSERT_EQ(PieceType::NONE, move.getPromoteTo());
+    }
 
+    TEST(Move, fromPositionsEnPassantCapture) {
+        auto game = Game::fromFEN("rnbqkbnr/ppppp1p1/7p/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3");
+        auto move = Move::fromPositions(game, pos("e5"), pos("f6"));
+        ASSERT_EQ(pos("e5"), move.getFrom());
+        ASSERT_EQ(pos("f6"), move.getTo());
+        ASSERT_EQ(game.getPiece(pos("e5")), move.getPiece());
+        ASSERT_EQ(game.getPiece(pos("f5")), move.getCapturedPiece());
+        ASSERT_EQ(PieceType::NONE, move.getPromoteTo());
     }
 }
