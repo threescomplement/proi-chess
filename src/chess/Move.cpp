@@ -158,10 +158,6 @@ Move Move::fromPositions(const Game &game, Position from, Position to, PieceType
         throw IllegalMoveException("Cannot move from empty field");
     }
 
-    if (game.getCurrentPlayer()->getColor() != movedPiece->getColor()) {
-        throw IllegalMoveException("Player can only move his own piece");
-    }
-
     return {from, to, movedPiece, capturedPiece, promotion};
 }
 

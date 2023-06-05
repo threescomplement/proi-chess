@@ -43,6 +43,10 @@ void processPlayerTurn(Game &game) {
 
         try {
             auto move = Move::parseSmithNotation(moveStr, game);
+            if (game.getCurrentPlayer()->getColor() != move.getPiece()->getColor()) {
+                throw IllegalMoveException("Player can only move his own piece");
+            }
+
             auto availableMoves = game.getMovesFrom(move.getFrom());
 
             if (std::find(availableMoves.begin(), availableMoves.end(), move) == availableMoves.end()) {
