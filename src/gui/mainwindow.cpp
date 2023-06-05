@@ -137,7 +137,6 @@ void MainWindow::handleFieldClick(GameField *field) {
         if (correspondingMove != nullptr) {
             changePickedField(nullptr);
             makeMove(correspondingMove);
-
             validChoice = true;
             // check if the field exists or if its just being reset
         } else if (field != nullptr) {
@@ -157,7 +156,6 @@ void MainWindow::handleFieldClick(GameField *field) {
         }
     }
 
-    updateBoardDisplay();
 }
 
 /**
@@ -193,9 +191,15 @@ void MainWindow::makeMove(Move *move) {
                                                        {"Bishop", PieceType::BISHOP},
                                                        {"Queen",  PieceType::QUEEN}};
 
-        move->setPromotion(pickToPieceMap[pickedPiece]);
+        if (ok){
+            move->setPromotion(pickToPieceMap[pickedPiece]);
+            game->makeMove(*move);
+        }
+
+    } else {
+        game->makeMove(*move);
     }
-    game->makeMove(*move);
+
     updateBoardDisplay();
     if (!(checkIfMate() || checkIfStalemate())) {
         //make bot move
@@ -240,6 +244,7 @@ void MainWindow::changePickedField(GameField *const new_picked) {
         int dest_y = move.getTo().getRow();
         emit updateFieldMark(dest_x, dest_y, true);
     }
+    updateBoardDisplay();
 }
 
 void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) {
