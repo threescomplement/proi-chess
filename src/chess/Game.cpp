@@ -77,6 +77,10 @@ void Game::makeMove(Move move) {
     this->refreshCastlingPossibilites(move);
 
     this->board->makeMove(move);
+    if (move.getPromoteTo() != PieceType::NONE) {
+        currentPlayer->removePiece(move.getPiece());
+        currentPlayer->getPieces().push_back(getPiece(move.getTo()));
+    }
 
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
