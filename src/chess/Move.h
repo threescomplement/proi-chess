@@ -52,6 +52,8 @@ public:
 
     Piece *getCapturedPiece() const;
 
+    PieceType getPromoteTo() const;
+
     bool isCapture() const;
 
     bool operator==(const Move &rhs) const;

@@ -101,3 +101,7 @@ void Move::validateMove() const {
         throw IllegalMoveException("Pawn not eligible for promotion!");
 }
 
+PieceType Move::getPromoteTo() const {
+    return promoteTo;
+}
+
