@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 class Board;
 class Move;
@@ -23,6 +24,7 @@ private:
     Player *blackPlayer;
     Player *currentPlayer;
     std::vector<Move> moveHistory;
+    std::map<std::string, int> positionCount;
 
     int movesWithoutCaptureOrPawnMove;
     bool canWhiteKingsideCastle;
@@ -65,6 +67,7 @@ private:
 
     bool isDrawByInsufficientMaterial() const;
     bool isDrawByRepetition() const;
+    Game deepCopy() const;
 
 
 public:
@@ -99,7 +102,7 @@ public:
     /**
      * Creates a deep copy of the board and makes a given move on it.
      * */
-    Game afterMove(Move move) const;
+    Game afterMove(const Move& move) const;
 
     /**
      * All possible moves from a field, taking neither the current turn nor the
@@ -148,6 +151,10 @@ public:
     int getHalfmoveClock() const;
 
     int getFullmoveNumber() const;
+
+    std::map<std::string, int> getPositionCount() const;
+
+    void setPositionCount(std::map<std::string, int> count);
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

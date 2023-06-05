@@ -26,6 +26,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
+    this->positionCount = {};
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -148,8 +149,9 @@ Game::Game(
         canBlackQueensideCastle(canBlackQueensideCastle),
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
-        fullmoveNumber(fullmoveNumber) ,
-        movesWithoutCaptureOrPawnMove(fullmoveNumber){} //todo - is this not duplication?
+        fullmoveNumber(fullmoveNumber),
+        movesWithoutCaptureOrPawnMove(fullmoveNumber), //todo - is this not duplication?
+        positionCount({}) {}
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
@@ -374,15 +376,15 @@ bool Game::isCheck(Color colorOfCheckedKing) const {
     return false;
 }
 
-Game Game::afterMove(Move move) const {
-    auto deepCopy = FENParser::parseGame(FENParser::gameToString(*this));
-    auto sourcePiece = deepCopy.getPiece(move.getFrom());
+Game Game::afterMove(const Move& move) const {
+    auto copy = this->deepCopy();
+    auto sourcePiece = copy.getPiece(move.getFrom());
 
-    Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : deepCopy.getPiece(
+    Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : copy.getPiece(
             move.getCapturedPiece()->getPosition());
     auto moveEquivalentForDeepCopy = Move(move.getFrom(), move.getTo(), sourcePiece, takenPiece);
-    deepCopy.makeMove(moveEquivalentForDeepCopy);
-    return deepCopy;
+    copy.makeMove(moveEquivalentForDeepCopy);
+    return copy;
 }
 
 bool Game::isCastlingObscuredByOpponent(Move &move) const {
@@ -475,6 +477,20 @@ int Game::getHalfmoveClock() const {
 
 int Game::getFullmoveNumber() const {
     return fullmoveNumber;
+}
+
+Game Game::deepCopy() const {
+    auto copy = FENParser::parseGame(FENParser::gameToString(*this));
+    copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
+    return copy;
+}
+
+std::map<std::string, int> Game::getPositionCount() const {
+    return positionCount;
+}
+
+void Game::setPositionCount(std::map<std::string, int> count) {
+    positionCount = std::move(count);
 }
 
 
