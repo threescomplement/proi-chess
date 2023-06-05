@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "Player.h"
 #include "pieces/Pawn.h"
-#include "../cli/CLIExceptions.h"
 
 std::map<std::string, PieceType> Move::promotionMapping = {
         {" ", PieceType::NONE},
@@ -122,7 +121,7 @@ void Move::setPromotion(PieceType type) {
 
 Move Move::parseSmithNotation(const std::string &moveStr, const Game &game) {
     if (moveStr.size() != 4 && moveStr.size() != 5) {
-        throw InvalidPlayerInputException("Invalid representation of a move");
+        throw IllegalMoveException("Invalid representation of a move");
     }
 
     auto promotionType = (moveStr.size() == 5)
@@ -146,11 +145,11 @@ Move Move::fromPositions(const Game &game, Position from, Position to, PieceType
                          : game.getPiece(to);
 
     if (movedPiece == nullptr) {
-        throw InvalidPlayerInputException("Cannot move from empty field");
+        throw IllegalMoveException("Cannot move from empty field");
     }
 
     if (game.getCurrentPlayer()->getColor() != movedPiece->getColor()) {
-        throw InvalidPlayerInputException("Player can only move his own piece");
+        throw IllegalMoveException("Player can only move his own piece");
     }
 
     return {from, to, movedPiece, capturedPiece, promotion};
