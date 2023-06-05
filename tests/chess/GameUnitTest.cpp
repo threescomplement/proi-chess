@@ -514,6 +514,17 @@ namespace GameUnitTest {
         ASSERT_EQ(movesForWhiteBishop.size(), 1);
     }
 
+    TEST(Game, canKingMoveWhenCheckedBug) {
+        auto game = Game::fromFEN("rnb1kbnr/ppp1pQpp/8/8/8/7B/PPPPPPPP/RNB1K1NR b KQkq - 0 1");
+        auto captureQueen = Move(pos("e8"), pos("f7"), game.getPiece(pos("e8")), game.getPiece(pos("f7")));
+        auto runFromCheck = Move(pos("e8"), pos("d8"), game.getPiece(pos("e8")), nullptr);
+        auto blackMoves = game.getLegalMovesForPlayer(game.getBlackPlayer());
+        ASSERT_TRUE(in(blackMoves, captureQueen));
+        ASSERT_TRUE(in(blackMoves, runFromCheck));
+        ASSERT_EQ(blackMoves.size(), 2);
+
+    }
+
     TEST(Game, cantCastleUnderCheck) {
         auto game = Game::fromFEN("rnbqk2r/ppppQppp/3n2N1/8/8/8/PPPP1PPP/RNB1KB1R b KQkq - 0 1");
         auto onlyMove = Move(pos("d8"), pos("e7"), game.getPiece(pos("d8")), game.getPiece(pos("e7")));
