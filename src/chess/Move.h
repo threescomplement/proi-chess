@@ -25,6 +25,8 @@ private:
 
     static std::map<PieceType, std::string> reversePromotionMapping;
 
+    void validateMove() const;
+
 public:
     Move(Position from, Position to, Piece *moved, Piece *captured, PieceType promoteTo) :
             from(from), to(to), movedPiece(moved), capturedPiece(captured), promoteTo(promoteTo) {
@@ -64,8 +66,6 @@ public:
     bool operator==(const Move &rhs) const;
 
     bool operator!=(const Move &rhs) const;
-
-    void validateMove() const;
 
     std::string toString() const; //TODO - handle promotion-related stuff
 
