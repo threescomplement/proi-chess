@@ -217,7 +217,7 @@ Board *Board::fromFEN(const std::string &FENDescription) {
     return board;
 }
 
-void Board::makeMove(Move move) {
+void Board::makeMove(const Move &move) {
     auto targetField = this->getField(move.getTo());
     auto sourceField = this->getField(move.getFrom());
     auto pieceOnTargetField = targetField->getPiece();
@@ -237,18 +237,20 @@ void Board::makeMove(Move move) {
         capturedPiece->takeOffField();
     }
 
-    targetField->setPiece(sourcePiece);
-    sourceField->setPiece(nullptr);
-
-    sourcePiece->setField(targetField);
-
-    if (move.isCastling()) {
-        auto rookCol = (move.isLongCastle()) ? 1 : 8;
-        auto row = (move.getTo().getRow());
-        auto castledRook = getField(Position(row, rookCol))->getPiece();
-        makeMove(Move::generateCastlingComplement(castledRook));
-    }
+    if (move.getPromoteTo() == PieceType::NONE) {
+        targetField->setPiece(sourcePiece);
+        sourceField->setPiece(nullptr);
+        sourcePiece->setField(targetField);
+        if (move.isCastling()) {
+            auto rookCol = (move.isLongCastle()) ? 1 : 8;
+            auto row = (move.getTo().getRow());
+            auto castledRook = getField(Position(row, rookCol))->getPiece();
+            makeMove(Move::generateCastlingComplement(castledRook));
+        }
+    } else
+        this->executePromotion(move);
 }
+
 
 const std::vector<Piece *> &Board::getAllPieces() const {
     return allPieces;
@@ -261,4 +263,35 @@ Piece *Board::getBlackKing() const {
 Piece *Board::getWhiteKing() const {
     return whiteKing;
 }
+
+void Board::executePromotion(const Move &move) {
+    auto sourcePiece = move.getPiece();
+    auto targetField = this->getField(move.getTo());
+    Piece *promotedPiece;
+    switch (move.getPromoteTo()) {
+        case PieceType::QUEEN: {
+            promotedPiece = new Queen(sourcePiece->getColor(), targetField);
+            break;
+        }
+        case PieceType::ROOK: {
+            promotedPiece = new Rook(sourcePiece->getColor(), targetField);
+            break;
+        }
+        case PieceType::BISHOP: {
+            promotedPiece = new Bishop(sourcePiece->getColor(), targetField);
+            break;
+        }
+        case PieceType::KNIGHT: {
+            promotedPiece = new Knight(sourcePiece->getColor(), targetField);
+            break;
+        }
+        default:
+            throw IllegalMoveException("Cannot promote to this piece!");
+    }
+    promotedPiece->getField()->setPiece(promotedPiece);
+    sourcePiece->getField()->setPiece(nullptr);
+    sourcePiece->takeOffField();
+    allPieces.push_back(promotedPiece);
+}
+
 
