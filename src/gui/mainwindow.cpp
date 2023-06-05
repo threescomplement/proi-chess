@@ -1,4 +1,3 @@
-
 #include <QPixmap>
 #include <vector>
 #include <QDialog>
@@ -13,7 +12,6 @@
 #include "Position.h"
 #include "Move.h"
 #include "pieces/Piece.h"
-#include "pieces/PieceType.h"
 #include "ChessExceptions.h"
 #include "Player.h"
 #include "../bot/StockfishBot.h"
@@ -38,9 +36,6 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
 
     this->resize(400, 400);
     ui->setupUi(this);
-    //ui->GameLayout->setSizeConstraint(QLayout::SetFixedSize);
-//    this->setMaximumSize(400, 450);
-//    this->setMinimumSize(400, 450);
     ui->GameLayout->setGeometry(QRect(0, 0, 400, 400));
     setFixedSize(400, 445);
     createBoard();
@@ -105,9 +100,7 @@ void MainWindow::updateBoardDisplay() {
     for (int row = 1; row <= BOARD_SIZE; row++) {
         for (int col = 1; col <= BOARD_SIZE; col++) {
             auto piece = this->game->getPiece(Position(row, col));
-            auto type = (piece != nullptr) ? piece->getType() : PieceType::NONE;
-            auto color = (piece != nullptr) ? piece->getColor() : Color::WHITE;
-            emit updateFieldPiece(col, row, type, color);
+            emit updateFieldPiece(col, row, piece);
         }
     }
     std::string currentPlayer = ((game->getCurrentPlayer()->getColor() == Color::WHITE) ? "White" : "Black");
@@ -374,7 +367,7 @@ void MainWindow::handleBotMove() {
 bool MainWindow::checkIfMate() {
     if (game->isMate()) {
         std::string winner = ((game->getCurrentPlayer()->getColor() == Color::WHITE) ? "Black" : "White");
-        winner += "is the winner!";
+        winner += " is the winner!";
         QMessageBox::warning(
                 this,
                 tr("Game Over"),

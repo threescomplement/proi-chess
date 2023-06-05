@@ -7,7 +7,6 @@
 #include <map>
 #include <string>
 #include <QColor>
-#include <QDebug>
 
 
 static int fieldSize = 50;
@@ -53,9 +52,9 @@ GameField::~GameField() noexcept {
  * @param type - SUBJECT TO CHANGE: the type of piece it's supposed to now hold
  * @param mark - the new state of being marked, false by default
  **/
-void GameField::updatePieceCalled(int called_x, int called_y, PieceType type, Color color) {
+void GameField::updatePieceCalled(int called_x, int called_y, Piece *piece) {
     if (called_x == x && called_y == y) {
-        setPiece(type, color);
+        setPiece(piece);
     }
 }
 
@@ -67,39 +66,42 @@ void GameField::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void GameField::setPiece(PieceType type, Color color) {
+void GameField::setPiece(Piece* piece) {
 
-    std::string fileName = ""; //= ":/resources/";
+    std::string fileName;
 
-    if (color == Color::WHITE) {
-        fileName += "White_";
-    } else {
-        fileName += "Black_";
+    if (piece != nullptr){
+        auto color = piece->getColor();
+        auto type = piece->getType();
+        if (color == Color::WHITE) {
+            fileName += "White_";
+        } else {
+            fileName += "Black_";
+        }
+        switch (type) {
+            case PieceType::NONE:
+                break;
+            case PieceType::KING:
+                fileName += "king";
+                break;
+            case PieceType::KNIGHT:
+                fileName += "knight";
+                break;
+            case PieceType::PAWN:
+                fileName += "pawn";
+                break;
+            case PieceType::QUEEN:
+                fileName += "queen";
+                break;
+            case PieceType::ROOK:
+                fileName += "rook";
+                break;
+            case PieceType::BISHOP:
+                fileName += "bishop";
+        }
     }
-    switch (type) {
-        case PieceType::NONE:
-            break;
-        case PieceType::KING:
-            fileName += "king";
-            break;
-        case PieceType::KNIGHT:
-            fileName += "knight";
-            break;
-        case PieceType::PAWN:
-            fileName += "pawn";
-            break;
-        case PieceType::QUEEN:
-            fileName += "queen";
-            break;
-        case PieceType::ROOK:
-            fileName += "rook";
-            break;
-        case PieceType::BISHOP:
-            fileName += "bishop";
-    }
+
     QPixmap pixmap = icons.pieceImgs[fileName];
-    QString new_text = QString::fromStdString(pieceChars[type]);
-    this->setText(new_text);
     this->setPixmap(pixmap.scaled(fieldSize, fieldSize, Qt::AspectRatioMode::KeepAspectRatio));
 
 }
@@ -112,12 +114,9 @@ int GameField::getY() const {
     return y;
 }
 
-const PieceType &GameField::getPiece() const {
-    return piece;
-}
 
 void GameField::reset() {
-    setPiece(PieceType::NONE, Color::WHITE);
+    setPiece(nullptr);
     clicked = false;
     setMark(false);
 }
@@ -128,7 +127,7 @@ void GameField::setMark(bool new_mark) {
     if (marked) {
         overlay->setPixmap(
                 QPixmap(":/resources/green_selection_mask_rectangular.png").scaled(fieldSize, fieldSize,
-                                                                       Qt::AspectRatioMode::KeepAspectRatio));
+                                                                                   Qt::AspectRatioMode::KeepAspectRatio));
     } else {
         overlay->setPixmap(QPixmap());
     }

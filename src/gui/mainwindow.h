@@ -92,7 +92,7 @@ public slots:
 
 signals:
 
-    void updateFieldPiece(int x, int y, PieceType type = PieceType::NONE, Color color = Color::WHITE);
+    void updateFieldPiece(int x, int y, Piece *piece = nullptr);
 
     void updateFieldMark(int x, int y, bool newMark);
 

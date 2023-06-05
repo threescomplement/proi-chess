@@ -6,6 +6,7 @@
 #include "pieces/PieceType.h"
 #include "Color.h"
 #include "ChessIcons.h"
+#include "pieces/Piece.h"
 
 
 /**
@@ -29,7 +30,6 @@ class GameField : public ClickableLabel {
 Q_OBJECT
 
 private:
-    PieceType piece;
     bool marked;
     int x;
     int y;
@@ -42,7 +42,7 @@ public:
 
     ~GameField();
 
-    void setPiece(PieceType type, Color color);
+    void setPiece(Piece *piece = nullptr);
 
     void mousePressEvent(QMouseEvent *event) override;
 
@@ -50,15 +50,13 @@ public:
 
     int getY() const;
 
-    const PieceType &getPiece() const;
-
     void setMark(bool new_mark);
 
 public slots:
 
     void reset();
 
-    void updatePieceCalled(int called_x, int called_y, PieceType type = PieceType::NONE, Color color = Color::WHITE);
+    void updatePieceCalled(int called_x, int called_y, Piece *piece = nullptr);
 
     void markUpdateCalled(int called_x, int called_y, bool new_mark);
 
