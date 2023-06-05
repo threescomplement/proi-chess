@@ -21,6 +21,11 @@ private:
     PieceType promoteTo;
 
 public:
+    Move(Position from, Position to, Piece *moved, Piece *captured, PieceType promoteTo) :
+            from(from), to(to), movedPiece(moved), capturedPiece(captured), promoteTo(promoteTo) {
+        validateMove();
+    };
+
     Move(Position from, Position to, Piece *moved, Piece *captured) :
             from(from), to(to), movedPiece(moved), capturedPiece(captured), promoteTo(PieceType::NONE) {
         validateMove();
