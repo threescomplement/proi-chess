@@ -105,3 +105,7 @@ PieceType Move::getPromoteTo() const {
     return promoteTo;
 }
 
+void Move::setPromotion(PieceType type) {
+    this->promoteTo = type;
+}
+

@@ -79,6 +79,8 @@ public:
     bool isLongCastle() const;
 
     bool resultsInPromotion() const;
+
+    void setPromotion(PieceType promoteTo);
 };
 
 
