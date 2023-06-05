@@ -9,6 +9,7 @@
 #include "pieces/Pawn.h"
 #include "pieces/PieceType.h"
 #include "GameOver.h"
+#include "FENParser.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -119,105 +120,10 @@ Player *Game::getCurrentPlayer() const {
     return currentPlayer;
 }
 
-std::string Game::castlingAvailabilityFEN() const {
-    std::stringstream ss;
-    if (canWhiteKingsideCastle) {
-        ss << "K";
-    }
-    if (canWhiteQueensideCastle) {
-        ss << "Q";
-    }
-    if (canBlackKingsideCastle) {
-        ss << "k";
-    }
-    if (canBlackQueensideCastle) {
-        ss << "q";
-    }
-
-    auto result = ss.str();
-    if (result.empty()) {
-        return "-";
-    }
-
-    return result;
-}
-
-std::string Game::toFEN() const {
-    std::stringstream ss;
-    auto board = this->getBoard()->toFEN();
-    auto activePlayer = (this->currentPlayer == this->whitePlayer) ? "w" : "b";
-    auto castling = this->castlingAvailabilityFEN();
-    auto enPassant = (this->enPassantTargetPosition != nullptr) ? this->enPassantTargetPosition->toString() : "-";
-
-    ss << board << " "
-       << activePlayer << " "
-       << castling << " "
-       << enPassant << " "
-       << this->halfmoveClock << " "
-       << this->fullmoveNumber;
-
-    return ss.str();
-}
 
 Piece *Game::getPiece(Position position) const {
     return this->getBoard()->getField(position)->getPiece();
 }
-
-Game Game::fromFEN(const std::string &fen) {
-    auto elements = split(fen, ' ');
-
-    auto board = Board::fromFEN(elements[0]);
-
-    auto activePlayer = elements[1];
-    if (activePlayer.size() != 1 || (activePlayer[0] != 'w' && activePlayer[0] != 'b')) {
-        throw FenException("Invalid FEN representation of Game");
-    }
-    auto whitePlayer = new Player("Player One", Color::WHITE);
-    auto blackPlayer = new Player("Player Two", Color::BLACK);
-    auto currentPlayer = (activePlayer[0] == 'w') ? whitePlayer : blackPlayer;
-    for (auto piece: board->getAllPieces()) {
-        if (piece->getColor() == Color::WHITE) {
-            whitePlayer->getPieces().push_back(piece);
-        } else {
-            blackPlayer->getPieces().push_back(piece);
-        }
-    }
-
-    auto castling = elements[2];
-    auto canWhiteKingsideCastle = castling.find('K') != -1;
-    auto canWhiteQueensideCastle = castling.find('Q') != -1;
-    auto canBlackKingsideCastle = castling.find('k') != -1;
-    auto canBlackQueensideCastle = castling.find('q') != -1;
-
-    auto enPassant = elements[3];
-    Position *enPassantPosition = nullptr;
-    if (!(enPassant.size() == 1 && enPassant[0] == '-') && enPassant.size() != 2) {
-        throw FenException("Invalid FEN representation of Game");
-    }
-
-    if (enPassant.size() == 2) {
-        auto pos = Position::fromString(enPassant);
-        enPassantPosition = new Position(pos.getRow(), pos.getCol());
-    }
-
-    auto halfmoveClock = std::stoi(elements[4]);
-    auto fullmoveNumber = std::stoi(elements[5]);
-
-    auto game = Game(
-            board,
-            whitePlayer,
-            blackPlayer,
-            currentPlayer,
-            canWhiteKingsideCastle,
-            canWhiteQueensideCastle,
-            canBlackKingsideCastle,
-            canBlackQueensideCastle,
-            enPassantPosition,
-            halfmoveClock,
-            fullmoveNumber
-    );
-    return game;
-};
 
 Game::Game(
         Board *board,
@@ -242,7 +148,7 @@ Game::Game(
         canBlackQueensideCastle(canBlackQueensideCastle),
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
-        fullmoveNumber(fullmoveNumber),
+        fullmoveNumber(fullmoveNumber) ,
         movesWithoutCaptureOrPawnMove(fullmoveNumber){} //todo - is this not duplication?
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
@@ -469,7 +375,7 @@ bool Game::isCheck(Color colorOfCheckedKing) const {
 }
 
 Game Game::afterMove(Move move) const {
-    auto deepCopy = Game::fromFEN(this->toFEN());
+    auto deepCopy = FENParser::parseGame(FENParser::gameToString(*this));
     auto sourcePiece = deepCopy.getPiece(move.getFrom());
 
     Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : deepCopy.getPiece(
@@ -545,6 +451,30 @@ bool Game::isDrawByRepetition() const {
 
 Position *Game::getEnPassantTargetPosition() const {
     return enPassantTargetPosition;
+}
+
+bool Game::getCanWhiteKingsideCastle() const {
+    return canWhiteKingsideCastle;
+}
+
+bool Game::getCanWhiteQueensideCastle() const {
+    return canWhiteQueensideCastle;
+}
+
+bool Game::getCanBlackKingsideCastle() const {
+    return canBlackKingsideCastle;
+}
+
+bool Game::getCanBlackQueensideCastle() const {
+    return canBlackQueensideCastle;
+}
+
+int Game::getHalfmoveClock() const {
+    return halfmoveClock;
+}
+
+int Game::getFullmoveNumber() const {
+    return fullmoveNumber;
 }
 
 

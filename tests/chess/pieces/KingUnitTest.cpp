@@ -1,13 +1,13 @@
-
 #include "gtest/gtest.h"
-#include "../../../src/chess/pieces/King.h"
-#include "../../../tests/chess/common.h"
-#include "../../../src/chess/Board.h"
+#include "pieces/King.h"
+#include "../common.h"
+#include "Board.h"
+
 using namespace ChessUnitTestCommon;
 
 namespace KingUnitTest {
     TEST(King, noPossibleMoves) {
-        auto testBoard = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        auto testBoard = fenBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         auto whiteKing = testBoard->getField(pos("e1"))->getPiece();
         auto blackKing = testBoard->getField(pos("e1"))->getPiece();
         auto whitekingMoves = whiteKing->getMoves();
@@ -17,7 +17,7 @@ namespace KingUnitTest {
     }
 
     TEST(King, onEdgeFile) {
-        auto testBoard = Board::fromFEN("8/8/k7/8/8/8/7K/8");
+        auto testBoard = fenBoard("8/8/k7/8/8/8/7K/8");
         auto whiteKing = testBoard->getField(pos("h2"))->getPiece();
         auto blackKing = testBoard->getField(pos("a6"))->getPiece();
         auto whitekingMoves = whiteKing->getMoves();
@@ -42,7 +42,7 @@ namespace KingUnitTest {
     }
 
     TEST(King, onEdgeRank) {
-        auto testBoard = Board::fromFEN("3k4/8/8/8/8/8/8/7K");
+        auto testBoard = fenBoard("3k4/8/8/8/8/8/8/7K");
         auto whiteKing = testBoard->getField(pos("h1"))->getPiece();
         auto blackKing = testBoard->getField(pos("d8"))->getPiece();
         auto whitekingMoves = whiteKing->getMoves();
@@ -65,7 +65,7 @@ namespace KingUnitTest {
     }
 
     TEST(King, possibleCaptures) {
-        auto testBoard = Board::fromFEN("8/8/8/8/8/8/2K2P1P/6k1");
+        auto testBoard = fenBoard("8/8/8/8/8/8/2K2P1P/6k1");
         auto blackKing = testBoard->getField(pos("g1"))->getPiece();
         auto blackKingMoves = blackKing->getMoves();
 

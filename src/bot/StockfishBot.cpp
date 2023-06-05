@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Board.h"
 #include "pieces/PieceType.h"
+#include "FENParser.h"
 
 const std::string StockfishBot::stockfishProgramName = "stockfish";
 
@@ -33,7 +34,9 @@ QString StockfishBot::getStockfishOutput(const char *positionCmd, const char *go
         stockfish.waitForReadyRead();
         QString output = stockfish.readAll();
         if (output.contains("bestmove")) {
-            stockfish.kill();
+            stockfish.write("quit\n");
+            stockfish.waitForFinished();
+            stockfish.kill();  // Just in case
             return output;
         }
     }
@@ -65,7 +68,7 @@ Move StockfishBot::getMoveFromStockfish(const std::string &gameFEN) const {
 }
 
 Move StockfishBot::getBestNextMove() const {
-    return this->getMoveFromStockfish(game.toFEN());
+    return this->getMoveFromStockfish(FENParser::gameToString(this->game));
 }
 
 StockfishBot::StockfishBot(const Game &game, int depth) : ChessBot(game, depth) {}
