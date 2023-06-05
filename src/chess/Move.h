@@ -3,6 +3,7 @@
 
 
 #include <sstream>
+#include <map>
 #include "Position.h"
 #include "pieces/PieceType.h"
 #include "pieces/Piece.h"
@@ -19,6 +20,8 @@ private:
     Piece *movedPiece;
     Piece *capturedPiece;
     PieceType promoteTo;
+
+    static std::map<std::string, PieceType> promotionMapping;
 
 public:
     Move(Position from, Position to, Piece *moved, Piece *captured, PieceType promoteTo) :
@@ -76,7 +79,11 @@ public:
      **/
     static Move generateCastlingComplement(Piece *CastlingRook);
 
-    static Move parseStockfishNotation(const std::string &moveStr, const Game &game);
+    static Move parseSmithNotation(const std::string &moveStr, const Game &game);
+
+    static Move fromPositions(const Game &game, Position from, Position to);
+
+    static Move fromPositions(const Game &game, Position from, Position to, PieceType promotion);
 
     bool isLongCastle() const;
 

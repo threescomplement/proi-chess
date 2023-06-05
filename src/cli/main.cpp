@@ -41,7 +41,7 @@ void processPlayerTurn(Game &game) {
         }
 
         try {
-            auto move = Move::parseStockfishNotation(moveStr, game);
+            auto move = Move::parseSmithNotation(moveStr, game);
             auto availableMoves = game.getMovesFrom(move.getFrom());
 
             if (std::find(availableMoves.begin(), availableMoves.end(), move) == availableMoves.end()) {

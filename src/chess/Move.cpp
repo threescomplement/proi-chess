@@ -5,6 +5,14 @@
 #include "pieces/Pawn.h"
 #include "../cli/CLIExceptions.h"
 
+std::map<std::string, PieceType> Move::promotionMapping = {
+        {" ", PieceType::NONE},
+        {"q", PieceType::QUEEN},
+        {"b", PieceType::BISHOP},
+        {"r", PieceType::ROOK},
+        {"n", PieceType::KNIGHT},
+};
+
 const Position &Move::getFrom() const {
     return from;
 }
@@ -112,18 +120,30 @@ void Move::setPromotion(PieceType type) {
     this->promoteTo = type;
 }
 
-Move Move::parseStockfishNotation(const std::string &moveStr, const Game &game) {
-    if (moveStr.size() != 4) {
+Move Move::parseSmithNotation(const std::string &moveStr, const Game &game) {
+    if (moveStr.size() != 4 && moveStr.size() != 5) {
         throw InvalidPlayerInputException("Invalid representation of a move");
     }
 
+    auto promotionType = (moveStr.size() == 5)
+            ? Move::promotionMapping[moveStr.substr(4, 1)]
+            : PieceType::NONE;
+
     Position sourcePosition = Position::fromString(moveStr.substr(0, 2));
     Position targetPosition = Position::fromString(moveStr.substr(2, 2));
+    return Move::fromPositions(game, sourcePosition, targetPosition, promotionType);
+}
+
+Move Move::fromPositions(const Game &game, Position from, Position to) {
+    return Move::fromPositions(game, from, to, PieceType::NONE);
+}
+
+Move Move::fromPositions(const Game &game, Position from, Position to, PieceType promotion) {
     auto enPassantTargetPos = game.getEnPassantTargetPosition();
-    auto movedPiece = game.getPiece(sourcePosition);
-    auto capturedPiece = (enPassantTargetPos != nullptr && (*enPassantTargetPos) == targetPosition)
+    auto movedPiece = game.getPiece(from);
+    auto capturedPiece = (enPassantTargetPos != nullptr && (*enPassantTargetPos) == to)
                          ? dynamic_cast<Piece *>(game.getEnPassantTargetPiece())
-                         : game.getPiece(targetPosition);
+                         : game.getPiece(to);
 
     if (movedPiece == nullptr) {
         throw InvalidPlayerInputException("Cannot move from empty field");
@@ -133,6 +153,6 @@ Move Move::parseStockfishNotation(const std::string &moveStr, const Game &game) 
         throw InvalidPlayerInputException("Player can only move his own piece");
     }
 
-    return {sourcePosition, targetPosition, movedPiece, capturedPiece};
+    return {from, to, movedPiece, capturedPiece, promotion};
 }
 
