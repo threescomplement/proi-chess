@@ -36,9 +36,13 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr), botGame(false), stockfishBot(
         nullptr), botColor(Color::BLACK) {
 
-
+    this->resize(400, 400);
     ui->setupUi(this);
-
+    //ui->GameLayout->setSizeConstraint(QLayout::SetFixedSize);
+//    this->setMaximumSize(400, 450);
+//    this->setMinimumSize(400, 450);
+    ui->GameLayout->setGeometry(QRect(0, 0, 400, 400));
+    setFixedSize(400, 450);
     createBoard();
 
     updateBoardDisplay();
@@ -62,8 +66,9 @@ void MainWindow::createBoard(Color side) {
     //ui->GameBoard->setScaledContents(true);
     ui->GameBoard->setPixmap(board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio));
     ui->GameBoard->setAlignment(Qt::AlignLeft);
+    ui->GameBoard->setGeometry(0, 0, 400, 400);
 
-    for(int row = 1; row <= BOARD_HEIGHT; row++) {
+    for (int row = 1; row <= BOARD_HEIGHT; row++) {
         for (int column = 1; column <= BOARD_WIDTH; column++) {
             int fieldRow;
             int fieldColumn;
