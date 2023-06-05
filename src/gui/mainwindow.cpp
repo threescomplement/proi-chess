@@ -393,8 +393,9 @@ bool MainWindow::checkIfStalemate() {
                 this,
                 tr("Game Over"),
                 tr("Stalemate!"));
+        ui->statusbar->showMessage("Stalemate!");
     }
-    ui->statusbar->showMessage("Stalemate!");
+
     return game->isStalemate();
 }
 
