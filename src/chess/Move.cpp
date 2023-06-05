@@ -94,3 +94,10 @@ bool Move::resultsInPromotion() const {
     return getTo().getRow() == promotionRankForThisPawn;
 }
 
+void Move::validateMove() const {
+    if (movedPiece->getType() != PieceType::PAWN && promoteTo != PieceType::NONE)
+        throw IllegalMoveException("Non-pawn pieces cannot promote!");
+    if (promoteTo != PieceType::NONE && !resultsInPromotion())
+        throw IllegalMoveException("Pawn not eligible for promotion!");
+}
+

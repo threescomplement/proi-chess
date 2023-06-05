@@ -6,6 +6,7 @@
 #include "Position.h"
 #include "pieces/PieceType.h"
 #include "pieces/Piece.h"
+#include "ChessExceptions.h"
 
 class Position;
 
@@ -21,16 +22,22 @@ private:
 
 public:
     Move(Position from, Position to, Piece *moved, Piece *captured) :
-            from(from), to(to), movedPiece(moved), capturedPiece(captured), promoteTo(PieceType::NONE){};
+            from(from), to(to), movedPiece(moved), capturedPiece(captured), promoteTo(PieceType::NONE) {
+        validateMove();
+    };
 
     Move(Position from, Position to, Piece *moved) :
-            from(from), to(to), movedPiece(moved), capturedPiece(nullptr),  promoteTo(PieceType::NONE){};
+            from(from), to(to), movedPiece(moved), capturedPiece(nullptr), promoteTo(PieceType::NONE) {};
 
     Move(const Move &move) : from(move.getFrom()), to(move.getTo()), movedPiece(move.getPiece()),
-                             capturedPiece(move.getCapturedPiece()), promoteTo(move.promoteTo) {};
+                             capturedPiece(move.getCapturedPiece()), promoteTo(move.promoteTo) {
+        validateMove();
+    };
 
     Move(Position from, Position to, Piece *moved, PieceType promoteTo) :
-            from(from), to(to), movedPiece(moved), capturedPiece(nullptr), promoteTo(promoteTo) {};
+            from(from), to(to), movedPiece(moved), capturedPiece(nullptr), promoteTo(promoteTo) {
+        validateMove();
+    };
 
     const Position &getFrom() const;
 
@@ -45,6 +52,8 @@ public:
     bool operator==(const Move &rhs) const;
 
     bool operator!=(const Move &rhs) const;
+
+    void validateMove() const;
 
     std::string toString() const; //TODO - handle promotion-related stuff
 
