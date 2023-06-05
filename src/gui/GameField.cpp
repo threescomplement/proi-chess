@@ -31,7 +31,6 @@ GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::Win
     this->x = x;
     this->y = y;
     overlay = new QLabel(this);
-    // Can't figure out how to get dimensions of GameField, all methods return weird 30X100 dimensions
     overlay->setGeometry(0, 0, fieldSize, fieldSize);
     overlay->show();
     overlay->raise();
