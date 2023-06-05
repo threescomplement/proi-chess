@@ -88,7 +88,6 @@ void Game::makeMove(Move move) {
 
     if (move.isCapture()) {
         auto captured = move.getCapturedPiece();
-        captured->takeOffField();
         auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
         player->removePiece(captured);
     }

@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QClipboard>
+#include <QThread>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "GameField.h"
