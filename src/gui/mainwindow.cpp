@@ -366,9 +366,9 @@ bool MainWindow::checkIfMate() {
                 this,
                 tr("Game Over"),
                 QString::fromStdString(winner));
-
+        ui->statusbar->showMessage("Checkmate!");
     }
-    ui->statusbar->showMessage("Checkmate!");
+
     return game->isMate();
 }
 
