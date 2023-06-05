@@ -26,7 +26,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
-    this->positionCount = {};
+    this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 0}};
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -106,6 +106,9 @@ void Game::makeMove(Move move) {
                                     movesWithoutCaptureOrPawnMove + 1;
 
     this->moveHistory.push_back(move);
+    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
+    positionCount[fenOfCurrentBoard] = (positionCount.find(fenOfCurrentBoard) == positionCount.end()) ? 1 :
+                                       positionCount[fenOfCurrentBoard] + 1;
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
 }
 
@@ -151,7 +154,7 @@ Game::Game(
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber),
         movesWithoutCaptureOrPawnMove(fullmoveNumber), //todo - is this not duplication?
-        positionCount({}) {}
+        positionCount({}) {}                            // todo - what about this constructor?
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
@@ -376,7 +379,7 @@ bool Game::isCheck(Color colorOfCheckedKing) const {
     return false;
 }
 
-Game Game::afterMove(const Move& move) const {
+Game Game::afterMove(const Move &move) const {
     auto copy = this->deepCopy();
     auto sourcePiece = copy.getPiece(move.getFrom());
 
