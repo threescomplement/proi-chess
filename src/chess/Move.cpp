@@ -12,6 +12,13 @@ std::map<std::string, PieceType> Move::promotionMapping = {
         {"n", PieceType::KNIGHT},
 };
 
+std::map<PieceType, std::string> Move::reversePromotionMapping = {
+        {PieceType::QUEEN, "q"},
+        {PieceType::BISHOP, "b"},
+        {PieceType::ROOK, "r"},
+        {PieceType::KNIGHT, "n"},
+};
+
 const Position &Move::getFrom() const {
     return from;
 }
@@ -77,6 +84,9 @@ bool Move::isDoublePawnMove() const {
 std::string Move::toSmithNotation() const {
     std::stringstream ss;
     ss << this->getFrom().toString() << this->getTo().toString();
+    if (this->resultsInPromotion()) {
+        ss << Move::reversePromotionMapping[this->getPromoteTo()];
+    }
     return ss.str();
 }
 

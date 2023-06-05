@@ -23,6 +23,8 @@ private:
 
     static std::map<std::string, PieceType> promotionMapping;
 
+    static std::map<PieceType, std::string> reversePromotionMapping;
+
 public:
     Move(Position from, Position to, Piece *moved, Piece *captured, PieceType promoteTo) :
             from(from), to(to), movedPiece(moved), capturedPiece(captured), promoteTo(promoteTo) {
