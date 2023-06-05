@@ -638,37 +638,37 @@ namespace GameUnitTest {
     }
 
     TEST(Game, insufficientMaterialOnlyKings) {
-        auto game = Game::fromFEN("k7/8/8/8/8/8/8/K7 w - - 0 1");
+        auto game = fenGame("k7/8/8/8/8/8/8/K7 w - - 0 1");
         ASSERT_EQ(game.isOver(), GameOver::INSUFFICIENT_MATERIAL);
     }
 
     TEST(Game, insufficientMaterialKingAndKnightvsKingAndBishop) {
-        auto game = Game::fromFEN("k6b/8/8/8/8/8/8/K1N5 b - - 0 1");
+        auto game = fenGame("k6b/8/8/8/8/8/8/K1N5 b - - 0 1");
         ASSERT_EQ(game.isOver(), GameOver::INSUFFICIENT_MATERIAL);
     }
 
     TEST(Game, insufficientMaterialKingAndKnightvsKing) {
-        auto game = Game::fromFEN("k7/8/8/8/8/8/8/K1N5 w - - 0 1");
+        auto game = fenGame("k7/8/8/8/8/8/8/K1N5 w - - 0 1");
         ASSERT_EQ(game.isOver(), GameOver::INSUFFICIENT_MATERIAL);
     }
 
     TEST(Game, insufficientMaterialKingAndBishopvsKing) {
-        auto game = Game::fromFEN("k7/8/8/8/8/8/8/K1B5 b - - 0 1");
+        auto game = fenGame("k7/8/8/8/8/8/8/K1B5 b - - 0 1");
         ASSERT_EQ(game.isOver(), GameOver::INSUFFICIENT_MATERIAL);
     }
 
     TEST(Game, sufficientMaterialKnightBishop) {
-        auto game = Game::fromFEN("k7/8/8/8/8/7B/8/K1N5 w - - 0 1");
+        auto game = fenGame("k7/8/8/8/8/7B/8/K1N5 w - - 0 1");
         ASSERT_EQ(game.isOver(), GameOver::NOT_OVER);
     }
 
     TEST(Game, sufficientMaterialTwoKnights) {
-        auto game = Game::fromFEN("k7/8/8/8/8/8/8/K1NN4 w - - 0 1");
+        auto game = fenGame("k7/8/8/8/8/8/8/K1NN4 w - - 0 1");
         ASSERT_EQ(game.isOver(), GameOver::NOT_OVER);
     }
 
     TEST(Game, sufficientMaterialRook) {
-        auto game = Game::fromFEN("k7/8/8/8/8/8/K1R5/8 w - - 0 1");
+        auto game = fenGame("k7/8/8/8/8/8/K1R5/8 w - - 0 1");
         ASSERT_EQ(game.isOver(), GameOver::NOT_OVER);
     }
 }
