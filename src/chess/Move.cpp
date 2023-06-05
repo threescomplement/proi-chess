@@ -67,7 +67,7 @@ bool Move::isDoublePawnMove() const {
     return (type == PieceType::PAWN && abs(sourceRow - targetRow) == 2);
 }
 
-std::string Move::toStockfishNotation() const {
+std::string Move::toSmithNotation() const {
     std::stringstream ss;
     ss << this->getFrom().toString() << this->getTo().toString();
     return ss.str();
@@ -87,6 +87,29 @@ Move Move::generateCastlingComplement(Piece *castlingRook) {
 
 bool Move::isLongCastle() const {
     return (isCastling() && getTo().getCol() == 3);
+}
+
+bool Move::resultsInPromotion() const {
+    if (getPiece()->getType() != PieceType::PAWN)
+        return false;
+    // if a pawn moves "up", it promotes on rank 8, else on rank 1
+    int promotionRankForThisPawn = (dynamic_cast<Pawn *>(getPiece())->getMoveDirection() == 1) ? 8 : 1;
+    return getTo().getRow() == promotionRankForThisPawn;
+}
+
+void Move::validateMove() const {
+    if (movedPiece->getType() != PieceType::PAWN && promoteTo != PieceType::NONE)
+        throw IllegalMoveException("Non-pawn pieces cannot promote!");
+    if (promoteTo != PieceType::NONE && !resultsInPromotion())
+        throw IllegalMoveException("Pawn not eligible for promotion!");
+}
+
+PieceType Move::getPromoteTo() const {
+    return promoteTo;
+}
+
+void Move::setPromotion(PieceType type) {
+    this->promoteTo = type;
 }
 
 Move Move::parseStockfishNotation(const std::string &moveStr, const Game &game) {

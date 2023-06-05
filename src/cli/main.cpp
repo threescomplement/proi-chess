@@ -49,7 +49,7 @@ void processPlayerTurn(Game &game) {
                           << ", moves allowed from " << move.getFrom().toString() << ":" << std::endl;
 
                 for (auto availableMove: availableMoves) {
-                    std::cout << availableMove.toStockfishNotation() << " ";
+                    std::cout << availableMove.toSmithNotation() << " ";
                 }
                 std::cout << std::endl;
                 continue;

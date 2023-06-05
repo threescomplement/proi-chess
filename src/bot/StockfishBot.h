@@ -3,8 +3,10 @@
 
 
 #include <QString>
+#include <map>
 #include "Game.h"
 #include "ChessBot.h"
+#include "pieces/PieceType.h"
 
 /**
  * Requires stockfish to be installed and on the system PATH
@@ -21,7 +23,10 @@ private:
 
     static std::string extractMove(const QString& stockfishOutput);
 
+    static std::map<std::string, PieceType> promotionMapping;
+
 public:
+
     explicit StockfishBot(const Game &game, int depth = 10);
 
     Move getBestNextMove() const override;

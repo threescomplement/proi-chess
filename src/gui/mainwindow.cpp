@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QClipboard>
+#include <QThread>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "GameField.h"
@@ -179,34 +180,22 @@ Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *fiel
 
 }
 
-void MainWindow::makeMove(Move const *move) {
-    game->makeMove(*move);
-    //not implemented in game logic yet :
-//    if (game.promotionFlag){
-//        bool ok;
-//        PieceType pickedType = PieceType::NONE;
-//        QStringList colorPicker = {"Rook", "Knight", "Bishop", "Queen"};
-//        QString pickedPiece = QInputDialog::getItem(this, tr("Promotion"), tr("Choose piece to promote to:"), colorPicker, 0,
-//                                                    false, &ok);
-//        if (ok){
-//            switch (pickedPiece) {
-//                case "Rook":
-//                    pickedType = PieceType::ROOK;
-//                    break;
-//                case "Knight":
-//                    pickedType = PieceType::KNIGHT;
-//                    break;
-//                case "Bishop":
-//                    pickedType = PieceType::BISHOP;
-//                    break;
-//                case "Queen":
-//                    pickedType = PieceType::QUEEN;
-//                    break;
-//            }
-//        }
-//        game.promote(pickedType);
-//    }
+void MainWindow::makeMove(Move *move) {
 
+    if (move->resultsInPromotion()) {
+        bool ok;
+        QStringList colorPicker = {"Rook", "Knight", "Bishop", "Queen"};
+        QString pickedPiece = QInputDialog::getItem(this, tr("Promotion"), tr("Choose piece to promote to:"),
+                                                    colorPicker, 0,
+                                                    false, &ok);
+        std::map<QString, PieceType> pickToPieceMap = {{"Rook",   PieceType::ROOK},
+                                                       {"Knight", PieceType::KNIGHT},
+                                                       {"Bishop", PieceType::BISHOP},
+                                                       {"Queen",  PieceType::QUEEN}};
+
+        move->setPromotion(pickToPieceMap[pickedPiece]);
+    }
+    game->makeMove(*move);
     updateBoardDisplay();
     if (!(checkIfMate() || checkIfStalemate())) {
         //make bot move

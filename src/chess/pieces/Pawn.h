@@ -46,6 +46,8 @@ public:
 
     std::string getUnicodeSymbol() const override;
 
+    int getMoveDirection() const;
+
     /**
      * Returns vector of possible en passant moves or empty if there are none.
      * Validates the board situation except checks and pins.
