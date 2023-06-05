@@ -283,7 +283,7 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
                                                 " the more accurate the bot will be):"),
                                              QLineEdit::Normal,
                                              0);
-        // stockFishBot.setDepth(bot_depth);
+        stockfishBot->setDepth(bot_depth);
     }
     handleBotMove();
 
