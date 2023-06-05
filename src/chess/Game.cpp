@@ -24,7 +24,6 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
-    this->promotionUnderway = nullptr;
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -233,8 +232,7 @@ Game::Game(
         canBlackQueensideCastle(canBlackQueensideCastle),
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
-        fullmoveNumber(fullmoveNumber),
-        promotionUnderway(nullptr){}
+        fullmoveNumber(fullmoveNumber){}
 
 
 
