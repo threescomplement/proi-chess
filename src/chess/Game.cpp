@@ -451,7 +451,9 @@ bool Game::isDrawByInsufficientMaterial() const {
 }
 
 bool Game::isDrawByRepetition() const {
-    return false; // TODO
+    return std::any_of(positionCount.begin(), positionCount.end(), [](const std::pair<std::string, int> &p) {
+        return p.second >= 3;
+    });
 }
 
 Position *Game::getEnPassantTargetPosition() const {
