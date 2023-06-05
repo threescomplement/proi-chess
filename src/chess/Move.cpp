@@ -1,5 +1,6 @@
 #include "Move.h"
 #include "pieces/PieceType.h"
+#include "pieces/Pawn.h"
 
 const Position &Move::getFrom() const {
     return from;
@@ -83,5 +84,13 @@ Move Move::generateCastlingComplement(Piece *castlingRook) {
 
 bool Move::isLongCastle() const {
     return (isCastling() && getTo().getCol() == 3);
+}
+
+bool Move::pawnMovingToLastRank() const {
+    if (getPiece()->getType() != PieceType::PAWN)
+        return false;
+    // if a pawn moves "up", it promotes on rank 8, else on rank 1
+    int promotionRankForThisPawn = (dynamic_cast<Pawn *>(getPiece())->getMoveDirection() == 1) ? 8 : 1;
+    return getTo().getRow() == promotionRankForThisPawn;
 }
 

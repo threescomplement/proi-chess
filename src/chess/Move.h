@@ -56,6 +56,8 @@ public:
     static Move generateCastlingComplement(Piece *CastlingRook);
 
     bool isLongCastle() const;
+
+    bool pawnMovingToLastRank() const;
 };
 
 
