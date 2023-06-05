@@ -6,13 +6,21 @@
 #include <string>
 
 class Board;
+
 class Move;
+
 class Player;
+
 class Piece;
+
 class Position;
+
 class King;
+
 class Pawn;
+
 class Move;
+
 enum class Color;
 enum class GameOver;
 
@@ -30,6 +38,9 @@ private:
     bool canBlackKingsideCastle;
     bool canBlackQueensideCastle;
     Position *enPassantTargetPosition;
+
+
+private:
     int halfmoveClock;
     int fullmoveNumber;
 
@@ -37,11 +48,10 @@ private:
          bool canWhiteQueensideCastle, bool canBlackKingsideCastle, bool canBlackQueensideCastle,
          Position *enPassantTarget, int halfmoveClock, int fullmoveNumber);
 
-private:
-
     std::string castlingAvailabilityFEN() const;
 
     void refreshEnPassant();
+
     bool isCastlingObscuredByOpponent(Move &move) const;
 
     /**
@@ -50,6 +60,7 @@ private:
      * in its direction.
      **/
     void refreshCastlingPossibilites(const Move &move);
+
     void refreshCastlingAfterRookCapture(const Piece *takenRook);
 
     /**
@@ -57,13 +68,16 @@ private:
      * there are no pieces between the king and rook
      * */
     bool possibleKingsideCastlingThisRound() const;
+
     bool possibleQueensideCastlingThisRound() const;
-    bool noPiecesBetweenKingAndRook(const Piece* king, const Piece* rook) const;
+
+    bool noPiecesBetweenKingAndRook(const Piece *king, const Piece *rook) const;
 
     /**
      *Generate a move object for a castle in a given direction based on the currentPlayer parameter
      * */
     Move generateKingSideCastle() const;
+
     Move generateQueenSideCastle() const;
 
     bool isDrawByInsufficientMaterial() const;
@@ -92,6 +106,8 @@ public:
     Player *getBlackPlayer() const;
 
     Player *getCurrentPlayer() const;
+
+    Position *getEnPassantTargetPosition() const;
 
     void makeMove(Move move);
 
