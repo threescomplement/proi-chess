@@ -129,7 +129,7 @@ std::string Game::castlingAvailabilityFEN() const {
     }
 
     auto result = ss.str();
-    if (result.size() == 0) {
+    if (result.empty()) {
         return "-";
     }
 
@@ -237,7 +237,7 @@ Game::Game(
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber),
-        isOver(GameOver::NOT_OVER){}
+        movesWithoutCaptureOrPawnMove(fullmoveNumber){} //todo - is this not duplication?
 
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
