@@ -46,9 +46,9 @@ public:
 
     bool operator!=(const Move &rhs) const;
 
-    std::string toString() const;
+    std::string toString() const; //TODO - handle promotion-related stuff
 
-    std::string toStockfishNotation() const; // TODO: rename
+    std::string toSmithNotation() const;
 
     bool isDoublePawnMove() const;
 

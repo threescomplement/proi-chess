@@ -64,7 +64,7 @@ bool Move::isDoublePawnMove() const {
     return (type == PieceType::PAWN && abs(sourceRow - targetRow) == 2);
 }
 
-std::string Move::toStockfishNotation() const {
+std::string Move::toSmithNotation() const {
     std::stringstream ss;
     ss << this->getFrom().toString() << this->getTo().toString();
     return ss.str();
