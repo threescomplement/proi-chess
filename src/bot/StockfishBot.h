@@ -23,8 +23,6 @@ private:
 
     static std::string extractMove(const QString& stockfishOutput);
 
-    static std::map<std::string, PieceType> promotionMapping;
-
 public:
 
     explicit StockfishBot(const Game &game, int depth = 10);

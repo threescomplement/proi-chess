@@ -3,13 +3,14 @@
 
 
 #include <sstream>
+#include <map>
 #include "Position.h"
 #include "pieces/PieceType.h"
 #include "pieces/Piece.h"
 #include "ChessExceptions.h"
 
 class Position;
-
+class Game;
 class Piece;
 
 class Move {
@@ -19,6 +20,12 @@ private:
     Piece *movedPiece;
     Piece *capturedPiece;
     PieceType promoteTo;
+
+    static std::map<std::string, PieceType> promotionMapping;
+
+    static std::map<PieceType, std::string> reversePromotionMapping;
+
+    void validateMove() const;
 
 public:
     Move(Position from, Position to, Piece *moved, Piece *captured, PieceType promoteTo) :
@@ -60,8 +67,6 @@ public:
 
     bool operator!=(const Move &rhs) const;
 
-    void validateMove() const;
-
     std::string toString() const; //TODO - handle promotion-related stuff
 
     std::string toSmithNotation() const;
@@ -75,6 +80,12 @@ public:
      * the king.
      **/
     static Move generateCastlingComplement(Piece *CastlingRook);
+
+    static Move parseSmithNotation(const std::string &moveStr, const Game &game);
+
+    static Move fromPositions(const Game &game, Position from, Position to);
+
+    static Move fromPositions(const Game &game, Position from, Position to, PieceType promotion);
 
     bool isLongCastle() const;
 

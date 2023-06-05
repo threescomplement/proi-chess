@@ -9,13 +9,6 @@
 
 const std::string StockfishBot::stockfishProgramName = "stockfish";
 
-std::map<std::string, PieceType> StockfishBot::promotionMapping = {
-        {" ", PieceType::NONE},
-        {"q", PieceType::QUEEN},
-        {"b", PieceType::BISHOP},
-        {"n", PieceType::KNIGHT},
-        {"r", PieceType::ROOK},
-};
 
 QString StockfishBot::getStockfishOutput(const char *positionCmd, const char *goCmd) {
     // Create a QtProcess object
@@ -66,16 +59,9 @@ std::string StockfishBot::extractMove(const QString &stockfishOutput) {
 }
 
 Move StockfishBot::getMoveFromStockfish(const std::string &gameFEN) const {
-    auto moveStr = extractMove(getStockfishOutput(gameFEN));
-    auto sourcePosition = Position::fromString(moveStr.substr(0, 2));
-    auto targetPosition = Position::fromString(moveStr.substr(2, 2));
-    auto promotionType = StockfishBot::promotionMapping[moveStr.substr(4, 1)];
-
-    auto board = this->game.getBoard();
-    auto movedPiece = board->getField(sourcePosition)->getPiece();
-    auto capturedPiece = board->getField(targetPosition)->getPiece();
-
-    return {sourcePosition, targetPosition, movedPiece, capturedPiece, promotionType};
+    auto rawStockfishOutput = getStockfishOutput(gameFEN);
+    auto moveStr = extractMove(rawStockfishOutput);
+    return Move::parseSmithNotation(moveStr, this->game);
 }
 
 Move StockfishBot::getBestNextMove() const {

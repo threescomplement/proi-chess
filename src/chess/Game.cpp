@@ -61,6 +61,9 @@ bool Game::isStalemate() const {
 }
 
 void Game::makeMove(Move move) {
+    if (this->getCurrentPlayer()->getColor() != move.getPiece()->getColor()) {
+        throw IllegalMoveException("Player can only move his own piece");
+    }
 
     if (this->currentPlayer->getColor() == Color::BLACK) {
         this->fullmoveNumber++;
@@ -236,7 +239,6 @@ Game::Game(
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber){}
-
 
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
@@ -486,6 +488,10 @@ bool Game::isCastlingObscuredByOpponent(Move &move) const {
             return true;
     }
     return false;
+}
+
+Position *Game::getEnPassantTargetPosition() const {
+    return enPassantTargetPosition;
 }
 
 

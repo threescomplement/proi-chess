@@ -9,12 +9,14 @@
 #include "ChessExceptions.h"
 #include "CLIExceptions.h"
 #include "StockfishBot.h"
+#include "pieces/Pawn.h"
 
 
 bool handleIfSpecialCommand(const std::string &playerInput) {
     if (playerInput == "help") {
         std::cout << "Type the move you want to make in Smith notation" << std::endl;
         std::cout << "eg. to move from e2 to e4 simply type 'e2e4', no need to specify the piece type" << std::endl;
+        std::cout << "in case of pawn promotion write e7e8q for queen, etc." << std::endl;
         return true;
     }
 
@@ -27,26 +29,6 @@ std::string playerPrompt(const Game &game) {
            : "Black move > ";
 }
 
-Move parseMove(const std::string &moveStr, const Game &game) {
-    if (moveStr.size() != 4) {
-        throw InvalidPlayerInputException("Invalid representation of a move");
-    }
-
-    Position sourcePosition = Position::fromString(moveStr.substr(0, 2));
-    Position targetPosition = Position::fromString(moveStr.substr(2, 2));
-    auto movedPiece = game.getPiece(sourcePosition);
-    auto capturedPiece = game.getPiece(targetPosition);
-
-    if (movedPiece == nullptr) {
-        throw InvalidPlayerInputException("Cannot move from empty field");
-    }
-
-    if (game.getCurrentPlayer()->getColor() != movedPiece->getColor()) {
-        throw InvalidPlayerInputException("Player can only move his own piece");
-    }
-
-    return {sourcePosition, targetPosition, movedPiece, capturedPiece};
-}
 
 void processPlayerTurn(Game &game) {
     while (true) {
@@ -60,14 +42,14 @@ void processPlayerTurn(Game &game) {
         }
 
         try {
-            auto move = parseMove(moveStr, game);
+            auto move = Move::parseSmithNotation(moveStr, game);
             auto availableMoves = game.getMovesFrom(move.getFrom());
 
             if (std::find(availableMoves.begin(), availableMoves.end(), move) == availableMoves.end()) {
                 std::cout << "Illegal move " << moveStr
                           << ", moves allowed from " << move.getFrom().toString() << ":" << std::endl;
 
-                for (auto availableMove: availableMoves) {
+                for (const auto& availableMove: availableMoves) {
                     std::cout << availableMove.toSmithNotation() << " ";
                 }
                 std::cout << std::endl;
