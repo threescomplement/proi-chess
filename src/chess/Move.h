@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include "Position.h"
+#include "pieces/PieceType.h"
 #include "pieces/Piece.h"
 
 class Position;
@@ -16,16 +17,20 @@ private:
     Position to;
     Piece *movedPiece;
     Piece *capturedPiece;
+    PieceType promoteTo;
 
 public:
     Move(Position from, Position to, Piece *moved, Piece *captured) :
-            from(from), to(to), movedPiece(moved), capturedPiece(captured) {};
+            from(from), to(to), movedPiece(moved), capturedPiece(captured), promoteTo(PieceType::NONE){};
 
     Move(Position from, Position to, Piece *moved) :
-            from(from), to(to), movedPiece(moved), capturedPiece(nullptr) {};
+            from(from), to(to), movedPiece(moved), capturedPiece(nullptr),  promoteTo(PieceType::NONE){};
 
-    Move(const Move &move): from(move.getFrom()), to(move.getTo()), movedPiece(move.getPiece()), capturedPiece(move.getCapturedPiece()){};
+    Move(const Move &move) : from(move.getFrom()), to(move.getTo()), movedPiece(move.getPiece()),
+                             capturedPiece(move.getCapturedPiece()), promoteTo(move.promoteTo) {};
 
+    Move(Position from, Position to, Piece *moved, PieceType promoteTo) :
+            from(from), to(to), movedPiece(moved), capturedPiece(nullptr), promoteTo(promoteTo) {};
 
     const Position &getFrom() const;
 
