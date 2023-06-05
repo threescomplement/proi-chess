@@ -1,4 +1,3 @@
-
 #include "GameField.h"
 #include "Color.h"
 #include "pieces/PieceType.h"
@@ -88,7 +87,6 @@ void GameField::setPiece(PieceType type, Color color) {
             break;
         case PieceType::PAWN:
             fileName += "pawn";
-            // qDebug() << "Changed pixmap!";
             break;
         case PieceType::QUEEN:
             fileName += "queen";
@@ -99,8 +97,6 @@ void GameField::setPiece(PieceType type, Color color) {
         case PieceType::BISHOP:
             fileName += "bishop";
     }
-    //fileName += ".png";
-    //pixmap.load(QString().fromStdString(fileName));
     QPixmap pixmap = icons.pieceImgs[fileName];
     QString new_text = QString::fromStdString(pieceChars[type]);
     this->setText(new_text);
