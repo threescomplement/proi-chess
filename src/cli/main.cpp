@@ -16,6 +16,7 @@ bool handleIfSpecialCommand(const std::string &playerInput) {
     if (playerInput == "help") {
         std::cout << "Type the move you want to make in Smith notation" << std::endl;
         std::cout << "eg. to move from e2 to e4 simply type 'e2e4', no need to specify the piece type" << std::endl;
+        std::cout << "in case of pawn promotion write e7e8q for queen, etc." << std::endl;
         return true;
     }
 
