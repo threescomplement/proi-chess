@@ -59,7 +59,7 @@ void MainWindow::createBoard(Color side) {
     QPixmap board_map = ((side == Color::WHITE) ? QPixmap(":/resources/empty_board_white_perspective.png") : QPixmap(
             ":/resources/empty_board_black_perspective.png"));
     board_map = board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio);
-    if (ui->GameBoard->pixmap().toImage() != board_map.toImage()){
+    if (ui->GameBoard->pixmap().toImage() != board_map.toImage()) {
         ui->GameBoard->setPixmap(board_map);
         ui->GameBoard->setAlignment(Qt::AlignLeft);
         ui->GameBoard->setGeometry(0, 0, 400, 400);
@@ -92,7 +92,6 @@ void MainWindow::createBoard(Color side) {
     }
 
 
-
 }
 
 
@@ -114,11 +113,11 @@ void MainWindow::updateBoardDisplay() {
     std::string currentPlayer = ((game->getCurrentPlayer()->getColor() == Color::WHITE) ? "White" : "Black");
     currentPlayer += "'s turn";
     ui->statusbar->showMessage(QString::fromStdString(currentPlayer));
-    if (game->isMate()){
+    if (game->isMate()) {
         ui->statusbar->showMessage("Checkmate!");
-    } else if (game->isCheck(game->getCurrentPlayer()->getColor())){
+    } else if (game->isCheck(game->getCurrentPlayer()->getColor())) {
         ui->statusbar->showMessage("Check!");
-    } else if (game->isStalemate()){
+    } else if (game->isStalemate()) {
         ui->statusbar->showMessage("Stalemate!");
     }
 }
@@ -216,7 +215,7 @@ void MainWindow::makeMove(Move const *move) {
 //    }
 
     updateBoardDisplay();
-    if(!(checkIfMate() || checkIfStalemate())){
+    if (!(checkIfMate() || checkIfStalemate())) {
         //make bot move
         handleBotMove();
         updateBoardDisplay();
@@ -224,10 +223,6 @@ void MainWindow::makeMove(Move const *move) {
         checkIfStalemate();
 
     }
-
-
-
-
 
 
 }
@@ -273,11 +268,12 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
         delete newGame;
         throw FenException("Incorrect Fen");
     }
-    if (botGame) {
-        createBoard((botColor == Color::WHITE) ? Color::BLACK : Color::WHITE);
-    } else {
-        changePickedField(nullptr);
-    }
+
+
+    createBoard((botColor == Color::WHITE) ? Color::BLACK : Color::WHITE);
+
+    changePickedField(nullptr);
+
 
     delete stockfishBot;
 
@@ -289,6 +285,12 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
     if (this->botGame) {
         stockfishBot = new StockfishBot(*game);
 
+        int bot_depth = QInputDialog::getInt(this, tr("Bot difficulty"),
+                                             tr("Enter the bot's search depth (the higher the depth,"
+                                                " the more accurate the bot will be):"),
+                                             QLineEdit::Normal,
+                                             0);
+        // stockFishBot.setDepth(bot_depth);
     }
     handleBotMove();
 
