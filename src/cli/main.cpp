@@ -9,6 +9,7 @@
 #include "ChessExceptions.h"
 #include "CLIExceptions.h"
 #include "StockfishBot.h"
+#include "pieces/Pawn.h"
 
 
 bool handleIfSpecialCommand(const std::string &playerInput) {
@@ -34,8 +35,11 @@ Move parseMove(const std::string &moveStr, const Game &game) {
 
     Position sourcePosition = Position::fromString(moveStr.substr(0, 2));
     Position targetPosition = Position::fromString(moveStr.substr(2, 2));
+    auto enPassantTargetPos = game.getEnPassantTargetPosition();
     auto movedPiece = game.getPiece(sourcePosition);
-    auto capturedPiece = game.getPiece(targetPosition);
+    auto capturedPiece = (enPassantTargetPos != nullptr && (*enPassantTargetPos) == targetPosition)
+                         ? dynamic_cast<Piece *>(game.getEnPassantTargetPiece())
+                         : game.getPiece(targetPosition);
 
     if (movedPiece == nullptr) {
         throw InvalidPlayerInputException("Cannot move from empty field");

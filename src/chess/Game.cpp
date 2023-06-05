@@ -235,7 +235,6 @@ Game::Game(
         fullmoveNumber(fullmoveNumber) {}
 
 
-
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
     if (piece == nullptr)
@@ -483,6 +482,10 @@ bool Game::isCastlingObscuredByOpponent(Move &move) const {
             return true;
     }
     return false;
+}
+
+Position *Game::getEnPassantTargetPosition() const {
+    return enPassantTargetPosition;
 }
 
 
