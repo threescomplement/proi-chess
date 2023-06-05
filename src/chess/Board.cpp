@@ -198,10 +198,12 @@ Board *Board::fromFEN(const std::string &FENDescription) {
                 }
                 case 'k': {
                     piece = new King(Color::BLACK, board->fields[row][col]);
+                    board->blackKing = piece;
                     break;
                 }
                 case 'K': {
                     piece = new King(Color::WHITE, board->fields[row][col]);
+                    board->whiteKing = piece;
                     break;
                 }
                 default:
