@@ -16,6 +16,7 @@
 #include "pieces/Piece.h"
 #include "ChessExceptions.h"
 #include "Player.h"
+#include "FENParser.h"
 
 #define BOARD_HEIGHT 8
 #define BOARD_WIDTH 8
@@ -207,7 +208,7 @@ void MainWindow::changePickedField(GameField *const new_picked) {
 void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) {
     Game *newGame = nullptr;
     try {
-        newGame = new Game(Game::fromFEN(fenNotation));
+        newGame = new Game(FENParser::parseGame(fenNotation));
     } catch (FenException &e) {
         delete newGame;
         throw FenException("Incorrect Fen");
@@ -317,7 +318,7 @@ bool MainWindow::checkIfMate() {
 
 void MainWindow::on_actionCopy_FEN_to_clipboard_triggered() {
     QClipboard *clipboard = QApplication::clipboard();
-    QString text = QString::fromStdString(game->toFEN());
+    QString text = QString::fromStdString(FENParser::gameToString(*game));
     clipboard->setText(text, QClipboard::Clipboard);
 
     if (clipboard->supportsSelection()) {

@@ -75,8 +75,6 @@ namespace GameUnitTest {
         ASSERT_TRUE(std::find(legalMoves.begin(), legalMoves.end(), problematic_move) != legalMoves.end());
         game.makeMove(problematic_move);
         ASSERT_EQ(fen(game), "rnbqkbnr/ppp1p1pp/8/3p1Q2/3P4/8/PPP1PPPP/RNB1KBNR b KQkq - 0 3");
-
-        //ASSERT_EQ(pos("b4"), onlyMove.getTo());
     }
 
     TEST(Game, EnPassantDeleteCaptured) {
@@ -92,8 +90,6 @@ namespace GameUnitTest {
                     legalMoves.end()); // is that move available
         game.makeMove(enPassantTake);
         ASSERT_EQ(fen(game), "rnbqkbnr/1pppp1pp/P4p2/8/8/8/P1PPPPPP/RNBQKBNR b KQkq - 0 3");
-
-//        ASSERT_EQ(pos("b4"), onlyMove.getTo());
     }
 
 
