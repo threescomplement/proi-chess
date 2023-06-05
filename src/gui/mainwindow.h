@@ -2,12 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "./ClickableLabel.h"
+#include <vector>
+#include "ClickableLabel.h"
 #include "Game.h"
 #include "pieces/PieceType.h"
-#include <vector>
 #include "Move.h"
 #include "GameField.h"
+#include "Color.h"
+#include "../bot/StockfishBot.h"
 #include "Color.h"
 
 
@@ -51,6 +53,8 @@ private:
     GameField *pickedField; // currently selected field
     std::vector<Move> validMoves; // moves possible from that field
     bool botGame;
+    ChessBot *stockfishBot;
+    Color botColor;
 
 
     void updateBoardDisplay();
@@ -59,6 +63,13 @@ private:
 
     void changePickedField(GameField *const new_picked);
 
+    void createBoard(Color side = Color::WHITE);
+
+    void handleBotMove();
+
+    bool checkIfMate();
+
+    bool checkIfStalemate();
 
 public:
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
@@ -67,14 +78,13 @@ public:
 
     void makeMove(Move const *move);
 
-    void newGame(bool botGame, std::string whiteName = "Player 1", std::string blackName = "Player 2",
-                 Color bot_color = Color::BLACK);
-    void newFenGame(bool botGame, std::string fenNotation ,std::string whiteName = "Player 1", std::string blackName = "Player 2",
-                    Color bot_color = Color::BLACK);
+    void newGame(bool botGame, Color bot_color = Color::BLACK,
+                 std::string fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    void newFenGame(bool botGame, Color bot_color = Color::BLACK);
 
 
 public slots:
-
 
 
     void handleFieldClick(GameField *field);
@@ -82,7 +92,7 @@ public slots:
 
 signals:
 
-    void updateFieldPiece(int x, int y, PieceType type = PieceType::NONE);
+    void updateFieldPiece(int x, int y, Piece *piece = nullptr);
 
     void updateFieldMark(int x, int y, bool newMark);
 
@@ -92,11 +102,15 @@ signals:
 private slots:
 
 
-    void on_newGameButton_clicked();
-
     void on_actionRegular_game_triggered();
 
     void on_actionGame_from_FEN_triggered();
+
+    void on_actionNew_classic_bot_game_triggered();
+
+    void on_actionNew_bot_game_from_FEN_triggered();
+
+    void on_actionCopy_FEN_to_clipboard_triggered();
 
 private:
     Ui::MainWindow *ui;

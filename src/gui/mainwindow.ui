@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>937</width>
-    <height>634</height>
+    <width>1025</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,36 +26,34 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>621</width>
-      <height>491</height>
+      <x>0</x>
+      <y>0</y>
+      <width>541</width>
+      <height>451</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="GameLayout">
-     <item>
-      <widget class="QLabel" name="GameBoard">
-       <property name="font">
-        <font>
-         <pointsize>17</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>GAME BOARD</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="newGameButton">
-       <property name="text">
-        <string>Start new game</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <layout class="QVBoxLayout" name="GameLayout"/>
+   </widget>
+   <widget class="QLabel" name="GameBoard">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>60</y>
+      <width>539</width>
+      <height>449</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>17</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>GAME BOARD</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -63,22 +61,31 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>937</width>
+     <width>1025</width>
      <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menupogg">
     <property name="title">
-     <string>nynynyny</string>
+     <string>Menu</string>
     </property>
     <widget class="QMenu" name="menunew_pvp_game">
      <property name="title">
-      <string>new pvp game</string>
+      <string>&amp;Pvp game</string>
      </property>
      <addaction name="actionRegular_game"/>
      <addaction name="actionGame_from_FEN"/>
     </widget>
+    <widget class="QMenu" name="menu_Bot_game">
+     <property name="title">
+      <string>&amp;Bot game</string>
+     </property>
+     <addaction name="actionNew_bot_game_from_FEN"/>
+     <addaction name="actionNew_classic_bot_game"/>
+    </widget>
     <addaction name="menunew_pvp_game"/>
+    <addaction name="menu_Bot_game"/>
+    <addaction name="actionCopy_FEN_to_clipboard"/>
    </widget>
    <addaction name="menupogg"/>
   </widget>
@@ -96,6 +103,21 @@
   <action name="actionGame_from_FEN">
    <property name="text">
     <string>Game from FEN</string>
+   </property>
+  </action>
+  <action name="actionNew_classic_bot_game">
+   <property name="text">
+    <string>New classic game</string>
+   </property>
+  </action>
+  <action name="actionNew_bot_game_from_FEN">
+   <property name="text">
+    <string>New game from FEN</string>
+   </property>
+  </action>
+  <action name="actionCopy_FEN_to_clipboard">
+   <property name="text">
+    <string>Copy FEN to clipboard</string>
    </property>
   </action>
  </widget>
