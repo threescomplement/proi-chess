@@ -57,7 +57,7 @@ public:
 
     bool isLongCastle() const;
 
-    bool pawnMovingToLastRank() const;
+    bool resultsInPromotion() const;
 };
 
 

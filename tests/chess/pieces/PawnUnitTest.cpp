@@ -94,5 +94,35 @@ namespace PawnUnitTest {
         ASSERT_TRUE(isPermutation(moves, expected));
     }
 
+    TEST(Pawn, doesMoveResultInPromotion) {
+        auto board = Board::fromFEN("rnbqkbnr/pppp1pP1/7P/8/8/p7/PPPPPPp1/RNBQKBNR");
+        auto whiteGPawn = board->getField(pos("g7"))->getPiece();
+        auto whiteHPawn = board->getField(pos("h6"))->getPiece();
+        auto blackAPawn = board->getField(pos("a3"))->getPiece();
+        auto blackGPawn = board->getField(pos("g2"))->getPiece();
+        auto whiteGPawnMoves = whiteGPawn->getMoves();
+        auto whiteHPawnMoves = whiteHPawn->getMoves();
+        auto blackAPawnMoves = blackAPawn->getMoves();
+        auto blackGPawnMoves = blackGPawn->getMoves();
 
+        ASSERT_TRUE(std::all_of(
+                whiteGPawnMoves.begin(), whiteGPawnMoves.end(),
+                [](const Move &m) { return m.resultsInPromotion(); }
+        ));
+
+        ASSERT_FALSE(std::any_of(
+                whiteHPawnMoves.begin(), whiteHPawnMoves.end(),
+                [](const Move &m) { return m.resultsInPromotion(); }
+        ));
+
+        ASSERT_TRUE(std::all_of(
+                blackGPawnMoves.begin(), blackGPawnMoves.end(),
+                [](const Move &m) { return m.resultsInPromotion(); }
+        ));
+
+        ASSERT_FALSE(std::any_of(
+                blackAPawnMoves.begin(), blackAPawnMoves.end(),
+                [](const Move &m) { return m.resultsInPromotion(); }
+        ));
+    }
 };

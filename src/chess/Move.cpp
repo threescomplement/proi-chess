@@ -86,7 +86,7 @@ bool Move::isLongCastle() const {
     return (isCastling() && getTo().getCol() == 3);
 }
 
-bool Move::pawnMovingToLastRank() const {
+bool Move::resultsInPromotion() const {
     if (getPiece()->getType() != PieceType::PAWN)
         return false;
     // if a pawn moves "up", it promotes on rank 8, else on rank 1
