@@ -107,6 +107,16 @@ void MainWindow::updateBoardDisplay() {
             emit updateFieldPiece(col, row, type, color);
         }
     }
+    std::string currentPlayer = ((game->getCurrentPlayer()->getColor() == Color::WHITE) ? "White" : "Black");
+    currentPlayer += "'s turn";
+    ui->statusbar->showMessage(QString::fromStdString(currentPlayer));
+    if (game->isMate()){
+        ui->statusbar->showMessage("Checkmate!");
+    } else if (game->isCheck(game->getCurrentPlayer()->getColor())){
+        ui->statusbar->showMessage("Check!");
+    } else if (game->isStalemate()){
+        ui->statusbar->showMessage("Stalemate!");
+    }
 }
 
 /**
@@ -366,6 +376,7 @@ bool MainWindow::checkIfMate() {
                 QString::fromStdString(winner));
 
     }
+    ui->statusbar->showMessage("Checkmate!");
     return game->isMate();
 }
 
@@ -391,6 +402,7 @@ bool MainWindow::checkIfStalemate() {
                 tr("Game Over"),
                 tr("Stalemate!"));
     }
+    ui->statusbar->showMessage("Stalemate!");
     return game->isStalemate();
 }
 
