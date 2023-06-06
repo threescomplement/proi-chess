@@ -1,11 +1,12 @@
 #include "gtest/gtest.h"
 #include "../common.h"
 #include "../../../src/chess/Board.h"
+#include "FENParser.h"
 
 using namespace ChessUnitTestCommon;
 namespace KnightUnitTests {
     TEST(Knight, getMovesStartingPosition) {
-        auto board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        auto board = FENParser::parseBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
         auto whiteKnight = board->getField(pos("g1"))->getPiece();
         auto whiteMoves = whiteKnight->getMoves();
@@ -27,7 +28,7 @@ namespace KnightUnitTests {
     }
 
     TEST(Knight, getMovesMultiplePossibleNoCapture) {
-        auto board = Board::fromFEN("rnbqkbnr/1ppppppp/p7/8/8/5N2/PPPPPPPP/RNBQKB1R");
+        auto board = FENParser::parseBoard("rnbqkbnr/1ppppppp/p7/8/8/5N2/PPPPPPPP/RNBQKB1R");
         auto knight = board->getField(pos("f3"))->getPiece();
         auto moves = knight->getMoves();
 
@@ -42,7 +43,7 @@ namespace KnightUnitTests {
     }
 
     TEST(Knight, getMovesMultipleCaptures) {
-        auto board = Board::fromFEN("rnbqkbnr/1ppppp1p/p5p1/4N3/8/8/PPPPPPPP/RNBQKB1R");
+        auto board = FENParser::parseBoard("rnbqkbnr/1ppppp1p/p5p1/4N3/8/8/PPPPPPPP/RNBQKB1R");
         auto knight = board->getField(pos("e5"))->getPiece();
         auto moves = knight->getMoves();
 

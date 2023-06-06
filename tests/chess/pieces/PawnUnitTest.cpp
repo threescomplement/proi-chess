@@ -2,6 +2,7 @@
 #include "../../../src/chess/pieces/Pawn.h"
 #include "../../../src/chess/Board.h"
 #include "gtest/gtest.h"
+#include "FENParser.h"
 #include <algorithm>
 
 using namespace ChessUnitTestCommon;
@@ -9,7 +10,7 @@ using namespace ChessUnitTestCommon;
 namespace PawnUnitTest {
 
     TEST(Pawn, getMoves_basePositionTwoMoves) {
-        auto testBoard = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        auto testBoard = FENParser::parseBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         auto testedPawn = testBoard->getField(pos("e2"))->getPiece();
         auto movesForPawn = testedPawn->getMoves();
         ASSERT_EQ(movesForPawn.size(), 2);
@@ -21,7 +22,7 @@ namespace PawnUnitTest {
 
 
     TEST(Pawn, getMoves_twoAttacksPossible) {
-        auto board = Board::fromFEN("rnbqkbnr/ppp1p1pp/8/3p1p2/4P3/8/PPPP1PPP/RNBQKBNR");
+        auto board = FENParser::parseBoard("rnbqkbnr/ppp1p1pp/8/3p1p2/4P3/8/PPPP1PPP/RNBQKBNR");
         auto pawn = board->getField(pos("e4"))->getPiece();
         auto pawnMoves = pawn->getMoves();
 
@@ -36,7 +37,7 @@ namespace PawnUnitTest {
 
 
     TEST(Pawn, getMoves_singleMovePossible) {
-        auto board = Board::fromFEN("rnbqkbnr/1ppppppp/8/p7/4P3/8/PPPP1PPP/RNBQKBNR");
+        auto board = FENParser::parseBoard("rnbqkbnr/1ppppppp/8/p7/4P3/8/PPPP1PPP/RNBQKBNR");
         auto pawn = board->getField(pos("e4"))->getPiece();
         auto moves = pawn->getMoves();
 
@@ -45,7 +46,7 @@ namespace PawnUnitTest {
     }
 
     TEST(Pawn, getMoves_oneAttackPossible) {
-        auto board = Board::fromFEN("rnbqkbnr/ppppp1pp/8/5p2/4P3/8/PPPP1PPP/RNBQKBNR");
+        auto board = FENParser::parseBoard("rnbqkbnr/ppppp1pp/8/5p2/4P3/8/PPPP1PPP/RNBQKBNR");
         auto pawn = board->getField(pos("e4"))->getPiece();
         auto moves = pawn->getMoves();
 
@@ -57,7 +58,7 @@ namespace PawnUnitTest {
     }
 
     TEST(Pawn, getmoves_fieldBehindAttackedProtected) {
-        auto board = Board::fromFEN("rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPP2PPP/RNBQKBNR");
+        auto board = FENParser::parseBoard("rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPP2PPP/RNBQKBNR");
         auto pawn = board->getField(pos("e4"))->getPiece();
         auto moves = pawn->getMoves();
 
@@ -69,7 +70,7 @@ namespace PawnUnitTest {
     }
 
     TEST(Pawn, enPassantExpected) {
-        auto board = Board::fromFEN("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR");
+        auto board = FENParser::parseBoard("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR");
         auto whitePawn = board->getField(pos("e5"))->getPiece();
         auto blackPawn = dynamic_cast<Pawn *> (board->getField(pos("d5"))->getPiece());
         blackPawn->setIsEnPassantTarget(true);
@@ -84,7 +85,7 @@ namespace PawnUnitTest {
     }
 
     TEST(Pawn, enPassantPosNoEP) {
-        auto board = Board::fromFEN("rnbqkbnr/ppppp1pp/8/8/4PpP1/8/PPPP1P1P/RNBQKBNR");
+        auto board = FENParser::parseBoard("rnbqkbnr/ppppp1pp/8/8/4PpP1/8/PPPP1P1P/RNBQKBNR");
         auto blackPawn = board->getField(pos("f4"))->getPiece();
         auto moves = blackPawn->getMoves();
 
@@ -95,7 +96,7 @@ namespace PawnUnitTest {
     }
 
     TEST(Pawn, doesMoveResultInPromotion) {
-        auto board = Board::fromFEN("rnbqkbnr/pppp1pP1/7P/8/8/p7/PPPPPPp1/RNBQKBNR");
+        auto board = FENParser::parseBoard("rnbqkbnr/pppp1pP1/7P/8/8/p7/PPPPPPp1/RNBQKBNR");
         auto whiteGPawn = board->getField(pos("g7"))->getPiece();
         auto whiteHPawn = board->getField(pos("h6"))->getPiece();
         auto blackAPawn = board->getField(pos("a3"))->getPiece();

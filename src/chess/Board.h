@@ -26,11 +26,12 @@ public:
 
     ~Board();
 
-    void makeMove(const Move& move);
+    void makeMove(const Move &move);
 
-    void executePromotion(const Move& move);
+    void executePromotion(const Move &move);
 
     Board afterMove(Move move) const;  // Deep copy
+
     std::string toStandardNotation() const;
 
     Field *getField(Position position) const;
@@ -39,7 +40,11 @@ public:
 
     Piece *getWhiteKing() const;
 
-    const std::vector<Piece *> &getAllPieces() const;
+    void setBlackKing(Piece *blackKing);
+
+    void setWhiteKing(Piece *whiteKing);
+
+    std::vector<Piece *> &getAllPieces();
 
     static Board *emptyBoard();
 
@@ -49,14 +54,6 @@ public:
     static Board *startingBoard();
 
     std::string toString() const;
-
-    std::string toFEN() const;
-
-    /**
-     * Creates a board object based on the given the FEN board description (without additional info, like castling
-     * rights)
-     */
-    static Board *fromFEN(const std::string &FENDescription);
 };
 
 

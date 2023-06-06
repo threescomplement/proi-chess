@@ -109,113 +109,6 @@ Board *Board::startingBoard() {
     return board;
 }
 
-std::string Board::toFEN() const {
-    // TODO: discuss the other fen parameters - castling and so on
-    std::stringstream ss;
-
-    for (int row = 7; row >= 0; row--) {
-        for (int col = 0; col < BOARD_SIZE; col++) {
-            int empties = 0;
-            auto tempCol = col;
-            while (tempCol < BOARD_SIZE && fields[row][tempCol]->isEmpty()) {
-                empties++;
-                tempCol++;
-            }
-            if (empties == 0) {
-                auto currPieceChar = fields[row][col]->getPiece()->getCharacter();
-                ss << currPieceChar;
-            } else {
-                ss << empties;
-                col = col + empties - 1;
-            }
-        }
-        ss << '/';
-    }
-
-    std::string result = ss.str();
-    result = result.substr(0, result.size() - 1);
-    return result;
-}
-
-Board *Board::fromFEN(const std::string &FENDescription) {
-    auto board = Board::emptyBoard();
-
-    int row = 7;
-    int col = 0;
-
-    for (auto character: FENDescription) {
-        if (isdigit(character)) {
-            // empties
-            std::string stringOfEmpties = {character};
-            col += std::stoi(stringOfEmpties);
-
-        } else if (character == '/') {
-            // next row
-            row -= 1;
-            col = 0;
-        } else {
-            Piece *piece = nullptr;
-            switch (character) {
-                case 'p': {
-                    piece = new Pawn(Color::BLACK, board->fields[row][col]);
-                    break;
-                }
-                case 'P': {
-                    piece = new Pawn(Color::WHITE, board->fields[row][col]);
-                    break;
-                }
-                case 'r': {
-                    piece = new Rook(Color::BLACK, board->fields[row][col]);
-                    break;
-                }
-                case 'R': {
-                    piece = new Rook(Color::WHITE, board->fields[row][col]);
-                    break;
-                }
-                case 'n': {
-                    piece = new Knight(Color::BLACK, board->fields[row][col]);
-                    break;
-                }
-                case 'N': {
-                    piece = new Knight(Color::WHITE, board->fields[row][col]);
-                    break;
-                }
-                case 'b': {
-                    piece = new Bishop(Color::BLACK, board->fields[row][col]);
-                    break;
-                }
-                case 'B': {
-                    piece = new Bishop(Color::WHITE, board->fields[row][col]);
-                    break;
-                }
-                case 'q': {
-                    piece = new Queen(Color::BLACK, board->fields[row][col]);
-                    break;
-                }
-                case 'Q': {
-                    piece = new Queen(Color::WHITE, board->fields[row][col]);
-                    break;
-                }
-                case 'k': {
-                    piece = new King(Color::BLACK, board->fields[row][col]);
-                    board->blackKing = piece;
-                    break;
-                }
-                case 'K': {
-                    piece = new King(Color::WHITE, board->fields[row][col]);
-                    board->whiteKing = piece;
-                    break;
-                }
-                default:
-                    throw FenException("Invalid FEN representation of Game");
-            }
-            board->allPieces.push_back(piece);
-            board->fields[row][col]->setPiece(piece);
-            col += 1;
-        }
-    }
-    return board;
-}
 
 void Board::makeMove(const Move &move) {
     auto targetField = this->getField(move.getTo());
@@ -252,7 +145,7 @@ void Board::makeMove(const Move &move) {
 }
 
 
-const std::vector<Piece *> &Board::getAllPieces() const {
+std::vector<Piece *> &Board::getAllPieces() {
     return allPieces;
 }
 
@@ -292,6 +185,14 @@ void Board::executePromotion(const Move &move) {
     sourcePiece->getField()->setPiece(nullptr);
     sourcePiece->takeOffField();
     allPieces.push_back(promotedPiece);
+}
+
+void Board::setBlackKing(Piece *blackKing) {
+    Board::blackKing = blackKing;
+}
+
+void Board::setWhiteKing(Piece *whiteKing) {
+    Board::whiteKing = whiteKing;
 }
 
 

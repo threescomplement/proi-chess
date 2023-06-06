@@ -6,6 +6,7 @@
 #include "../../src/chess/Color.h"
 #include "Game.h"
 #include "common.h"
+#include "FENParser.h"
 
 using namespace ChessUnitTestCommon;
 
@@ -68,7 +69,7 @@ namespace MoveUnitTest {
     }
 
     TEST(Move, parseSmithNotationPromotion) {
-        auto game = Game::fromFEN("rnbqkb1r/pppp2Pp/4pp1n/8/7p/8/PPPPPP2/RNBQKBNR w KQkq - 0 6");
+        auto game = FENParser::parseGame("rnbqkb1r/pppp2Pp/4pp1n/8/7p/8/PPPPPP2/RNBQKBNR w KQkq - 0 6");
         auto move = Move::parseSmithNotation("g7g8q", game);
         ASSERT_EQ(pos("g7"), move.getFrom());
         ASSERT_EQ(pos("g8"), move.getTo());
@@ -88,7 +89,7 @@ namespace MoveUnitTest {
     }
 
     TEST(Move, fromPositionsEnPassantCapture) {
-        auto game = Game::fromFEN("rnbqkbnr/ppppp1p1/7p/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3");
+        auto game = FENParser::parseGame("rnbqkbnr/ppppp1p1/7p/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3");
         auto move = Move::fromPositions(game, pos("e5"), pos("f6"));
         ASSERT_EQ(pos("e5"), move.getFrom());
         ASSERT_EQ(pos("f6"), move.getTo());

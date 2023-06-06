@@ -3,13 +3,14 @@
 #include "../../../src/chess/Move.h"
 #include "../../../src/chess/Board.h"
 #include "../common.h"
+#include "FENParser.h"
 
 
 using namespace ChessUnitTestCommon;
 
 namespace QueenUnitTest {
     TEST(Queen, getMoves_initialState) {
-        auto testBoard = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        auto testBoard = FENParser::parseBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         auto whiteQueen = testBoard->getField(pos("d1"))->getPiece();
         auto blackQueen = testBoard->getField(pos("d8"))->getPiece();
         auto whiteQueenMoves = whiteQueen->getMoves();
@@ -19,7 +20,7 @@ namespace QueenUnitTest {
     }
 
     TEST(Queen, getMovesMultipleDirectionsBlockedAndCaptures) {
-        auto board = Board::fromFEN("rnbqk1nr/pppp1ppp/3b4/4p3/8/1QP5/PP1PPPPP/RNB1KBNR");
+        auto board = FENParser::parseBoard("rnbqk1nr/pppp1ppp/3b4/4p3/8/1QP5/PP1PPPPP/RNB1KBNR");
         auto queen = board->getField(pos("b3"))->getPiece();
         auto moves = queen->getMoves();
 
@@ -42,7 +43,7 @@ namespace QueenUnitTest {
     }
 
     TEST(Queen, getMovesOnBoardEdge) {
-        auto board = Board::fromFEN("rnbqk1nr/pppp2pp/3b1p2/4p3/Q7/2P5/PP1PPPPP/RNB1KBNR");
+        auto board = FENParser::parseBoard("rnbqk1nr/pppp2pp/3b1p2/4p3/Q7/2P5/PP1PPPPP/RNB1KBNR");
         auto queen = board->getField(pos("a4"))->getPiece();
         auto moves = queen->getMoves();
 

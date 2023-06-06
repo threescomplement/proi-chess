@@ -42,10 +42,6 @@ private:
     int halfmoveClock;
     int fullmoveNumber;
 
-    Game(Board *board, Player *whitePlayer, Player *blackPlayer, Player *currentPlayer, bool canWhiteKingsideCastle,
-         bool canWhiteQueensideCastle, bool canBlackKingsideCastle, bool canBlackQueensideCastle,
-         Position *enPassantTarget, int halfmoveClock, int fullmoveNumber);
-
     std::string castlingAvailabilityFEN() const;
 
     void refreshEnPassant();
@@ -81,6 +77,10 @@ private:
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
 
+    Game(Board *board, Player *whitePlayer, Player *blackPlayer, Player *currentPlayer, bool canWhiteKingsideCastle,
+         bool canWhiteQueensideCastle, bool canBlackKingsideCastle, bool canBlackQueensideCastle,
+         Position *enPassantTarget, int halfmoveClock, int fullmoveNumber);
+
     ~Game();
 
     Board *getBoard() const;
@@ -90,8 +90,6 @@ public:
     Player *getCurrentPlayer();
 
     std::vector<Move> &getMoveHistory();
-
-    std::string toFEN() const;
 
     Player *getWhitePlayer() const;
 
@@ -144,7 +142,17 @@ public:
      */
     Pawn *getEnPassantTargetPiece() const;
 
-    static Game fromFEN(const std::string &fen);
+    bool getCanWhiteKingsideCastle() const;
+
+    bool getCanWhiteQueensideCastle() const;
+
+    bool getCanBlackKingsideCastle() const;
+
+    bool getCanBlackQueensideCastle() const;
+
+    int getHalfmoveClock() const;
+
+    int getFullmoveNumber() const;
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);
