@@ -39,11 +39,6 @@ void GameHandler::clearMoves() {
     validMoves.clear();
 }
 
-//void GameHandler::setValidMoves(const std::vector<Move> &validMoves) {
-//    GameHandler::validMoves = validMoves;
-//}
-
-
 void GameHandler::makeMove(Move const *move) {
     game->makeMove(*move);
 }
