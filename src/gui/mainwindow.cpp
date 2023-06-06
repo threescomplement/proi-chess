@@ -21,7 +21,7 @@
 
 MainWindow::MainWindow(Game *game, QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow),
-          pickedField(nullptr), botGame(false), stockfishBot(nullptr), botColor(Color::BLACK) {
+          pickedField(nullptr) {
 
     gameHandler = new GameHandler(game);
     this->resize(400, 400);

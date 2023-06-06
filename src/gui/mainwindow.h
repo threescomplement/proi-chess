@@ -51,10 +51,6 @@ Q_OBJECT
 
 private:
     GameField *pickedField; // currently selected field
-    std::vector<Move> validMoves; // moves possible from that field
-    bool botGame;
-    ChessBot *stockfishBot;
-    Color botColor;
     GameHandler *gameHandler;
 
 
