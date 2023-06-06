@@ -531,7 +531,7 @@ void Game::undoMove() {
         currentPlayer->getPieces().push_back(moveToReverse.getPiece());
         currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
     }
-//    board->reverseMove(moveToReverse);
+    board->reverseMove(moveToReverse);
     // for castling flags probably will just keep a vector of flag strings to parse from
 
 }
