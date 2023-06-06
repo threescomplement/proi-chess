@@ -16,7 +16,7 @@ using namespace ChessUnitTestCommon;
 
 namespace FENParserUnitTest {
 
-    TEST(Board, FEN_emptyBoard) {
+    TEST(FENParser, boardEmpty) {
         auto testBoard = Board::emptyBoard();
         std::string expected = "8/8/8/8/8/8/8/8";
         ASSERT_EQ(expected, FENParser::toString(*testBoard));
@@ -24,7 +24,7 @@ namespace FENParserUnitTest {
         ASSERT_EQ(expected, FENParser::toString(*copyFromFen));
     }
 
-    TEST(Board, FEN_initialBoardState) {
+    TEST(FENParser, boardStartingState) {
         auto testBoard = Board::emptyBoard();
         std::vector<Piece *> allPieces = {};
 
@@ -76,7 +76,7 @@ namespace FENParserUnitTest {
         ASSERT_EQ(expected, FENParser::toString(*copyFromFen));
     }
 
-    TEST(Board, FEN_goofyItalian) {
+    TEST(FENParser, gameGoofyItalian) {
         auto testBoard = Board::emptyBoard();
         std::vector<Piece *> allPieces = {};
 
@@ -129,7 +129,7 @@ namespace FENParserUnitTest {
         ASSERT_EQ(expected, FENParser::toString(*copyFromFen));
     }
 
-    TEST(Game, fromFENStartingGame) {
+    TEST(FENParser, gameStartingState) {
         auto game = FENParser::parseGame("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         auto newGame = Game();
         ASSERT_EQ(FENParser::toString(newGame), FENParser::toString(game));
@@ -137,7 +137,7 @@ namespace FENParserUnitTest {
         ASSERT_EQ(16, game.getBlackPlayer()->getPieces().size());
     }
 
-    TEST(Game, fromFENAfterMoves) {
+    TEST(FENParser, gameAfterMoves) {
         auto fenGame = FENParser::parseGame("rnbqkbnr/pppp1ppp/8/4p3/4P3/7N/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
 
         auto game = Game();
@@ -150,7 +150,7 @@ namespace FENParserUnitTest {
         ASSERT_EQ(16, game.getBlackPlayer()->getPieces().size());
     }
 
-    TEST(Game, fromFENCastling) {
+    TEST(FENParser, gameCastling) {
         auto game = FENParser::parseGame("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1");
         auto whiteKing = game.getPiece(pos("e1"));
         auto blackKing = game.getPiece(pos("e8"));
