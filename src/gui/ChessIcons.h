@@ -17,12 +17,12 @@ protected:
     static ChessIcons *instance;
 
     ChessIcons();
+
 public:
     QPixmap getPixmap(Color color, PieceType type);
 
     static ChessIcons *getIcons();
 };
-
 
 
 #endif //CHESS_CHESSICONS_H

@@ -30,7 +30,6 @@ GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::Win
 GameField::~GameField() noexcept {
     // destructor calls will propagate upwards the inheritance tree, so everything will be cleaned up
     delete overlay;
-
 }
 
 

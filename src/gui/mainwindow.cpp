@@ -15,25 +15,14 @@
 #include "pieces/Piece.h"
 #include "ChessExceptions.h"
 #include "Player.h"
-#include "../bot/StockfishBot.h"
 
 #define BOARD_HEIGHT 8
 #define BOARD_WIDTH 8
 
-/**
- * displays the image of a board,
- * then sets up a 8 x 8 grid of @class GameField
- * to act as clickable tiles on the board.
- * Connects the appropriate signals between the fields and the window
- *
- *
- *
- * @param game - the game that will be played and displayed in the window
- * @param parent
- **/
+
 MainWindow::MainWindow(Game *game, QWidget *parent)
-        : QMainWindow(parent), ui(new Ui::MainWindow), game(game), pickedField(nullptr), botGame(false), stockfishBot(
-        nullptr), botColor(Color::BLACK) {
+        : QMainWindow(parent), ui(new Ui::MainWindow),
+          game(game), pickedField(nullptr), botGame(false), stockfishBot(nullptr), botColor(Color::BLACK) {
 
     this->resize(400, 400);
     ui->setupUi(this);
@@ -52,8 +41,9 @@ MainWindow::~MainWindow() {
 
 
 void MainWindow::createBoard(Color side) {
-    QPixmap board_map = ((side == Color::WHITE) ? QPixmap(":/resources/empty_board_white_perspective.png") : QPixmap(
-            ":/resources/empty_board_black_perspective.png"));
+    QPixmap board_map = ((side == Color::WHITE)
+                         ? QPixmap(":/resources/empty_board_white_perspective.png")
+                         : QPixmap(":/resources/empty_board_black_perspective.png"));
     board_map = board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio);
     if (ui->GameBoard->pixmap().toImage() != board_map.toImage()) {
         ui->GameBoard->setPixmap(board_map);
@@ -86,17 +76,9 @@ void MainWindow::createBoard(Color side) {
             }
         }
     }
-
-
 }
 
 
-/**
- * updates the state of fields in the window
- * to the state of the internal game
- *
- *
- **/
 void MainWindow::updateBoardDisplay() {
     for (int row = 1; row <= BOARD_SIZE; row++) {
         for (int col = 1; col <= BOARD_SIZE; col++) {
@@ -116,17 +98,7 @@ void MainWindow::updateBoardDisplay() {
     }
 }
 
-/**
- * Activated by emitting a "fieldClicked" signal by a connected @class GameField.
- * Handles everything related to picking a piece and making moves.
- *
- * If there is no field selected, it will select that field.
- * If a field is selected:
- *          - if the clicked field is one where a piece from the selected field can move, make that move,
- *          - if not, check if that field can be selected (must be a pawn of current player)
- *
- * @param field
- **/
+
 void MainWindow::handleFieldClick(GameField *field) {
 
     // TODO - Could be cleaned up a bit
@@ -160,15 +132,7 @@ void MainWindow::handleFieldClick(GameField *field) {
     updateBoardDisplay();
 }
 
-/**
- * check whether a field is the endpoint of one of the moves that are currenly
- * being considered for the selected piece (if any)
- *
- *
- * @param moves
- * @param field
- * @return the move with an endpoint at the given field, or nullptr if such a move is not found
- **/
+
 Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *field) {
     for (auto move: moves) {
         Position goal = move.getTo();
@@ -215,18 +179,10 @@ void MainWindow::makeMove(Move const *move) {
         updateBoardDisplay();
         checkIfMate();
         checkIfStalemate();
-
     }
-
-
 }
 
 
-/**
- * Makes sure that the state of all fields is consistent after de-selecting a piece (ex. after a move)
- * or selecting a new one
- * @param new_picked - the field that is now supposed to be considered for moves etc.
- **/
 void MainWindow::changePickedField(GameField *const new_picked) {
 
     if (pickedField != nullptr) {
@@ -247,7 +203,7 @@ void MainWindow::changePickedField(GameField *const new_picked) {
     if (pickedField != nullptr) {
         emit updateFieldMark(pickedField->getX(), pickedField->getY(), true);
     }
-    for (auto move: validMoves) {
+    for (const auto &move: validMoves) {
         int dest_x = move.getTo().getCol();
         int dest_y = move.getTo().getRow();
         emit updateFieldMark(dest_x, dest_y, true);
@@ -258,21 +214,17 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
     Game *newGame = nullptr;
     try {
         newGame = new Game(Game::fromFEN(fenNotation));
-    } catch (FenException e) {
+    } catch (FenException &e) {
         delete newGame;
         throw FenException("Incorrect Fen");
     }
 
-
     createBoard((botColor == Color::WHITE) ? Color::BLACK : Color::WHITE);
-
     changePickedField(nullptr);
 
-
     delete stockfishBot;
-
-
     delete game;
+
     game = newGame;
     this->botGame = botGame;
     this->botColor = botColor;
@@ -287,16 +239,12 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
         stockfishBot->setDepth(bot_depth);
     }
     handleBotMove();
-
-
     updateBoardDisplay();
 }
 
 
 void MainWindow::newFenGame(bool botGame, Color bot_color) {
-
     bool ok;
-
     QString fenNotation = QInputDialog::getText(this, tr("New Fen notation game"),
                                                 tr("Enter the FEN notation:"), QLineEdit::Normal,
                                                 QDir::home().dirName(), &ok);
@@ -309,19 +257,16 @@ void MainWindow::newFenGame(bool botGame, Color bot_color) {
             QMessageBox::warning(
                     this,
                     tr("Invalid FEN notation"),
-                    tr("Failed to initialise game from given FEN notation. \n"));
+                    tr("Failed to initialise game from given FEN notation. \n")
+            );
 
         }
     }
-
 }
 
 
 void MainWindow::on_actionGame_from_FEN_triggered() {
-
-
     newFenGame(false);
-
 }
 
 
@@ -350,8 +295,6 @@ void MainWindow::on_actionNew_bot_game_from_FEN_triggered() {
     if (ok) {
         newFenGame(true, (pickedColor == "White") ? Color::BLACK : Color::WHITE);
     }
-
-
 }
 
 
@@ -360,8 +303,6 @@ void MainWindow::handleBotMove() {
 
         Move botMove = stockfishBot->getBestNextMove();
         game->makeMove(botMove);
-
-
     }
 }
 
