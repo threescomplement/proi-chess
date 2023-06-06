@@ -29,7 +29,7 @@ ChessIcons *ChessIcons::getIcons() {
 
 QPixmap ChessIcons::getPixmap(Color color, PieceType type) {
     if (type == PieceType::NONE) {
-        return QPixmap("");
+        return {};
     }
     return this->pieceImgs[{color, type}];
 }
