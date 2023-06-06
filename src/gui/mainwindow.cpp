@@ -282,7 +282,7 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
                                              tr("Enter the bot's search depth (the higher the depth,"
                                                 " the more accurate the bot will be):"),
                                              QLineEdit::Normal,
-                                             0);
+                                             1);
         stockfishBot->setDepth(bot_depth);
     }
     handleBotMove();
