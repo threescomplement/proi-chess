@@ -92,7 +92,7 @@ public:
     void makeMove(Move *move);
 
     void newGame(bool botGame, Color bot_color = Color::BLACK,
-                 std::string fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+                 const std::string &fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     void newFenGame(bool isBotGame, Color bot_color = Color::BLACK);
 
