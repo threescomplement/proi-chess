@@ -1,7 +1,7 @@
 #include <vector>
 #include "gtest/gtest.h"
-#include "../../../src/chess/Move.h"
-#include "../../../src/chess/Board.h"
+#include "Move.h"
+#include "Board.h"
 #include "../common.h"
 #include "FENParser.h"
 
@@ -10,7 +10,7 @@ using namespace ChessUnitTestCommon;
 
 namespace RookUnitTest {
     TEST(Rook, getMoves_initialState) {
-        auto testBoard = FENParser::parseBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        auto testBoard = fenBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         auto whiteRook = testBoard->getField(pos("a1"))->getPiece();
         auto blackRook = testBoard->getField(pos("h8"))->getPiece();
         auto whiteRookMoves = whiteRook->getMoves();
@@ -20,7 +20,7 @@ namespace RookUnitTest {
     }
 
     TEST(Rook, getMovesMultipleDirectionsBlockedCapturesAndBoardBoundary) {
-        auto board = FENParser::parseBoard("rnbqkbnr/1pppp3/p4ppp/8/P2R4/8/1PPPPPPP/1NBQKBNR");
+        auto board = fenBoard("rnbqkbnr/1pppp3/p4ppp/8/P2R4/8/1PPPPPPP/1NBQKBNR");
         auto rook = board->getField(pos("d4"))->getPiece();
         auto moves = rook->getMoves();
 

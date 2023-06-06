@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../../src/chess/Field.h"
+#include "Field.h"
 
 namespace FieldUnitTest {
     TEST(Field, constructor) {

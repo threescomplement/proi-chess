@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../../src/chess/Position.h"
+#include "Position.h"
 
 
 namespace PositionUnitTest {

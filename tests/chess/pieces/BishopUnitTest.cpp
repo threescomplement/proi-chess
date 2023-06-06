@@ -1,18 +1,14 @@
 #include <vector>
 #include "gtest/gtest.h"
-#include "../../../src/chess/Move.h"
-#include "../../../src/chess/Position.h"
-#include "../../../src/chess/Board.h"
+#include "Move.h"
+#include "Board.h"
 #include "../common.h"
-
-#include "../../../src/chess/pieces/Bishop.h"
-#include "FENParser.h"
 
 using namespace ChessUnitTestCommon;
 
 namespace BishopUnitTest {
     TEST(Bishop, getMoves_initialState) {
-        auto testBoard = FENParser::parseBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        auto testBoard = fenBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         auto whiteBishop = testBoard->getField(pos("c1"))->getPiece();
         auto blackBishop = testBoard->getField(pos("f8"))->getPiece();
         auto whiteBishopMoves = whiteBishop->getMoves();
@@ -22,7 +18,7 @@ namespace BishopUnitTest {
     }
 
     TEST(Bishop, oneDiagonalOpen) {
-        auto testBoard = FENParser::parseBoard("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR");
+        auto testBoard = fenBoard("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR");
         auto whiteBishop = testBoard->getField(pos("f1"))->getPiece();
         auto blackBishop = testBoard->getField(pos("c8"))->getPiece();
         auto whiteBishopMoves = whiteBishop->getMoves();
@@ -51,7 +47,7 @@ namespace BishopUnitTest {
     }
 
     TEST(Bishop, bothDiagonalsCompletelyOpen) {
-        auto testBoard = FENParser::parseBoard("5k2/8/4b3/8/8/4B3/8/1K6");
+        auto testBoard = fenBoard("5k2/8/4b3/8/8/4B3/8/1K6");
         auto whiteBishop = testBoard->getField(pos("e3"))->getPiece();
         auto blackBishop = testBoard->getField(pos("e6"))->getPiece();
         auto whiteBishopMoves = whiteBishop->getMoves();
@@ -91,7 +87,7 @@ namespace BishopUnitTest {
     }
 
     TEST(Bishop, capturesAndOwnPiecesInTheWay) {
-        auto testBoard = FENParser::parseBoard("5k2/8/8/8/5r2/4B3/3P4/1K6");
+        auto testBoard = fenBoard("5k2/8/8/8/5r2/4B3/3P4/1K6");
         auto whiteBishop = testBoard->getField(pos("e3"))->getPiece();
         auto whiteBishopMoves = whiteBishop->getMoves();
         std::vector<Move> expectedWhiteMoves = {
