@@ -23,9 +23,9 @@ public:
      */
     static Board *parseBoard(const std::string &fen);
 
-    static std::string toString(const Game &game);
+    static std::string gameToString(const Game &game);
 
-    static std::string toString(const Board &board);
+    static std::string boardToString(const Board &board);
 };
 
 

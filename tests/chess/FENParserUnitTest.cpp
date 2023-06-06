@@ -19,9 +19,9 @@ namespace FENParserUnitTest {
     TEST(FENParser, boardEmpty) {
         auto testBoard = Board::emptyBoard();
         std::string expected = "8/8/8/8/8/8/8/8";
-        ASSERT_EQ(expected, FENParser::toString(*testBoard));
-        Board *copyFromFen = FENParser::parseBoard(FENParser::toString(*testBoard));
-        ASSERT_EQ(expected, FENParser::toString(*copyFromFen));
+        ASSERT_EQ(expected, FENParser::boardToString(*testBoard));
+        Board *copyFromFen = FENParser::parseBoard(FENParser::boardToString(*testBoard));
+        ASSERT_EQ(expected, FENParser::boardToString(*copyFromFen));
     }
 
     TEST(FENParser, boardStartingState) {
@@ -71,9 +71,9 @@ namespace FENParserUnitTest {
         }
 
         std::string expected = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-        ASSERT_EQ(expected, FENParser::toString(*testBoard));
-        Board *copyFromFen = FENParser::parseBoard(FENParser::toString(*testBoard));
-        ASSERT_EQ(expected, FENParser::toString(*copyFromFen));
+        ASSERT_EQ(expected, FENParser::boardToString(*testBoard));
+        Board *copyFromFen = FENParser::parseBoard(FENParser::boardToString(*testBoard));
+        ASSERT_EQ(expected, FENParser::boardToString(*copyFromFen));
     }
 
     TEST(FENParser, gameGoofyItalian) {
@@ -123,16 +123,16 @@ namespace FENParserUnitTest {
         }
 
         std::string expected = "r1bqkbnr/1pp1pppp/p1n5/3p4/2B1P3/5N2/PPPP1PPP/RNBQK2R";
-        ASSERT_EQ(expected, FENParser::toString(*testBoard));
+        ASSERT_EQ(expected, FENParser::boardToString(*testBoard));
 
-        Board *copyFromFen = FENParser::parseBoard(FENParser::toString(*testBoard));
-        ASSERT_EQ(expected, FENParser::toString(*copyFromFen));
+        Board *copyFromFen = FENParser::parseBoard(FENParser::boardToString(*testBoard));
+        ASSERT_EQ(expected, FENParser::boardToString(*copyFromFen));
     }
 
     TEST(FENParser, gameStartingState) {
         auto game = FENParser::parseGame("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         auto newGame = Game();
-        ASSERT_EQ(FENParser::toString(newGame), FENParser::toString(game));
+        ASSERT_EQ(FENParser::gameToString(newGame), FENParser::gameToString(game));
         ASSERT_EQ(16, game.getWhitePlayer()->getPieces().size());
         ASSERT_EQ(16, game.getBlackPlayer()->getPieces().size());
     }
@@ -145,7 +145,7 @@ namespace FENParserUnitTest {
         game.makeMove(Move(pos("e7"), pos("e5"), game.getPiece(pos("e7"))));
         game.makeMove(Move(pos("g1"), pos("h3"), game.getPiece(pos("g1"))));
 
-        ASSERT_EQ(FENParser::toString(game), FENParser::toString(fenGame));
+        ASSERT_EQ(FENParser::gameToString(game), FENParser::gameToString(fenGame));
         ASSERT_EQ(16, game.getWhitePlayer()->getPieces().size());
         ASSERT_EQ(16, game.getBlackPlayer()->getPieces().size());
     }

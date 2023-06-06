@@ -157,9 +157,9 @@ Board *FENParser::parseBoard(const std::string &fen) {
     return board;
 }
 
-std::string FENParser::toString(const Game &game) {
+std::string FENParser::gameToString(const Game &game) {
     std::stringstream ss;
-    auto board = FENParser::toString(*game.getBoard());
+    auto board = FENParser::boardToString(*game.getBoard());
     auto activePlayer = (game.getCurrentPlayer() == game.getWhitePlayer()) ? "w" : "b";
     auto castling = FENParser::castlingAvailability(game);
     auto enPassant = (game.getEnPassantTargetPosition() != nullptr)
@@ -176,7 +176,7 @@ std::string FENParser::toString(const Game &game) {
     return ss.str();
 }
 
-std::string FENParser::toString(const Board &board) {
+std::string FENParser::boardToString(const Board &board) {
     std::stringstream ss;
 
     for (int row = BOARD_SIZE; row >= 1; row--) {

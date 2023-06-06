@@ -371,7 +371,7 @@ bool Game::isCheck(Color colorOfCheckedKing) const {
 }
 
 Game Game::afterMove(Move move) const {
-    auto deepCopy = FENParser::parseGame(FENParser::toString(*this));
+    auto deepCopy = FENParser::parseGame(FENParser::gameToString(*this));
     auto sourcePiece = deepCopy.getPiece(move.getFrom());
 
     Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : deepCopy.getPiece(

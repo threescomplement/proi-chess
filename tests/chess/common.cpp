@@ -30,15 +30,15 @@ Position ChessUnitTestCommon::pos(const std::string &textRepr) {
 }
 
 std::string ChessUnitTestCommon::fen(const Game &game) {
-    return FENParser::toString(game);
+    return FENParser::gameToString(game);
 }
 
 std::string ChessUnitTestCommon::fen(const Board &board) {
-    return FENParser::toString(board);
+    return FENParser::boardToString(board);
 }
 
 std::string ChessUnitTestCommon::fen(Board *board) {
-    return FENParser::toString(*board);
+    return FENParser::boardToString(*board);
 }
 
 Game ChessUnitTestCommon::fenGame(const std::string &fen) {

@@ -68,7 +68,7 @@ Move StockfishBot::getMoveFromStockfish(const std::string &gameFEN) const {
 }
 
 Move StockfishBot::getBestNextMove() const {
-    return this->getMoveFromStockfish(FENParser::toString(this->game));
+    return this->getMoveFromStockfish(FENParser::gameToString(this->game));
 }
 
 StockfishBot::StockfishBot(const Game &game, int depth) : ChessBot(game, depth) {}
