@@ -302,11 +302,13 @@ bool MainWindow::checkIfStalemate() {
 void MainWindow::on_actionUndo_move_triggered()
 {
     gameHandler->undo();
+    updateBoardDisplay();
 }
 
 
 void MainWindow::on_actionRedo_move_triggered()
 {
     gameHandler->redo();
+    updateBoardDisplay();
 }
 
