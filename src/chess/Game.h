@@ -25,6 +25,7 @@ private:
     Player *currentPlayer;
     std::vector<Move> moveHistory;
     std::map<std::string, int> positionCount;
+    std::vector<std::string> positionHistory;
 
     int movesWithoutCaptureOrPawnMove;
     bool canWhiteKingsideCastle;
@@ -34,6 +35,7 @@ private:
     Position *enPassantTargetPosition;
     int halfmoveClock;
     int fullmoveNumber;
+
 
     void refreshEnPassant();
 
