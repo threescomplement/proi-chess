@@ -56,17 +56,15 @@ void GameField::mousePressEvent(QMouseEvent *event) {
 }
 
 void GameField::setPiece(Piece *piece) {
-
-    QPixmap pixmap;
-
-    if (piece != nullptr) {
-        auto color = piece->getColor();
-        auto type = piece->getType();
-        pixmap = ChessIcons::getIcons()->getPixmap(color, type);
+    if (piece == nullptr) {
+        this->setPixmap(QPixmap());  // Clear currently displayed
+        return;
     }
 
+    auto color = piece->getColor();
+    auto type = piece->getType();
+    QPixmap pixmap = ChessIcons::getIcons()->getPixmap(color, type);
     this->setPixmap(pixmap.scaled(fieldSize, fieldSize, Qt::AspectRatioMode::KeepAspectRatio));
-
 }
 
 int GameField::getX() const {
