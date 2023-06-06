@@ -197,26 +197,29 @@ void Board::setWhiteKing(Piece *whiteKing) {
 }
 
 void Board::reverseMove(const Move &move) {
-    auto targetField = this->getField(move.getTo());
-    auto sourceField = this->getField(move.getFrom());
-    auto pieceOnTargetField = targetField->getPiece();
+    auto sourceField = this->getField(move.getTo());
+    auto targetField = this->getField(move.getFrom());
     auto sourcePiece = sourceField->getPiece();
     auto capturedPiece = move.getCapturedPiece();
 
-    sourcePiece->setField(sourceField);
-    sourceField->setPiece(sourcePiece);
+    sourcePiece->setField(targetField);
+    targetField->setPiece(sourcePiece);
 
     if (move.getPromoteTo() == PieceType::NONE) {
-        targetField->setPiece(nullptr);
+        sourceField->setPiece(nullptr);
         //todo - move.iscastlingcomplement
     } else {
-        auto promotedPiece = targetField->getPiece();
+        auto promotedPiece = sourceField->getPiece();
         allPieces.erase(std::remove(allPieces.begin(), allPieces.end(), promotedPiece));
-        targetField->setPiece(nullptr);
+        sourceField->setPiece(nullptr);
         promotedPiece->takeOffField();
         delete promotedPiece;
     }
 
+    if (capturedPiece != nullptr) {
+        capturedPiece->setField(sourceField);
+        sourceField->setPiece(capturedPiece);
+    }
 
 }
 
