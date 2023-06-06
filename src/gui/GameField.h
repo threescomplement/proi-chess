@@ -53,6 +53,13 @@ public slots:
 
     void reset();
 
+    /**
+     *
+     * @param called_x - identifies which field was called to update
+     * @param called_y - identifies which field was called to update
+     * @param type - SUBJECT TO CHANGE: the type of piece it's supposed to now hold
+     * @param mark - the new state of being marked, false by default
+     **/
     void updatePieceCalled(int called_x, int called_y, Piece *piece = nullptr);
 
     void markUpdateCalled(int called_x, int called_y, bool new_mark);

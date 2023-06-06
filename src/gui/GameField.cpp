@@ -34,13 +34,6 @@ GameField::~GameField() noexcept {
 }
 
 
-/**
- *
- * @param called_x - identifies which field was called to update
- * @param called_y - identifies which field was called to update
- * @param type - SUBJECT TO CHANGE: the type of piece it's supposed to now hold
- * @param mark - the new state of being marked, false by default
- **/
 void GameField::updatePieceCalled(int called_x, int called_y, Piece *piece) {
     if (called_x == x && called_y == y) {
         setPiece(piece);
@@ -87,8 +80,9 @@ void GameField::setMark(bool new_mark) {
     marked = new_mark;
     if (marked) {
         overlay->setPixmap(
-                QPixmap(":/resources/green_selection_mask_rectangular.png").scaled(fieldSize, fieldSize,
-                                                                                   Qt::AspectRatioMode::KeepAspectRatio));
+                QPixmap(":/resources/green_selection_mask_rectangular.png")
+                        .scaled(fieldSize, fieldSize, Qt::AspectRatioMode::KeepAspectRatio)
+        );
     } else {
         overlay->setPixmap(QPixmap());
     }
