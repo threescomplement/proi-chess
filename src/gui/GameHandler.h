@@ -71,10 +71,6 @@ public:
 
     bool isMate();
 
-    bool belongsTo(Piece *piece, Player *player);
-
-    bool pieceBelongsToCurrent(Piece *piece);
-
     bool fieldBelongsToCurrent(Position position);
 };
 

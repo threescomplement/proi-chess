@@ -15,8 +15,11 @@
 #include "Player.h"
 #include "GameHandler.h"
 
-#define BOARD_HEIGHT 8
-#define BOARD_WIDTH 8
+#define BOARD_ROWS 8
+#define BOARD_COLUMNS 8
+#define BOARD_SIDE_LENGTH 400
+#define WINDOW_HEIGHT (BOARD_SIDE_LENGTH+45)
+#define WINDOW_WIDTH BOARD_SIDE_LENGTH
 
 
 MainWindow::MainWindow(Game *game, QWidget *parent)
@@ -24,10 +27,9 @@ MainWindow::MainWindow(Game *game, QWidget *parent)
           pickedField(nullptr) {
 
     gameHandler = new GameHandler(game);
-    this->resize(400, 400);
     ui->setupUi(this);
     ui->GameLayout->setGeometry(QRect(0, 0, 400, 400));
-    setFixedSize(400, 445);
+    setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     createBoard();
 
     updateBoardDisplay();
@@ -44,18 +46,18 @@ void MainWindow::createBoard(Color side) {
     QPixmap board_map = ((side == Color::WHITE)
                          ? QPixmap(":/resources/empty_board_white_perspective.png")
                          : QPixmap(":/resources/empty_board_black_perspective.png"));
-    board_map = board_map.scaled(400, 400, Qt::AspectRatioMode::KeepAspectRatio);
+    board_map = board_map.scaled(BOARD_SIDE_LENGTH, BOARD_SIDE_LENGTH, Qt::AspectRatioMode::KeepAspectRatio);
     if (ui->GameBoard->pixmap().toImage() != board_map.toImage()) {
         ui->GameBoard->setPixmap(board_map);
         ui->GameBoard->setAlignment(Qt::AlignLeft);
-        ui->GameBoard->setGeometry(0, 0, 400, 400);
+        ui->GameBoard->setGeometry(0, 0, BOARD_SIDE_LENGTH, BOARD_SIDE_LENGTH);
 
 
         for (auto child: ui->GameBoard->children()) {
             delete child;
         }
-        for (int row = 1; row <= BOARD_HEIGHT; row++) {
-            for (int column = 1; column <= BOARD_WIDTH; column++) {
+        for (int row = 1; row <= BOARD_ROWS; row++) {
+            for (int column = 1; column <= BOARD_COLUMNS; column++) {
                 int fieldRow;
                 int fieldColumn;
                 if (side == Color::WHITE) {
@@ -65,13 +67,14 @@ void MainWindow::createBoard(Color side) {
                     fieldRow = row;
                     fieldColumn = 9 - column;
                 }
+                int fieldSize = BOARD_SIDE_LENGTH / 8;
                 auto *field = new GameField(QString(), fieldColumn, fieldRow, ui->GameBoard);
                 QObject::connect(this, &MainWindow::updateFieldPiece, field, &GameField::updatePieceCalled);
                 QObject::connect(field, &GameField::fieldClicked, this, &MainWindow::handleFieldClick);
                 QObject::connect(this, &MainWindow::callReset, field, &GameField::reset);
                 QObject::connect(this, &MainWindow::updateFieldMark, field, &GameField::markUpdateCalled);
                 field->setAlignment(Qt::AlignLeft);
-                field->setGeometry(50 * (column - 1), 50 * (row - 1), 50, 50);
+                field->setGeometry(fieldSize * (column - 1), fieldSize * (row - 1), fieldSize, fieldSize);
                 field->show();
             }
         }
@@ -103,9 +106,7 @@ void MainWindow::handleFieldClick(GameField *field) {
         changePickedField(nullptr);
         return;
     }
-    // TODO - Could be cleaned up a bit
     if (field != pickedField) {
-        bool validChoice = false;
         // check if there is a move to the chosen position
         Position fieldPos(field->getY(), field->getX());
         Move *correspondingMove = gameHandler->findMoveTo(fieldPos);
@@ -125,25 +126,21 @@ void MainWindow::handleFieldClick(GameField *field) {
 void MainWindow::makeMove(Move *move) {
 
     if (move->resultsInPromotion()) {
-        bool ok;
+        bool ok_button_pressed;
         QStringList colorPicker = {"Rook", "Knight", "Bishop", "Queen"};
         QString pickedPiece = QInputDialog::getItem(this, tr("Promotion"), tr("Choose piece to promote to:"),
                                                     colorPicker, 0,
-                                                    false, &ok);
+                                                    false, &ok_button_pressed);
         std::map<QString, PieceType> pickToPieceMap = {{"Rook",   PieceType::ROOK},
                                                        {"Knight", PieceType::KNIGHT},
                                                        {"Bishop", PieceType::BISHOP},
                                                        {"Queen",  PieceType::QUEEN}};
-
-        if (ok) {
-            move->setPromotion(pickToPieceMap[pickedPiece]);
-            gameHandler->makeMove(move);
+        if (!ok_button_pressed) {
+            return;
         }
-
-    } else {
-        gameHandler->makeMove(move);
+        move->setPromotion(pickToPieceMap[pickedPiece]);
     }
-
+    gameHandler->makeMove(move);
     updateBoardDisplay();
     if (!(checkIfMate() || checkIfStalemate())) {
         //make bot move
@@ -169,7 +166,6 @@ void MainWindow::changePickedField(GameField *const new_picked) {
         emit updateFieldMark(new_picked->getX(), new_picked->getY(), true);
     } else {
         gameHandler->clearMoves();
-        //validMoves.clear();
     }
     emit callReset();
 
@@ -181,7 +177,7 @@ void MainWindow::changePickedField(GameField *const new_picked) {
     updateBoardDisplay();
 }
 
-void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) {
+void MainWindow::newGame(bool botGame, Color botColor, const std::string &fenNotation) {
     gameHandler->newGame(botGame, botColor, fenNotation);
 
     createBoard((botColor == Color::WHITE) ? Color::BLACK : Color::WHITE);
@@ -193,7 +189,7 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
                                              tr("Enter the bot's search depth (the higher the depth,"
                                                 " the more accurate the bot will be):"),
                                              QLineEdit::Normal,
-                                            1);
+                                             1);
         gameHandler->setBotDepth(bot_depth);
     }
     gameHandler->handleBotMove();
@@ -202,24 +198,26 @@ void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) 
 
 
 void MainWindow::newFenGame(bool isBotGame, Color bot_color) {
-    bool ok;
+    bool ok_button_pressed;
     QString fenNotation = QInputDialog::getText(this, tr("New Fen notation game"),
                                                 tr("Enter the FEN notation:"), QLineEdit::Normal,
-                                                QDir::home().dirName(), &ok);
-    if (ok) {
-        try {
-            newGame(isBotGame, bot_color, fenNotation.toStdString());
-        } catch (FenException) {
-            // incorrect fen notation
-            // display warning pop-up
-            QMessageBox::warning(
-                    this,
-                    tr("Invalid FEN notation"),
-                    tr("Failed to initialise game from given FEN notation. \n")
-            );
-
-        }
+                                                QDir::home().dirName(), &ok_button_pressed);
+    if (!ok_button_pressed) {
+        return;
     }
+    try {
+        newGame(isBotGame, bot_color, fenNotation.toStdString());
+    } catch (FenException &e) {
+        // incorrect fen notation
+        // display warning pop-up
+        QMessageBox::warning(
+                this,
+                tr("Invalid FEN notation"),
+                tr("Failed to initialise game from given FEN notation. \n")
+        );
+
+    }
+
 }
 
 
@@ -229,12 +227,12 @@ void MainWindow::on_actionGame_from_FEN_triggered() {
 
 
 void MainWindow::on_actionNew_classic_bot_game_triggered() {
-    bool ok;
+    bool ok_button_pressed;
     QStringList colorPicker = {"White", "Black"};
     QString pickedColor = QInputDialog::getItem(this, tr("Choose your color"), tr("Choose your color:"), colorPicker, 0,
-                                                false, &ok);
+                                                false, &ok_button_pressed);
 
-    if (ok) {
+    if (ok_button_pressed) {
         newGame(true, (pickedColor == "White") ? Color::BLACK : Color::WHITE);
     }
 }
@@ -245,12 +243,12 @@ void MainWindow::on_actionRegular_game_triggered() {
 
 
 void MainWindow::on_actionNew_bot_game_from_FEN_triggered() {
-    bool ok;
+    bool ok_button_pressed;
     QStringList colorPicker = {"White", "Black"};
     QString pickedColor = QInputDialog::getItem(this, tr("Choose your color"), tr("Choose your color:"), colorPicker, 0,
-                                                false, &ok);
+                                                false, &ok_button_pressed);
 
-    if (ok) {
+    if (ok_button_pressed) {
         newFenGame(true, (pickedColor == "White") ? Color::BLACK : Color::WHITE);
     }
 }

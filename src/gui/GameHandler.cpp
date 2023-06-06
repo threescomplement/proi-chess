@@ -1,7 +1,6 @@
 
 #include "GameHandler.h"
 #include <vector>
-#include <QThread>
 #include "Player.h"
 
 GameHandler::GameHandler()
@@ -109,34 +108,23 @@ Color GameHandler::getCurrentPlayerColor() {
 Move *GameHandler::findMoveTo(const Position position) {
     for (auto move: validMoves) {
         Position goal = move.getTo();
-        if (goal.getCol() == position.getCol() && goal.getRow() == position.getRow()) {
+        if (goal == position) {
             return new Move(move);
         }
     }
     return nullptr;
 }
 
-bool GameHandler::belongsTo(Piece *piece, Player *player) {
+bool GameHandler::fieldBelongsToCurrent(Position position) {
+    Piece *piece = game->getPiece(position);
+    Player *player = game->getCurrentPlayer();
     if (piece == nullptr) {
         return false;
     }
     if (player == nullptr) {
         return false;
     }
-    auto playerPieces = player->getPieces();
-    return std::find(playerPieces.begin(),
-                     playerPieces.end(),
-                     piece)
-           != playerPieces.end(); // check if the piece belongs to the player
-}
-
-bool GameHandler::pieceBelongsToCurrent(Piece *piece) {
-    return belongsTo(piece, game->getCurrentPlayer());
-}
-
-bool GameHandler::fieldBelongsToCurrent(Position position) {
-    Piece *piece = game->getPiece(position);
-    return pieceBelongsToCurrent(piece);
+    return piece->getColor() == player->getColor(); // check if the piece belongs to the player
 }
 
 
