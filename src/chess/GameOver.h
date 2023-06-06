@@ -1,0 +1,9 @@
+
+enum class GameOver {
+    NOT_OVER,
+    MATE,
+    STALEMATE,
+    INSUFFICIENT_MATERIAL,
+    FIFTY_MOVE_RULE,
+    THREEFOLD_REPETITION,
+};

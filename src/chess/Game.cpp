@@ -8,6 +8,7 @@
 #include "ChessExceptions.h"
 #include "pieces/Pawn.h"
 #include "pieces/PieceType.h"
+#include "GameOver.h"
 #include "FENParser.h"
 
 
@@ -25,6 +26,8 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
+    this->movesWithoutCaptureOrPawnMove = 0;
+    this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -100,7 +103,13 @@ void Game::makeMove(Move move) {
         player->removePiece(captured);
     }
 
+    movesWithoutCaptureOrPawnMove = (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) ? 0 :
+                                    movesWithoutCaptureOrPawnMove + 1;
+
     this->moveHistory.push_back(move);
+    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
+    positionCount[fenOfCurrentBoard] = (positionCount.find(fenOfCurrentBoard) == positionCount.end()) ? 1 :
+                                       positionCount[fenOfCurrentBoard] + 1;
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
 }
 
@@ -144,8 +153,9 @@ Game::Game(
         canBlackQueensideCastle(canBlackQueensideCastle),
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
-        fullmoveNumber(fullmoveNumber) {}
-
+        fullmoveNumber(fullmoveNumber),
+        movesWithoutCaptureOrPawnMove(0),
+        positionCount({}) {}
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
@@ -370,15 +380,15 @@ bool Game::isCheck(Color colorOfCheckedKing) const {
     return false;
 }
 
-Game Game::afterMove(Move move) const {
-    auto deepCopy = FENParser::parseGame(FENParser::gameToString(*this));
-    auto sourcePiece = deepCopy.getPiece(move.getFrom());
+Game Game::afterMove(const Move &move) const {
+    auto copy = this->deepCopy();
+    auto sourcePiece = copy.getPiece(move.getFrom());
 
-    Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : deepCopy.getPiece(
+    Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : copy.getPiece(
             move.getCapturedPiece()->getPosition());
     auto moveEquivalentForDeepCopy = Move(move.getFrom(), move.getTo(), sourcePiece, takenPiece);
-    deepCopy.makeMove(moveEquivalentForDeepCopy);
-    return deepCopy;
+    copy.makeMove(moveEquivalentForDeepCopy);
+    return copy;
 }
 
 bool Game::isCastlingObscuredByOpponent(Move &move) const {
@@ -394,6 +404,56 @@ bool Game::isCastlingObscuredByOpponent(Move &move) const {
             return true;
     }
     return false;
+}
+
+GameOver Game::isOver() const {
+    if (isMate())
+        return GameOver::MATE;
+    else if (isStalemate())
+        return GameOver::STALEMATE;
+    else if (isDrawByInsufficientMaterial())
+        return GameOver::INSUFFICIENT_MATERIAL;
+    else if (isDrawByRepetition())
+        return GameOver::THREEFOLD_REPETITION;
+    else if (isDrawByFiftyMoveRule())
+        return GameOver::FIFTY_MOVE_RULE;
+    else
+        return GameOver::NOT_OVER;
+}
+
+bool Game::isDrawByInsufficientMaterial() const {
+    auto whitePieces = std::vector<Piece *>(whitePlayer->getPieces());
+    auto blackPieces = std::vector<Piece *>(blackPlayer->getPieces());
+
+    whitePieces.erase(std::remove_if(whitePieces.begin(), whitePieces.end(),
+                                     [](Piece *p) { return p->getType() == PieceType::KING; }), whitePieces.end());
+    blackPieces.erase(std::remove_if(blackPieces.begin(), blackPieces.end(),
+                                     [](Piece *p) { return p->getType() == PieceType::KING; }), blackPieces.end());
+
+    if (whitePieces.empty() && blackPieces.empty())
+        return true;
+    else if (whitePieces.size() == 1 && blackPieces.empty()) {
+        auto whitePiece = whitePieces[0];
+        if (whitePiece->getType() == PieceType::BISHOP || whitePiece->getType() == PieceType::KNIGHT)
+            return true;
+    } else if (whitePieces.empty() && blackPieces.size() == 1) {
+        auto blackPiece = blackPieces[0];
+        if (blackPiece->getType() == PieceType::BISHOP || blackPiece->getType() == PieceType::KNIGHT)
+            return true;
+    } else if (whitePieces.size() == 1 && blackPieces.size() == 1) {
+        auto whitePiece = whitePieces[0];
+        auto blackPiece = blackPieces[0];
+        if ((whitePiece->getType() == PieceType::BISHOP || whitePiece->getType() == PieceType::KNIGHT) &&
+            (blackPiece->getType() == PieceType::BISHOP || blackPiece->getType() == PieceType::KNIGHT))
+            return true;
+    }
+    return false;
+}
+
+bool Game::isDrawByRepetition() const {
+    return std::any_of(positionCount.begin(), positionCount.end(), [](const std::pair<std::string, int> &p) {
+        return p.second >= 3;
+    });
 }
 
 Position *Game::getEnPassantTargetPosition() const {
@@ -422,6 +482,24 @@ int Game::getHalfmoveClock() const {
 
 int Game::getFullmoveNumber() const {
     return fullmoveNumber;
+}
+
+Game Game::deepCopy() const {
+    auto copy = FENParser::parseGame(FENParser::gameToString(*this));
+    copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
+    return copy;
+}
+
+std::map<std::string, int> Game::getPositionCount() const {
+    return positionCount;
+}
+
+void Game::setPositionCount(std::map<std::string, int> count) {
+    positionCount = std::move(count);
+}
+
+bool Game::isDrawByFiftyMoveRule() const {
+    return movesWithoutCaptureOrPawnMove >= 100;
 }
 
 

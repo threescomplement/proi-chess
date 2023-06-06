@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 class Board;
 class Move;
@@ -14,6 +15,7 @@ class King;
 class Pawn;
 class Move;
 enum class Color;
+enum class GameOver;
 
 class Game {
 private:
@@ -22,7 +24,9 @@ private:
     Player *blackPlayer;
     Player *currentPlayer;
     std::vector<Move> moveHistory;
+    std::map<std::string, int> positionCount;
 
+    int movesWithoutCaptureOrPawnMove;
     bool canWhiteKingsideCastle;
     bool canWhiteQueensideCastle;
     bool canBlackKingsideCastle;
@@ -61,6 +65,20 @@ private:
 
     Move generateQueenSideCastle() const;
 
+    /**
+     * In a situation where there are 4 or less pieces on the board. Player has only a king and a knight/bishop -> he
+     * does not have enough material to mate, hence draw.
+     * */
+    bool isDrawByInsufficientMaterial() const;
+    bool isDrawByRepetition() const;
+    bool isDrawByFiftyMoveRule() const;
+
+    /**
+     * Create a deep copy of the game. Child game inherits positionCount from parent.
+     * */
+    Game deepCopy() const;
+
+
 public:
     Game(std::string whiteName = "Player 1", std::string blackName = "Player 2");
 
@@ -69,6 +87,8 @@ public:
          Position *enPassantTarget, int halfmoveClock, int fullmoveNumber);
 
     ~Game();
+
+    GameOver isOver() const;
 
     Board *getBoard() const;
 
@@ -91,7 +111,7 @@ public:
     /**
      * Creates a deep copy of the board and makes a given move on it.
      * */
-    Game afterMove(Move move) const;
+    Game afterMove(const Move& move) const;
 
     /**
      * All possible moves from a field, taking neither the current turn nor the
@@ -140,6 +160,10 @@ public:
     int getHalfmoveClock() const;
 
     int getFullmoveNumber() const;
+
+    std::map<std::string, int> getPositionCount() const;
+
+    void setPositionCount(std::map<std::string, int> count);
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

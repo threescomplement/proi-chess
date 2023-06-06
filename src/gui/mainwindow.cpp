@@ -14,6 +14,7 @@
 #include "ChessExceptions.h"
 #include "Player.h"
 #include "GameHandler.h"
+#include "FENParser.h"
 
 #define BOARD_ROWS 8
 #define BOARD_COLUMNS 8

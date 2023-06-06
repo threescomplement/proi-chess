@@ -7,6 +7,7 @@
 #include "ChessExceptions.h"
 #include "common.h"
 #include "Color.h"
+#include "GameOver.h"
 #include "pieces/PieceType.h"
 
 using namespace ChessUnitTestCommon;
@@ -74,8 +75,6 @@ namespace GameUnitTest {
         ASSERT_TRUE(std::find(legalMoves.begin(), legalMoves.end(), problematic_move) != legalMoves.end());
         game.makeMove(problematic_move);
         ASSERT_EQ(fen(game), "rnbqkbnr/ppp1p1pp/8/3p1Q2/3P4/8/PPP1PPPP/RNB1KBNR b KQkq - 0 3");
-
-        //ASSERT_EQ(pos("b4"), onlyMove.getTo());
     }
 
     TEST(Game, EnPassantDeleteCaptured) {
@@ -91,8 +90,6 @@ namespace GameUnitTest {
                     legalMoves.end()); // is that move available
         game.makeMove(enPassantTake);
         ASSERT_EQ(fen(game), "rnbqkbnr/1pppp1pp/P4p2/8/8/8/P1PPPPPP/RNBQKBNR b KQkq - 0 3");
-
-//        ASSERT_EQ(pos("b4"), onlyMove.getTo());
     }
 
 
@@ -634,5 +631,106 @@ namespace GameUnitTest {
         ASSERT_TRUE(game.isCheck(Color::BLACK));
         ASSERT_FALSE(game.isMate());
 
+    }
+
+    TEST(Game, insufficientMaterialOnlyKings) {
+        auto game = fenGame("k7/8/8/8/8/8/8/K7 w - - 0 1");
+        ASSERT_EQ(game.isOver(), GameOver::INSUFFICIENT_MATERIAL);
+    }
+
+    TEST(Game, insufficientMaterialKingAndKnightvsKingAndBishop) {
+        auto game = fenGame("k6b/8/8/8/8/8/8/K1N5 b - - 0 1");
+        ASSERT_EQ(game.isOver(), GameOver::INSUFFICIENT_MATERIAL);
+    }
+
+    TEST(Game, insufficientMaterialKingAndKnightvsKing) {
+        auto game = fenGame("k7/8/8/8/8/8/8/K1N5 w - - 0 1");
+        ASSERT_EQ(game.isOver(), GameOver::INSUFFICIENT_MATERIAL);
+    }
+
+    TEST(Game, insufficientMaterialKingAndBishopvsKing) {
+        auto game = fenGame("k7/8/8/8/8/8/8/K1B5 b - - 0 1");
+        ASSERT_EQ(game.isOver(), GameOver::INSUFFICIENT_MATERIAL);
+    }
+
+    TEST(Game, sufficientMaterialKnightBishop) {
+        auto game = fenGame("k7/8/8/8/8/7B/8/K1N5 w - - 0 1");
+        ASSERT_EQ(game.isOver(), GameOver::NOT_OVER);
+    }
+
+    TEST(Game, sufficientMaterialTwoKnights) {
+        auto game = fenGame("k7/8/8/8/8/8/8/K1NN4 w - - 0 1");
+        ASSERT_EQ(game.isOver(), GameOver::NOT_OVER);
+    }
+
+    TEST(Game, sufficientMaterialRook) {
+        auto game = fenGame("k7/8/8/8/8/8/K1R5/8 w - - 0 1");
+        ASSERT_EQ(game.isOver(), GameOver::NOT_OVER);
+    }
+
+    TEST(Game, positionCountMechanics) {
+        auto game = Game();
+        auto e4 = Move(pos("e2"), pos("e4"), game.getPiece(pos("e2")));
+        auto d5 = Move(pos("d7"), pos("d5"), game.getPiece(pos("d7")));
+        auto nf3 = Move(pos("g1"), pos("f3"), game.getPiece(pos("g1")));
+        auto nc6 = Move(pos("b8"), pos("c6"), game.getPiece(pos("b8")));
+
+        game.makeMove(e4);
+        game.makeMove(d5);
+        game.makeMove(nf3);
+        game.makeMove(nc6);
+        auto expectedPositionCount = std::map<std::string, int>{
+                {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1},
+                {"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", 1},
+                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR", 1},
+                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/5N2/PPPP1PPP/RNBQKB1R", 1},
+                {"r1bqkbnr/ppp1pppp/2n5/3p4/4P3/5N2/PPPP1PPP/RNBQKB1R", 1},
+        };
+        ASSERT_EQ(game.getPositionCount(), expectedPositionCount);
+        auto ng1 = Move(pos("f3"), pos("g1"), game.getPiece(pos("f3")));
+        auto game2 = game.afterMove(ng1);
+        ASSERT_EQ(game.getPositionCount(), expectedPositionCount);
+        auto game2nb8 = Move(pos("c6"), pos("b8"), game2.getPiece(pos("c6")));
+        game2.makeMove(game2nb8);
+        ASSERT_EQ(game.getPositionCount(), expectedPositionCount);
+        expectedPositionCount["r1bqkbnr/ppp1pppp/2n5/3p4/4P3/8/PPPP1PPP/RNBQKBNR"] += 1;
+        expectedPositionCount["rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR"] += 1;
+        ASSERT_EQ(game2.getPositionCount(), expectedPositionCount);
+    }
+
+    TEST(Game, threefoldRepetitionSandomierzGambit) {
+        auto game = Game();
+        auto nf3 = Move(pos("g1"), pos("f3"), game.getPiece(pos("g1")));
+        auto nc6 = Move(pos("b8"), pos("c6"), game.getPiece(pos("b8")));
+        game.makeMove(nf3);
+        game.makeMove(nc6);
+        auto ng1 = Move(pos("f3"), pos("g1"), game.getPiece(pos("f3")));
+        auto nb8 = Move(pos("c6"), pos("b8"), game.getPiece(pos("c6")));
+        game.makeMove(ng1);
+        game.makeMove(nb8);
+        game.makeMove(nf3);
+        game.makeMove(nc6);
+        game.makeMove(ng1);
+        game.makeMove(nb8);
+        game.makeMove(nf3);
+        ASSERT_EQ(game.isOver(), GameOver::THREEFOLD_REPETITION);
+    }
+
+    TEST(Game, twoOccurencesOfAPosition)
+    {
+        auto game = Game();
+        auto nc3 = Move(pos("b1"), pos("c3"), game.getPiece(pos("b1")));
+        auto nf6 = Move(pos("g8"), pos("f6"), game.getPiece(pos("g8")));
+        game.makeMove(nc3);
+        game.makeMove(nf6);
+        auto nb1 = Move(pos("c3"), pos("b1"), game.getPiece(pos("c3")));
+        auto ng8 = Move(pos("f6"), pos("g8"), game.getPiece(pos("f6")));
+        game.makeMove(nb1);
+        game.makeMove(ng8);
+        game.makeMove(nc3);
+        game.makeMove(nf6);
+        game.makeMove(nb1);
+        auto over = game.isOver();
+        ASSERT_EQ(game.isOver(), GameOver::NOT_OVER);
     }
 }
