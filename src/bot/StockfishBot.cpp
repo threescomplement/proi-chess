@@ -33,7 +33,9 @@ QString StockfishBot::getStockfishOutput(const char *positionCmd, const char *go
         stockfish.waitForReadyRead();
         QString output = stockfish.readAll();
         if (output.contains("bestmove")) {
-            stockfish.kill();
+            stockfish.write("quit\n");
+            stockfish.waitForFinished();
+            stockfish.kill();  // Just in case
             return output;
         }
     }
