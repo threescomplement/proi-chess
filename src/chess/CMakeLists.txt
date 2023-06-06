@@ -5,6 +5,7 @@ set(CHESS_LIBRARY_SOURCES
         Player.cpp
         Move.cpp
         Position.cpp
+        FENParser.cpp
         pieces/Piece.cpp
         pieces/Pawn.cpp
         pieces/Rook.cpp
