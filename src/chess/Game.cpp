@@ -26,7 +26,8 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
-    this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 0}};
+    this->movesWithoutCaptureOrPawnMove = 0;
+    this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -153,8 +154,8 @@ Game::Game(
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber),
-        movesWithoutCaptureOrPawnMove(fullmoveNumber), //todo - is this not duplication?
-        positionCount({}) {}                            // todo - what about this constructor?
+        movesWithoutCaptureOrPawnMove(0),
+        positionCount({}) {}
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
@@ -418,7 +419,6 @@ GameOver Game::isOver() const {
         return GameOver::FIFTY_MOVE_RULE;
     else
         return GameOver::NOT_OVER;
-    return GameOver::NOT_OVER;
 }
 
 bool Game::isDrawByInsufficientMaterial() const {
