@@ -57,10 +57,28 @@ private:
     Color botColor;
 
 
+    /**
+     * updates the state of fields in the window
+     * to the state of the internal game
+     **/
     void updateBoardDisplay();
 
+    /**
+     * check whether a field is the endpoint of one of the moves that are currenly
+     * being considered for the selected piece (if any)
+     *
+     *
+     * @param moves
+     * @param field
+     * @return the move with an endpoint at the given field, or nullptr if such a move is not found
+     **/
     Move *findMove(const std::vector<Move> &moves, const GameField *field);
 
+    /**
+     * Makes sure that the state of all fields is consistent after de-selecting a piece (ex. after a move)
+     * or selecting a new one
+     * @param new_picked - the field that is now supposed to be considered for moves etc.
+     **/
     void changePickedField(GameField *const new_picked);
 
     void createBoard(Color side = Color::WHITE);
@@ -72,11 +90,23 @@ private:
     bool checkIfStalemate();
 
 public:
+
+    /**
+     * displays the image of a board,
+     * then sets up a 8 x 8 grid of @class GameField
+     * to act as clickable tiles on the board.
+     * Connects the appropriate signals between the fields and the window
+     *
+     *
+     *
+     * @param game - the game that will be played and displayed in the window
+     * @param parent
+     **/
     MainWindow(Game *game = new Game("player1", "player2"), QWidget *parent = nullptr);
 
     ~MainWindow();
 
-    void makeMove(Move const *move);
+    void makeMove(Move *move);
 
     void newGame(bool botGame, Color bot_color = Color::BLACK,
                  std::string fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -86,7 +116,17 @@ public:
 
 public slots:
 
-
+    /**
+     * Activated by emitting a "fieldClicked" signal by a connected @class GameField.
+     * Handles everything related to picking a piece and making moves.
+     *
+     * If there is no field selected, it will select that field.
+     * If a field is selected:
+     *          - if the clicked field is one where a piece from the selected field can move, make that move,
+     *          - if not, check if that field can be selected (must be a pawn of current player)
+     *
+     * @param field
+     **/
     void handleFieldClick(GameField *field);
 
 
@@ -95,7 +135,6 @@ signals:
     void updateFieldPiece(int x, int y, Piece *piece = nullptr);
 
     void updateFieldMark(int x, int y, bool newMark);
-
 
     void callReset();
 

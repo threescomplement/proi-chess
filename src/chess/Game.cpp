@@ -61,6 +61,9 @@ bool Game::isStalemate() const {
 }
 
 void Game::makeMove(Move move) {
+    if (this->getCurrentPlayer()->getColor() != move.getPiece()->getColor()) {
+        throw IllegalMoveException("Player can only move his own piece");
+    }
 
     if (this->currentPlayer->getColor() == Color::BLACK) {
         this->fullmoveNumber++;
@@ -77,6 +80,10 @@ void Game::makeMove(Move move) {
     this->refreshCastlingPossibilites(move);
 
     this->board->makeMove(move);
+    if (move.getPromoteTo() != PieceType::NONE) {
+        currentPlayer->removePiece(move.getPiece());
+        currentPlayer->getPieces().push_back(getPiece(move.getTo()));
+    }
 
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
@@ -88,7 +95,6 @@ void Game::makeMove(Move move) {
 
     if (move.isCapture()) {
         auto captured = move.getCapturedPiece();
-        captured->takeOffField();
         auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
         player->removePiece(captured);
     }
@@ -232,8 +238,7 @@ Game::Game(
         canBlackQueensideCastle(canBlackQueensideCastle),
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
-        fullmoveNumber(fullmoveNumber) {}
-
+        fullmoveNumber(fullmoveNumber){}
 
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
@@ -483,6 +488,10 @@ bool Game::isCastlingObscuredByOpponent(Move &move) const {
             return true;
     }
     return false;
+}
+
+Position *Game::getEnPassantTargetPosition() const {
+    return enPassantTargetPosition;
 }
 
 
