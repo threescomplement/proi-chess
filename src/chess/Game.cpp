@@ -28,7 +28,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->fullmoveNumber = 1;
     this->movesWithoutCaptureOrPawnMove = 0;
     this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
-    this->FENHistory = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}};
+    this->movesIntoThePast = 0;
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -107,9 +107,10 @@ void Game::makeMove(Move move) {
     movesWithoutCaptureOrPawnMove = (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) ? 0 :
                                     movesWithoutCaptureOrPawnMove + 1;
 
-    this->moveHistory.push_back(move);
-    this->FENHistory.push_back(FENParser::gameToString(*this));
-    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
+    this->moveHistory.push_back(move); // todo: what about this?
+    this->movesIntoThePast = 0;
+
+    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board)); // todo: what about this?
     positionCount[fenOfCurrentBoard] = (positionCount.find(fenOfCurrentBoard) == positionCount.end()) ? 1 :
                                        positionCount[fenOfCurrentBoard] + 1;
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
@@ -157,7 +158,7 @@ Game::Game(
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber),
         movesWithoutCaptureOrPawnMove(0),
-        FENHistory({}),
+        movesIntoThePast(0),
         positionCount({}) {}
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
@@ -491,7 +492,7 @@ Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
     copy.movesWithoutCaptureOrPawnMove = this->movesWithoutCaptureOrPawnMove;
-    copy.FENHistory = std::vector<std::string>(this->FENHistory);
+    copy.movesIntoThePast = this->movesIntoThePast;
     return copy;
 }
 

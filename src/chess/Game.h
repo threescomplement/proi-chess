@@ -25,7 +25,7 @@ private:
     Player *currentPlayer;
     std::vector<Move> moveHistory;
     std::map<std::string, int> positionCount;
-    std::vector<std::string> FENHistory;
+    int movesIntoThePast;
 
     int movesWithoutCaptureOrPawnMove;
     bool canWhiteKingsideCastle;
