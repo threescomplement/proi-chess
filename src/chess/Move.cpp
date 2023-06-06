@@ -13,9 +13,9 @@ std::map<std::string, PieceType> Move::promotionMapping = {
 };
 
 std::map<PieceType, std::string> Move::reversePromotionMapping = {
-        {PieceType::QUEEN, "q"},
+        {PieceType::QUEEN,  "q"},
         {PieceType::BISHOP, "b"},
-        {PieceType::ROOK, "r"},
+        {PieceType::ROOK,   "r"},
         {PieceType::KNIGHT, "n"},
 };
 
@@ -135,17 +135,14 @@ Move Move::parseSmithNotation(const std::string &moveStr, const Game &game) {
     }
 
     auto promotionType = (moveStr.size() == 5)
-            ? Move::promotionMapping[moveStr.substr(4, 1)]
-            : PieceType::NONE;
+                         ? Move::promotionMapping[moveStr.substr(4, 1)]
+                         : PieceType::NONE;
 
     Position sourcePosition = Position::fromString(moveStr.substr(0, 2));
     Position targetPosition = Position::fromString(moveStr.substr(2, 2));
     return Move::fromPositions(game, sourcePosition, targetPosition, promotionType);
 }
 
-Move Move::fromPositions(const Game &game, Position from, Position to) {
-    return Move::fromPositions(game, from, to, PieceType::NONE);
-}
 
 Move Move::fromPositions(const Game &game, Position from, Position to, PieceType promotion) {
     auto enPassantTargetPos = game.getEnPassantTargetPosition();

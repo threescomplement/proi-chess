@@ -83,9 +83,7 @@ public:
 
     static Move parseSmithNotation(const std::string &moveStr, const Game &game);
 
-    static Move fromPositions(const Game &game, Position from, Position to);
-
-    static Move fromPositions(const Game &game, Position from, Position to, PieceType promotion);
+    static Move fromPositions(const Game &game, Position from, Position to, PieceType promotion = PieceType::NONE);
 
     bool isLongCastle() const;
 
