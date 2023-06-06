@@ -89,8 +89,7 @@ void MainWindow::updateBoardDisplay() {
     std::string currentPlayer = ((gameHandler->getCurrentPlayerColor() == Color::WHITE) ? "White" : "Black");
     currentPlayer += "'s turn";
     ui->statusbar->showMessage(QString::fromStdString(currentPlayer));
-    validMoves = gameHandler->getValidMoves();
-    for (const auto &move: validMoves) {
+    for (const auto &move: gameHandler->getValidMoves()) {
         int dest_x = move.getTo().getCol();
         int dest_y = move.getTo().getRow();
         emit updateFieldMark(dest_x, dest_y, true);
