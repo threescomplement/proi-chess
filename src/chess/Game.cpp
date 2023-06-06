@@ -504,6 +504,38 @@ bool Game::isDrawByFiftyMoveRule() const {
     return halfmoveClock >= 100;
 }
 
+void Game::undoMove() {
+    if (movesIntoThePast == moveHistory.size() - 1)
+        return;
+    this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
+    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
+    positionCount[fenOfCurrentBoard]--;
+    this->movesIntoThePast++;
+    auto moveToReverse = moveHistory[moveHistory.size() - 1];
+    //todo: halfmoveClock - possibly using a stack?
+    //todo: en passant, castling, promotion
+    //todo: overall game parameters, all flags etc - removing them is simple, how to restore them?
+    if (moveToReverse.isCapture()) {
+        auto captured = moveToReverse.getCapturedPiece();
+        auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
+        player->getPieces().push_back(captured);
+    }
+    if (moveToReverse.isDoublePawnMove()) {
+        auto row = (moveToReverse.getFrom().getRow() + moveToReverse.getTo().getRow()) / 2;
+        auto col = moveToReverse.getTo().getCol();
+        this->enPassantTargetPosition = nullptr;
+        auto movedPawn = dynamic_cast<Pawn *>(moveToReverse.getPiece());
+        movedPawn->setIsEnPassantTarget(false);
+    }
+    if (moveToReverse.getPromoteTo() != PieceType::NONE) {
+        currentPlayer->getPieces().push_back(moveToReverse.getPiece());
+        currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
+    }
+//    board->reverseMove(moveToReverse);
+    // for castling flags probably will just keep a vector of flag strings to parse from
+
+}
+
 
 std::vector<std::string> split(const std::string &txt, char ch) {
     std::vector<std::string> strings;
