@@ -26,7 +26,6 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
-    this->movesWithoutCaptureOrPawnMove = 0;
     this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
     this->movesIntoThePast = 0;
 
@@ -104,9 +103,6 @@ void Game::makeMove(Move move) {
         player->removePiece(captured);
     }
 
-    movesWithoutCaptureOrPawnMove = (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) ? 0 :
-                                    movesWithoutCaptureOrPawnMove + 1;
-
     this->moveHistory.push_back(move); // todo: what about this?
     this->movesIntoThePast = 0;
 
@@ -157,7 +153,6 @@ Game::Game(
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber),
-        movesWithoutCaptureOrPawnMove(0),
         movesIntoThePast(0),
         positionCount({}) {}
 
@@ -491,7 +486,8 @@ int Game::getFullmoveNumber() const {
 Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
-    copy.movesWithoutCaptureOrPawnMove = this->movesWithoutCaptureOrPawnMove;
+    copy.halfmoveClock = this->halfmoveClock;
+    //todo: probably need to copy more params, not really important as of now
     copy.movesIntoThePast = this->movesIntoThePast;
     return copy;
 }
@@ -505,7 +501,7 @@ void Game::setPositionCount(std::map<std::string, int> count) {
 }
 
 bool Game::isDrawByFiftyMoveRule() const {
-    return movesWithoutCaptureOrPawnMove >= 100;
+    return halfmoveClock >= 100;
 }
 
 
