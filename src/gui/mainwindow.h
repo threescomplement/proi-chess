@@ -11,6 +11,7 @@
 #include "Color.h"
 #include "../bot/StockfishBot.h"
 #include "Color.h"
+#include "GameHandler.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -49,12 +50,8 @@ class MainWindow : public QMainWindow {
 Q_OBJECT
 
 private:
-    Game *game;
     GameField *pickedField; // currently selected field
-    std::vector<Move> validMoves; // moves possible from that field
-    bool botGame;
-    ChessBot *stockfishBot;
-    Color botColor;
+    GameHandler *gameHandler;
 
 
     /**
@@ -64,26 +61,19 @@ private:
     void updateBoardDisplay();
 
     /**
-     * check whether a field is the endpoint of one of the moves that are currenly
-     * being considered for the selected piece (if any)
-     *
-     *
-     * @param moves
-     * @param field
-     * @return the move with an endpoint at the given field, or nullptr if such a move is not found
-     **/
-    Move *findMove(const std::vector<Move> &moves, const GameField *field);
-
-    /**
      * Makes sure that the state of all fields is consistent after de-selecting a piece (ex. after a move)
      * or selecting a new one
      * @param new_picked - the field that is now supposed to be considered for moves etc.
      **/
     void changePickedField(GameField *const new_picked);
 
+    /**
+    * displays the image of a board,
+    * then sets up a 8 x 8 grid of GameField
+    * to act as clickable tiles on the board.
+    * Connects the appropriate signals between the fields and the window
+    **/
     void createBoard(Color side = Color::WHITE);
-
-    void handleBotMove();
 
     bool checkIfMate();
 
@@ -92,13 +82,6 @@ private:
 public:
 
     /**
-     * displays the image of a board,
-     * then sets up a 8 x 8 grid of @class GameField
-     * to act as clickable tiles on the board.
-     * Connects the appropriate signals between the fields and the window
-     *
-     *
-     *
      * @param game - the game that will be played and displayed in the window
      * @param parent
      **/
@@ -109,9 +92,9 @@ public:
     void makeMove(Move *move);
 
     void newGame(bool botGame, Color bot_color = Color::BLACK,
-                 std::string fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+                 const std::string &fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-    void newFenGame(bool botGame, Color bot_color = Color::BLACK);
+    void newFenGame(bool isBotGame, Color bot_color = Color::BLACK);
 
 
 public slots:
