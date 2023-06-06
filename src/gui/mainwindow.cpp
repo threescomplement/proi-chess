@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QClipboard>
+#include <QThread>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "GameField.h"
@@ -136,7 +137,6 @@ void MainWindow::handleFieldClick(GameField *field) {
         if (correspondingMove != nullptr) {
             changePickedField(nullptr);
             makeMove(correspondingMove);
-
             validChoice = true;
             // check if the field exists or if its just being reset
         } else if (field != nullptr) {
@@ -156,7 +156,6 @@ void MainWindow::handleFieldClick(GameField *field) {
         }
     }
 
-    updateBoardDisplay();
 }
 
 /**
@@ -179,33 +178,27 @@ Move *MainWindow::findMove(const std::vector<Move> &moves, const GameField *fiel
 
 }
 
-void MainWindow::makeMove(Move const *move) {
-    game->makeMove(*move);
-    //not implemented in game logic yet :
-//    if (game.promotionFlag){
-//        bool ok;
-//        PieceType pickedType = PieceType::NONE;
-//        QStringList colorPicker = {"Rook", "Knight", "Bishop", "Queen"};
-//        QString pickedPiece = QInputDialog::getItem(this, tr("Promotion"), tr("Choose piece to promote to:"), colorPicker, 0,
-//                                                    false, &ok);
-//        if (ok){
-//            switch (pickedPiece) {
-//                case "Rook":
-//                    pickedType = PieceType::ROOK;
-//                    break;
-//                case "Knight":
-//                    pickedType = PieceType::KNIGHT;
-//                    break;
-//                case "Bishop":
-//                    pickedType = PieceType::BISHOP;
-//                    break;
-//                case "Queen":
-//                    pickedType = PieceType::QUEEN;
-//                    break;
-//            }
-//        }
-//        game.promote(pickedType);
-//    }
+void MainWindow::makeMove(Move *move) {
+
+    if (move->resultsInPromotion()) {
+        bool ok;
+        QStringList colorPicker = {"Rook", "Knight", "Bishop", "Queen"};
+        QString pickedPiece = QInputDialog::getItem(this, tr("Promotion"), tr("Choose piece to promote to:"),
+                                                    colorPicker, 0,
+                                                    false, &ok);
+        std::map<QString, PieceType> pickToPieceMap = {{"Rook",   PieceType::ROOK},
+                                                       {"Knight", PieceType::KNIGHT},
+                                                       {"Bishop", PieceType::BISHOP},
+                                                       {"Queen",  PieceType::QUEEN}};
+
+        if (ok){
+            move->setPromotion(pickToPieceMap[pickedPiece]);
+            game->makeMove(*move);
+        }
+
+    } else {
+        game->makeMove(*move);
+    }
 
     updateBoardDisplay();
     if (!(checkIfMate() || checkIfStalemate())) {
@@ -251,6 +244,7 @@ void MainWindow::changePickedField(GameField *const new_picked) {
         int dest_y = move.getTo().getRow();
         emit updateFieldMark(dest_x, dest_y, true);
     }
+    updateBoardDisplay();
 }
 
 void MainWindow::newGame(bool botGame, Color botColor, std::string fenNotation) {
@@ -372,9 +366,9 @@ bool MainWindow::checkIfMate() {
                 this,
                 tr("Game Over"),
                 QString::fromStdString(winner));
-
+        ui->statusbar->showMessage("Checkmate!");
     }
-    ui->statusbar->showMessage("Checkmate!");
+
     return game->isMate();
 }
 
@@ -399,8 +393,9 @@ bool MainWindow::checkIfStalemate() {
                 this,
                 tr("Game Over"),
                 tr("Stalemate!"));
+        ui->statusbar->showMessage("Stalemate!");
     }
-    ui->statusbar->showMessage("Stalemate!");
+
     return game->isStalemate();
 }
 

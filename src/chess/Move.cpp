@@ -1,5 +1,23 @@
 #include "Move.h"
 #include "pieces/PieceType.h"
+#include "Game.h"
+#include "Player.h"
+#include "pieces/Pawn.h"
+
+std::map<std::string, PieceType> Move::promotionMapping = {
+        {" ", PieceType::NONE},
+        {"q", PieceType::QUEEN},
+        {"b", PieceType::BISHOP},
+        {"r", PieceType::ROOK},
+        {"n", PieceType::KNIGHT},
+};
+
+std::map<PieceType, std::string> Move::reversePromotionMapping = {
+        {PieceType::QUEEN,  "q"},
+        {PieceType::BISHOP, "b"},
+        {PieceType::ROOK,   "r"},
+        {PieceType::KNIGHT, "n"},
+};
 
 const Position &Move::getFrom() const {
     return from;
@@ -63,9 +81,12 @@ bool Move::isDoublePawnMove() const {
     return (type == PieceType::PAWN && abs(sourceRow - targetRow) == 2);
 }
 
-std::string Move::toStockfishNotation() const {
+std::string Move::toSmithNotation() const {
     std::stringstream ss;
     ss << this->getFrom().toString() << this->getTo().toString();
+    if (this->resultsInPromotion()) {
+        ss << Move::reversePromotionMapping[this->getPromoteTo()];
+    }
     return ss.str();
 }
 
@@ -83,5 +104,57 @@ Move Move::generateCastlingComplement(Piece *castlingRook) {
 
 bool Move::isLongCastle() const {
     return (isCastling() && getTo().getCol() == 3);
+}
+
+bool Move::resultsInPromotion() const {
+    if (getPiece()->getType() != PieceType::PAWN)
+        return false;
+    // if a pawn moves "up", it promotes on rank 8, else on rank 1
+    int promotionRankForThisPawn = (dynamic_cast<Pawn *>(getPiece())->getMoveDirection() == 1) ? 8 : 1;
+    return getTo().getRow() == promotionRankForThisPawn;
+}
+
+void Move::validateMove() const {
+    if (movedPiece->getType() != PieceType::PAWN && promoteTo != PieceType::NONE)
+        throw IllegalMoveException("Non-pawn pieces cannot promote!");
+    if (promoteTo != PieceType::NONE && !resultsInPromotion())
+        throw IllegalMoveException("Pawn not eligible for promotion!");
+}
+
+PieceType Move::getPromoteTo() const {
+    return promoteTo;
+}
+
+void Move::setPromotion(PieceType type) {
+    this->promoteTo = type;
+}
+
+Move Move::parseSmithNotation(const std::string &moveStr, const Game &game) {
+    if (moveStr.size() != 4 && moveStr.size() != 5) {
+        throw IllegalMoveException("Invalid representation of a move");
+    }
+
+    auto promotionType = (moveStr.size() == 5)
+                         ? Move::promotionMapping[moveStr.substr(4, 1)]
+                         : PieceType::NONE;
+
+    Position sourcePosition = Position::fromString(moveStr.substr(0, 2));
+    Position targetPosition = Position::fromString(moveStr.substr(2, 2));
+    return Move::fromPositions(game, sourcePosition, targetPosition, promotionType);
+}
+
+
+Move Move::fromPositions(const Game &game, Position from, Position to, PieceType promotion) {
+    auto enPassantTargetPos = game.getEnPassantTargetPosition();
+    auto movedPiece = game.getPiece(from);
+    auto capturedPiece = (enPassantTargetPos != nullptr && (*enPassantTargetPos) == to)
+                         ? dynamic_cast<Piece *>(game.getEnPassantTargetPiece())
+                         : game.getPiece(to);
+
+    if (movedPiece == nullptr) {
+        throw IllegalMoveException("Cannot move from empty field");
+    }
+
+    return {from, to, movedPiece, capturedPiece, promotion};
 }
 

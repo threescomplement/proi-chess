@@ -26,7 +26,9 @@ public:
 
     ~Board();
 
-    void makeMove(Move move);
+    void makeMove(const Move& move);
+
+    void executePromotion(const Move& move);
 
     Board afterMove(Move move) const;  // Deep copy
     std::string toStandardNotation() const;
