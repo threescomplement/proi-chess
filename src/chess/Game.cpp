@@ -536,6 +536,10 @@ void Game::undoMove() {
 
 }
 
+void Game::redoMove() {
+    return; //todo
+}
+
 
 std::vector<std::string> split(const std::string &txt, char ch) {
     std::vector<std::string> strings;
