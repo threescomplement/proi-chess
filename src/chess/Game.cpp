@@ -487,6 +487,7 @@ int Game::getFullmoveNumber() const {
 Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
+    copy.movesWithoutCaptureOrPawnMove = this->movesWithoutCaptureOrPawnMove;
     return copy;
 }
 
