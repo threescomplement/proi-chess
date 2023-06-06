@@ -100,7 +100,7 @@ void GameField::setPiece(Piece* piece) {
         }
     }
 
-    QPixmap pixmap = icons.pieceImgs[fileName];
+    QPixmap pixmap = ChessIcons::getIcons()->getPixmap(fileName);
     this->setPixmap(pixmap.scaled(fieldSize, fieldSize, Qt::AspectRatioMode::KeepAspectRatio));
 
 }

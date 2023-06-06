@@ -3,6 +3,7 @@
 #include <QDialog>
 #include <QInputDialog>
 #include <QDir>
+#include <QThread>
 #include <QMessageBox>
 #include <QClipboard>
 #include "mainwindow.h"
