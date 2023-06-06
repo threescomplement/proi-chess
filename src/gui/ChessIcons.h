@@ -4,19 +4,21 @@
 #include <QPixmap>
 #include <string>
 #include <map>
+#include "pieces/PieceType.h"
+#include "Color.h"
 
 /**
  * Singleton pattern
  */
 class ChessIcons {
 protected:
-    std::map<std::string, QPixmap> pieceImgs;
+    std::map<std::pair<Color, PieceType>, QPixmap> pieceImgs;
 
     static ChessIcons *instance;
 
     ChessIcons();
 public:
-    QPixmap getPixmap(std::string str);
+    QPixmap getPixmap(Color color, PieceType type);
 
     static ChessIcons *getIcons();
 };

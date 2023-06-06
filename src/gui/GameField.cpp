@@ -67,40 +67,14 @@ void GameField::mousePressEvent(QMouseEvent *event) {
 
 void GameField::setPiece(Piece* piece) {
 
-    std::string fileName;
+    QPixmap pixmap;
 
     if (piece != nullptr){
         auto color = piece->getColor();
         auto type = piece->getType();
-        if (color == Color::WHITE) {
-            fileName += "White_";
-        } else {
-            fileName += "Black_";
-        }
-        switch (type) {
-            case PieceType::NONE:
-                break;
-            case PieceType::KING:
-                fileName += "king";
-                break;
-            case PieceType::KNIGHT:
-                fileName += "knight";
-                break;
-            case PieceType::PAWN:
-                fileName += "pawn";
-                break;
-            case PieceType::QUEEN:
-                fileName += "queen";
-                break;
-            case PieceType::ROOK:
-                fileName += "rook";
-                break;
-            case PieceType::BISHOP:
-                fileName += "bishop";
-        }
+        pixmap = ChessIcons::getIcons()->getPixmap(color, type);
     }
 
-    QPixmap pixmap = ChessIcons::getIcons()->getPixmap(fileName);
     this->setPixmap(pixmap.scaled(fieldSize, fieldSize, Qt::AspectRatioMode::KeepAspectRatio));
 
 }

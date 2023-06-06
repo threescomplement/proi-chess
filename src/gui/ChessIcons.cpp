@@ -4,19 +4,18 @@ ChessIcons *ChessIcons::instance = nullptr;
 
 ChessIcons::ChessIcons() {
     this->pieceImgs = {
-            {"",             QPixmap("")},
-            {"White_pawn",   QPixmap(":/resources/White_pawn.png")},
-            {"Black_pawn",   QPixmap(":/resources/Black_pawn.png")},
-            {"White_rook",   QPixmap(":/resources/White_rook.png")},
-            {"Black_rook",   QPixmap(":/resources/Black_rook.png")},
-            {"White_bishop", QPixmap(":/resources/White_bishop.png")},
-            {"Black_bishop", QPixmap(":/resources/Black_bishop.png")},
-            {"White_knight", QPixmap(":/resources/White_knight.png")},
-            {"Black_knight", QPixmap(":/resources/Black_knight.png")},
-            {"White_king",   QPixmap(":/resources/White_king.png")},
-            {"Black_king",   QPixmap(":/resources/Black_king.png")},
-            {"White_queen",  QPixmap(":/resources/White_queen.png")},
-            {"Black_queen",  QPixmap(":/resources/Black_queen.png")}
+            {{Color::WHITE, PieceType::PAWN},   QPixmap(":/resources/White_pawn.png")},
+            {{Color::BLACK, PieceType::PAWN},   QPixmap(":/resources/Black_pawn.png")},
+            {{Color::WHITE, PieceType::ROOK},   QPixmap(":/resources/White_rook.png")},
+            {{Color::BLACK, PieceType::ROOK},   QPixmap(":/resources/Black_rook.png")},
+            {{Color::WHITE, PieceType::BISHOP}, QPixmap(":/resources/White_bishop.png")},
+            {{Color::BLACK, PieceType::BISHOP}, QPixmap(":/resources/Black_bishop.png")},
+            {{Color::WHITE, PieceType::KNIGHT}, QPixmap(":/resources/White_knight.png")},
+            {{Color::BLACK, PieceType::KNIGHT}, QPixmap(":/resources/Black_knight.png")},
+            {{Color::WHITE, PieceType::KING},   QPixmap(":/resources/White_king.png")},
+            {{Color::BLACK, PieceType::KING},   QPixmap(":/resources/Black_king.png")},
+            {{Color::WHITE, PieceType::QUEEN},  QPixmap(":/resources/White_queen.png")},
+            {{Color::BLACK, PieceType::QUEEN},  QPixmap(":/resources/Black_queen.png")}
     };
 }
 
@@ -28,6 +27,9 @@ ChessIcons *ChessIcons::getIcons() {
     return ChessIcons::instance;
 }
 
-QPixmap ChessIcons::getPixmap(std::string str) {
-    return this->pieceImgs[str];
+QPixmap ChessIcons::getPixmap(Color color, PieceType type) {
+    if (type == PieceType::NONE) {
+        return QPixmap("");
+    }
+    return this->pieceImgs[{color, type}];
 }
