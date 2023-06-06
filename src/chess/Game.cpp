@@ -196,8 +196,19 @@ Game Game::fromFEN(const std::string &fen) {
         enPassantPosition = new Position(pos.getRow(), pos.getCol());
     }
 
-    auto halfmoveClock = std::stoi(elements[4]);
-    auto fullmoveNumber = std::stoi(elements[5]);
+    int halfmoveClock;
+    try {
+        halfmoveClock = std::stoi(elements[4]);
+    } catch (std::exception &e) {
+        throw FenException("Invalid FEN - halfmove clock value");
+    }
+
+    int fullmoveNumber;
+    try {
+        fullmoveNumber = std::stoi(elements[5]);
+    } catch (std::exception &e) {
+        throw FenException("Invalid FEN - fullmove number value");
+    }
 
     auto game = Game(
             board,
