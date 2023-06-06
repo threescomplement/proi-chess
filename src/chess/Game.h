@@ -6,21 +6,13 @@
 #include <string>
 
 class Board;
-
 class Move;
-
 class Player;
-
 class Piece;
-
 class Position;
-
 class King;
-
 class Pawn;
-
 class Move;
-
 enum class Color;
 
 class Game {
@@ -36,13 +28,8 @@ private:
     bool canBlackKingsideCastle;
     bool canBlackQueensideCastle;
     Position *enPassantTargetPosition;
-
-
-private:
     int halfmoveClock;
     int fullmoveNumber;
-
-    std::string castlingAvailabilityFEN() const;
 
     void refreshEnPassant();
 
