@@ -7,7 +7,7 @@ set(GUI_SOURCES
         ClickableLabel.cpp
         GameField.cpp
         ChessIcons.cpp
-        )
+        GameHandler.cpp GameHandler.h)
 
 add_executable(gui ${GUI_SOURCES})
 target_include_directories(gui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
