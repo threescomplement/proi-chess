@@ -26,7 +26,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -80,8 +80,9 @@
      <property name="title">
       <string>&amp;Bot game</string>
      </property>
-     <addaction name="actionNew_bot_game_from_FEN"/>
      <addaction name="actionNew_classic_bot_game"/>
+     <addaction name="actionNew_bot_game_from_FEN"/>
+     <addaction name="separator"/>
     </widget>
     <addaction name="menunew_pvp_game"/>
     <addaction name="menu_Bot_game"/>
