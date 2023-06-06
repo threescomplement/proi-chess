@@ -415,7 +415,7 @@ GameOver Game::isOver() const {
         return GameOver::INSUFFICIENT_MATERIAL;
     else if (isDrawByRepetition())
         return GameOver::THREEFOLD_REPETITION;
-    else if (movesWithoutCaptureOrPawnMove >= 100)
+    else if (isDrawByFiftyMoveRule())
         return GameOver::FIFTY_MOVE_RULE;
     else
         return GameOver::NOT_OVER;
@@ -496,6 +496,10 @@ std::map<std::string, int> Game::getPositionCount() const {
 
 void Game::setPositionCount(std::map<std::string, int> count) {
     positionCount = std::move(count);
+}
+
+bool Game::isDrawByFiftyMoveRule() const {
+    return movesWithoutCaptureOrPawnMove >= 100;
 }
 
 

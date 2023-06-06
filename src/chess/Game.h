@@ -65,8 +65,17 @@ private:
 
     Move generateQueenSideCastle() const;
 
+    /**
+     * In a situation where there are 4 or less pieces on the board. Player has only a king and a knight/bishop -> he
+     * does not have enough material to mate, hence draw.
+     * */
     bool isDrawByInsufficientMaterial() const;
     bool isDrawByRepetition() const;
+    bool isDrawByFiftyMoveRule() const;
+
+    /**
+     * Create a deep copy of the game. Child game inherits positionCount from parent.
+     * */
     Game deepCopy() const;
 
 
