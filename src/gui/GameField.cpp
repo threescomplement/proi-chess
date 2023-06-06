@@ -11,16 +11,6 @@
 
 static int fieldSize = 50;
 
-std::map<PieceType, std::string> pieceChars{
-        {PieceType::NONE,   ""},
-        {PieceType::PAWN,   "♟"},
-        {PieceType::ROOK,   "♜"},
-        {PieceType::BISHOP, "♝"},
-        {PieceType::KNIGHT, "♞"},
-        {PieceType::KING,   "♚"},
-        {PieceType::QUEEN,  "♛"},
-};
-
 
 GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::WindowFlags f) :
         ClickableLabel(text, parent, f), marked(false) {
@@ -65,11 +55,11 @@ void GameField::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void GameField::setPiece(Piece* piece) {
+void GameField::setPiece(Piece *piece) {
 
     QPixmap pixmap;
 
-    if (piece != nullptr){
+    if (piece != nullptr) {
         auto color = piece->getColor();
         auto type = piece->getType();
         pixmap = ChessIcons::getIcons()->getPixmap(color, type);
