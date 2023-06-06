@@ -28,7 +28,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->fullmoveNumber = 1;
     this->movesWithoutCaptureOrPawnMove = 0;
     this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
-    this->positionHistory = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}};
+    this->FENHistory = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}};
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -108,6 +108,7 @@ void Game::makeMove(Move move) {
                                     movesWithoutCaptureOrPawnMove + 1;
 
     this->moveHistory.push_back(move);
+    this->FENHistory.push_back(FENParser::gameToString(*this));
     auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
     positionCount[fenOfCurrentBoard] = (positionCount.find(fenOfCurrentBoard) == positionCount.end()) ? 1 :
                                        positionCount[fenOfCurrentBoard] + 1;
@@ -156,7 +157,7 @@ Game::Game(
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber),
         movesWithoutCaptureOrPawnMove(0),
-        positionHistory({}),
+        FENHistory({}),
         positionCount({}) {}
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
@@ -490,7 +491,7 @@ Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
     copy.movesWithoutCaptureOrPawnMove = this->movesWithoutCaptureOrPawnMove;
-    copy.positionHistory = std::vector<std::string>(this->positionHistory);
+    copy.FENHistory = std::vector<std::string>(this->FENHistory);
     return copy;
 }
 
