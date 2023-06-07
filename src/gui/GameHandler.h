@@ -65,6 +65,8 @@ public:
 
     void undo();
 
+    void redo();
+
     std::string getGameFen();
 
     bool isStalemate();

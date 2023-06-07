@@ -137,12 +137,15 @@
     <string>Undo move</string>
    </property>
    <property name="shortcut">
-    <string>Left</string>
+    <string>Left, Ctrl+Z</string>
    </property>
   </action>
   <action name="actionRedo_move">
    <property name="text">
     <string>Redo move</string>
+   </property>
+   <property name="shortcut">
+    <string>Right, Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>

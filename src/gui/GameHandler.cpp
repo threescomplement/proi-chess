@@ -131,6 +131,8 @@ void GameHandler::undo() {
     game->undoMove();
 }
 
-
+void GameHandler::redo() {
+    game->redoMove();
+}
 
 
