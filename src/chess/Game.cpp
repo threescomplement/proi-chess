@@ -505,7 +505,7 @@ bool Game::isDrawByFiftyMoveRule() const {
 }
 
 void Game::undoMove() {
-    if (movesIntoThePast == moveHistory.size() - 1)
+    if (movesIntoThePast == moveHistory.size())
         return;
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
     auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
@@ -534,6 +534,10 @@ void Game::undoMove() {
     board->reverseMove(moveToReverse);
     // for castling flags probably will just keep a vector of flag strings to parse from
 
+}
+
+void Game::redoMove() {
+    return; //todo
 }
 
 

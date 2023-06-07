@@ -109,6 +109,7 @@ public:
 
     void makeMove(Move move);
     void undoMove();
+    void redoMove();
 
     /**
      * Creates a deep copy of the board and makes a given move on it.
