@@ -139,7 +139,7 @@ void Board::makeMove(const Move &move) {
             auto rookCol = (move.isLongCastle()) ? 1 : 8;
             auto row = (move.getTo().getRow());
             auto castledRook = getField(Position(row, rookCol))->getPiece();
-            makeMove(Move::generateCastlingComplement(castledRook));
+            makeMove(Move::generateCastlingComplement(castledRook, false));
         }
     } else
         this->executePromotion(move);
@@ -199,27 +199,38 @@ void Board::setWhiteKing(Piece *whiteKing) {
 void Board::reverseMove(const Move &move) {
     auto sourceField = this->getField(move.getTo());
     auto targetField = this->getField(move.getFrom());
-    auto sourcePiece = sourceField->getPiece();
+    auto pieceOnSourceField = sourceField->getPiece();
     auto capturedPiece = move.getCapturedPiece();
+    auto movedPiece = move.getPiece();
 
-    sourcePiece->setField(targetField);
-    targetField->setPiece(sourcePiece);
 
-    if (move.getPromoteTo() == PieceType::NONE) {
-        sourceField->setPiece(nullptr);
-        //todo - move.iscastlingcomplement
-    } else {
-        auto promotedPiece = sourceField->getPiece();
-        allPieces.erase(std::remove(allPieces.begin(), allPieces.end(), promotedPiece));
-        sourceField->setPiece(nullptr);
-        promotedPiece->takeOffField();
-        delete promotedPiece;
+    if (move.getPromoteTo() != PieceType::NONE) {
+        // if the move was a promotion, remove the promoted piece from the board and deallocate the memory
+        allPieces.erase(std::remove(allPieces.begin(), allPieces.end(), pieceOnSourceField));
+        pieceOnSourceField->takeOffField();
+        delete pieceOnSourceField;
     }
+
+    // set the moved piece to the target field (the move.getfrom() field) and update the pointer on the
+    // source field
+    movedPiece->setField(targetField);
+    targetField->setPiece(movedPiece);
+    sourceField->setPiece(nullptr);
+
+    if (move.isCastling()) {
+        auto rookCol = (move.isLongCastle()) ? 4 : 6;
+        auto row = (move.getTo().getRow());
+        auto castledRook = getField(Position(row, rookCol))->getPiece();
+        reverseMove(Move::generateCastlingComplement(castledRook, true));
+    }
+
 
     if (capturedPiece != nullptr) {
         capturedPiece->setField(sourceField);
         sourceField->setPiece(capturedPiece);
     }
+
+    //todo - en passant
 
 }
 
