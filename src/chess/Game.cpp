@@ -68,6 +68,10 @@ void Game::makeMove(Move move) {
     if (this->getCurrentPlayer()->getColor() != move.getPiece()->getColor()) {
         throw IllegalMoveException("Player can only move his own piece");
     }
+    // todo: this needs to be done somewhere else.
+    moveHistory.erase(moveHistory.end() - movesIntoThePast, moveHistory.end());
+    movesIntoThePast = 0;
+
 
     if (this->currentPlayer->getColor() == Color::BLACK) {
         this->fullmoveNumber++;
@@ -88,7 +92,6 @@ void Game::makeMove(Move move) {
         currentPlayer->removePiece(move.getPiece());
         currentPlayer->getPieces().push_back(getPiece(move.getTo()));
     }
-
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
         auto col = move.getTo().getCol();
@@ -100,7 +103,8 @@ void Game::makeMove(Move move) {
     if (move.isCapture()) {
         auto captured = move.getCapturedPiece();
         auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
-        player->removePiece(captured);
+        player->
+                removePiece(captured);
     }
 
     this->moveHistory.push_back(move); // todo: what about this?
@@ -489,6 +493,7 @@ Game Game::deepCopy() const {
     copy.halfmoveClock = this->halfmoveClock;
     //todo: probably need to copy more params, not really important as of now
     copy.movesIntoThePast = this->movesIntoThePast;
+    copy.moveHistory = std::vector<Move>(this->moveHistory);
     return copy;
 }
 
@@ -510,8 +515,7 @@ void Game::undoMove() {
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
     auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
     positionCount[fenOfCurrentBoard]--;
-    this->movesIntoThePast++;
-    auto moveToReverse = moveHistory[moveHistory.size() - 1];
+    auto moveToReverse = moveHistory[moveHistory.size() - 1 - movesIntoThePast];
     //todo: halfmoveClock - possibly using a stack?
     //todo: en passant, castling, promotion
     //todo: overall game parameters, all flags etc - removing them is simple, how to restore them?
@@ -532,12 +536,21 @@ void Game::undoMove() {
         currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
     }
     board->reverseMove(moveToReverse);
+    movesIntoThePast++;
     // for castling flags probably will just keep a vector of flag strings to parse from
 
 }
 
 void Game::redoMove() {
-    return; //todo
+    if (movesIntoThePast == 0)
+        return;
+
+    auto moveToReverse = moveHistory[moveHistory.size() - movesIntoThePast];
+    int temp = --movesIntoThePast;  // since making a moves sets it to 0, keep it here
+    auto temp2 = moveHistory;
+    makeMove(moveToReverse);
+    movesIntoThePast = temp;
+    moveHistory = temp2;
 }
 
 
