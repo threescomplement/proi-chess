@@ -17,6 +17,16 @@ class Move;
 enum class Color;
 enum class GameOver;
 
+struct GameState {
+    bool canWhiteKingsideCastle;
+    bool canWhiteQueensideCastle;
+    bool canBlackKingsideCastle;
+    bool canBlackQueensideCastle;
+    Position *enPassantTargetPosition;
+    int halfmoveClock;
+    int fullmoveNumber;
+};
+
 class Game {
 private:
     Board *board;
@@ -26,14 +36,7 @@ private:
     std::vector<Move> moveHistory;
     std::map<std::string, int> positionCount;
     int movesIntoThePast;
-
-    bool canWhiteKingsideCastle;
-    bool canWhiteQueensideCastle;
-    bool canBlackKingsideCastle;
-    bool canBlackQueensideCastle;
-    Position *enPassantTargetPosition;
-    int halfmoveClock;
-    int fullmoveNumber;
+    GameState gameState;
 
 
     void refreshEnPassant();

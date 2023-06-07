@@ -19,13 +19,13 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->currentPlayer = whitePlayer;
     this->moveHistory = {};
 
-    this->canWhiteKingsideCastle = true;
-    this->canWhiteQueensideCastle = true;
-    this->canBlackKingsideCastle = true;
-    this->canBlackQueensideCastle = true;
-    this->enPassantTargetPosition = nullptr;
-    this->halfmoveClock = 0;
-    this->fullmoveNumber = 1;
+    this->gameState.canWhiteKingsideCastle = true;
+    this->gameState.canWhiteQueensideCastle = true;
+    this->gameState.canBlackKingsideCastle = true;
+    this->gameState.canBlackQueensideCastle = true;
+    this->gameState.enPassantTargetPosition = nullptr;
+    this->gameState.halfmoveClock = 0;
+    this->gameState.fullmoveNumber = 1;
     this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
     this->movesIntoThePast = 0;
 
@@ -74,15 +74,15 @@ void Game::makeMove(Move move) {
 
 
     if (this->currentPlayer->getColor() == Color::BLACK) {
-        this->fullmoveNumber++;
+        this->gameState.fullmoveNumber++;
     }
 
-    this->halfmoveClock++;
+    this->gameState.halfmoveClock++;
     if (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) {
-        this->halfmoveClock = 0;
+        this->gameState.halfmoveClock = 0;
     }
 
-    if (this->enPassantTargetPosition != nullptr) {
+    if (this->gameState.enPassantTargetPosition != nullptr) {
         refreshEnPassant();
     };
     this->refreshCastlingPossibilites(move);
@@ -95,7 +95,7 @@ void Game::makeMove(Move move) {
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
         auto col = move.getTo().getCol();
-        this->enPassantTargetPosition = new Position(row, col);
+        this->gameState.enPassantTargetPosition = new Position(row, col);
         auto movedPawn = dynamic_cast<Pawn *>(move.getPiece());
         movedPawn->setIsEnPassantTarget(true);
     }
@@ -150,15 +150,16 @@ Game::Game(
         whitePlayer(whitePlayer),
         blackPlayer(blackPlayer),
         currentPlayer(currentPlayer),
-        canWhiteKingsideCastle(canWhiteKingsideCastle),
-        canWhiteQueensideCastle(canWhiteQueensideCastle),
-        canBlackKingsideCastle(canBlackKingsideCastle),
-        canBlackQueensideCastle(canBlackQueensideCastle),
-        enPassantTargetPosition(enPassantTarget),
-        halfmoveClock(halfmoveClock),
-        fullmoveNumber(fullmoveNumber),
         movesIntoThePast(0),
-        positionCount({}) {}
+        positionCount({}) {
+            this->gameState.canWhiteKingsideCastle = canWhiteKingsideCastle;
+            this->gameState.canWhiteQueensideCastle = canWhiteQueensideCastle;
+            this->gameState.canBlackKingsideCastle = canBlackKingsideCastle;
+            this->gameState.canBlackQueensideCastle = canBlackQueensideCastle;
+            this->gameState.enPassantTargetPosition = enPassantTarget;
+            this->gameState.halfmoveClock = halfmoveClock;
+            this->gameState.fullmoveNumber = fullmoveNumber;
+}
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
@@ -222,11 +223,11 @@ std::vector<Move> Game::getLegalMovesForPlayer(Player *player) const {
 }
 
 Pawn *Game::getEnPassantTargetPiece() const {
-    if (enPassantTargetPosition == nullptr)
+    if (gameState.enPassantTargetPosition == nullptr)
         return nullptr;
 
-    int targetRow = enPassantTargetPosition->getRow();
-    int targetCol = enPassantTargetPosition->getCol();
+    int targetRow = gameState.enPassantTargetPosition->getRow();
+    int targetCol = gameState.enPassantTargetPosition->getCol();
     int rowOffsetFromEPPosition = (currentPlayer == whitePlayer) ? -1 : 1;
 
     auto positionOfTargetPiece = Position(targetRow + rowOffsetFromEPPosition, targetCol);
@@ -239,32 +240,32 @@ Pawn *Game::getEnPassantTargetPiece() const {
 void Game::refreshEnPassant() {
     auto oldEnPassantTarget = this->getEnPassantTargetPiece();
     oldEnPassantTarget->setIsEnPassantTarget(false);
-    delete this->enPassantTargetPosition;
-    this->enPassantTargetPosition = nullptr;
+    delete this->gameState.enPassantTargetPosition;
+    this->gameState.enPassantTargetPosition = nullptr;
 }
 
 void Game::refreshCastlingPossibilites(const Move &move) {
     if (move.getPiece()->getType() == PieceType::KING) {
         if (move.getPiece()->getColor() == Color::WHITE) {
-            canWhiteKingsideCastle = false;
-            canWhiteQueensideCastle = false;
+            gameState.canWhiteKingsideCastle = false;
+            gameState.canWhiteQueensideCastle = false;
         } else {
-            canBlackKingsideCastle = false;
-            canBlackQueensideCastle = false;
+            gameState.canBlackKingsideCastle = false;
+            gameState.canBlackQueensideCastle = false;
         }
 
     } else if (move.getPiece()->getType() == PieceType::ROOK) {
         if (move.getPiece()->getColor() == Color::WHITE) {
             if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 1) {
-                canWhiteQueensideCastle = false;
+                gameState.canWhiteQueensideCastle = false;
             } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8) {
-                canWhiteKingsideCastle = false;
+                gameState.canWhiteKingsideCastle = false;
             }
         } else {
             if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 1) {
-                canBlackQueensideCastle = false;
+                gameState.canBlackQueensideCastle = false;
             } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8) {
-                canBlackKingsideCastle = false;
+                gameState.canBlackKingsideCastle = false;
             }
         }
     }
@@ -275,20 +276,20 @@ void Game::refreshCastlingPossibilites(const Move &move) {
 
 void Game::refreshCastlingAfterRookCapture(const Piece *takenRook) {
     if (takenRook->getPosition() == Position(1, 1)) {
-        canWhiteQueensideCastle = false;
+        gameState.canWhiteQueensideCastle = false;
     } else if (takenRook->getPosition() == Position(1, 8)) {
-        canWhiteKingsideCastle = false;
+        gameState.canWhiteKingsideCastle = false;
     }
     if (takenRook->getPosition() == Position(8, 1)) {
-        canBlackQueensideCastle = false;
+        gameState.canBlackQueensideCastle = false;
     } else if (takenRook->getPosition() == Position(8, 8)) {
-        canBlackKingsideCastle = false;
+        gameState.canBlackKingsideCastle = false;
     }
 }
 
 bool Game::possibleKingsideCastlingThisRound() const {
-    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteKingsideCastle ||
-        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackKingsideCastle) {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !gameState.canWhiteKingsideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !gameState.canBlackKingsideCastle) {
         return false;
     }
     int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
@@ -300,8 +301,8 @@ bool Game::possibleKingsideCastlingThisRound() const {
 }
 
 bool Game::possibleQueensideCastlingThisRound() const {
-    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteQueensideCastle ||
-        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackQueensideCastle) {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !gameState.canWhiteQueensideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !gameState.canBlackQueensideCastle) {
         return false;
     }
     int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
@@ -460,37 +461,37 @@ bool Game::isDrawByRepetition() const {
 }
 
 Position *Game::getEnPassantTargetPosition() const {
-    return enPassantTargetPosition;
+    return gameState.enPassantTargetPosition;
 }
 
 bool Game::getCanWhiteKingsideCastle() const {
-    return canWhiteKingsideCastle;
+    return gameState.canWhiteKingsideCastle;
 }
 
 bool Game::getCanWhiteQueensideCastle() const {
-    return canWhiteQueensideCastle;
+    return gameState.canWhiteQueensideCastle;
 }
 
 bool Game::getCanBlackKingsideCastle() const {
-    return canBlackKingsideCastle;
+    return gameState.canBlackKingsideCastle;
 }
 
 bool Game::getCanBlackQueensideCastle() const {
-    return canBlackQueensideCastle;
+    return gameState.canBlackQueensideCastle;
 }
 
 int Game::getHalfmoveClock() const {
-    return halfmoveClock;
+    return gameState.halfmoveClock;
 }
 
 int Game::getFullmoveNumber() const {
-    return fullmoveNumber;
+    return gameState.fullmoveNumber;
 }
 
 Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
-    copy.halfmoveClock = this->halfmoveClock;
+    copy.gameState.halfmoveClock = this->gameState.halfmoveClock;
     //todo: probably need to copy more params, not really important as of now
     copy.movesIntoThePast = this->movesIntoThePast;
     copy.moveHistory = std::vector<Move>(this->moveHistory);
@@ -506,7 +507,7 @@ void Game::setPositionCount(std::map<std::string, int> count) {
 }
 
 bool Game::isDrawByFiftyMoveRule() const {
-    return halfmoveClock >= 100;
+    return gameState.halfmoveClock >= 100;
 }
 
 void Game::undoMove() {
@@ -525,7 +526,7 @@ void Game::undoMove() {
     if (moveToReverse.isDoublePawnMove()) {
         auto row = (moveToReverse.getFrom().getRow() + moveToReverse.getTo().getRow()) / 2;
         auto col = moveToReverse.getTo().getCol();
-        this->enPassantTargetPosition = nullptr;
+        this->gameState.enPassantTargetPosition = nullptr;
         auto movedPawn = dynamic_cast<Pawn *>(moveToReverse.getPiece());
         movedPawn->setIsEnPassantTarget(false);
     }
