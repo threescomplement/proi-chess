@@ -144,4 +144,8 @@ void GameHandler::redo() {
     handleBotMove();
 }
 
+GameOver GameHandler::getGameState() {
+    return game->isOver();
+}
+
 

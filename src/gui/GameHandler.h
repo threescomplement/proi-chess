@@ -12,6 +12,7 @@
 #include "../bot/StockfishBot.h"
 #include "Color.h"
 #include "Position.h"
+#include "GameOver.h"
 
 
 class GameHandler {
@@ -58,7 +59,7 @@ public:
 
     void newGame(bool botGame, Color bot_color = Color::BLACK,
                  std::string const &fenNotation =
-                         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+                 "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 
     void handleBotMove();
@@ -66,6 +67,8 @@ public:
     void undo();
 
     void redo();
+
+    GameOver getGameState();
 
     std::string getGameFen();
 

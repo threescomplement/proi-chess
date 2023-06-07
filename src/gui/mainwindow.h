@@ -75,9 +75,7 @@ private:
     **/
     void createBoard(Color side = Color::WHITE);
 
-    bool checkIfMate();
-
-    bool checkIfStalemate();
+    bool checkGameOver();
 
 public:
 
@@ -137,6 +135,7 @@ private slots:
     void on_actionUndo_move_triggered();
 
     void on_actionRedo_move_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

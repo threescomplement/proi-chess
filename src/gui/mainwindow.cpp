@@ -143,12 +143,11 @@ void MainWindow::makeMove(Move *move) {
     }
     gameHandler->makeMove(move);
     updateBoardDisplay();
-    if (!(checkIfMate() || checkIfStalemate())) {
+    if (!checkGameOver()) {
         //make bot move
         gameHandler->handleBotMove();
         updateBoardDisplay();
-        checkIfMate();
-        checkIfStalemate();
+        checkGameOver();
     }
 }
 
@@ -221,6 +220,47 @@ void MainWindow::newFenGame(bool isBotGame, Color bot_color) {
 
 }
 
+bool MainWindow::checkGameOver() {
+    GameOver state = gameHandler->getGameState();
+    std::string title = "Game Over";
+    std::string userMessage;
+    switch (state) {
+        case GameOver::NOT_OVER: {
+            return false;
+        }
+        case GameOver::MATE: {
+            std::string winner = ((gameHandler->getCurrentPlayerColor() == Color::WHITE)
+                                  ? "Black" : "White");
+            winner += " is the winner!";
+            userMessage = "Checkmate! " + winner;
+            break;
+        }
+        case GameOver::STALEMATE: {
+            userMessage = "Draw - Stalemate!";
+            break;
+        }
+        case GameOver::INSUFFICIENT_MATERIAL: {
+            userMessage = "Draw - Insufficient material for further play!";
+            break;
+        }
+        case GameOver::FIFTY_MOVE_RULE: {
+            userMessage = "Be so for real rn";
+            break;
+        }
+        case GameOver::THREEFOLD_REPETITION: {
+            userMessage = "Draw - Same position repeated 3 times!";
+            break;
+        }
+
+    }
+    QMessageBox::warning(
+            this,
+            QString::fromStdString(title),
+            QString::fromStdString(userMessage));
+    ui->statusbar->showMessage(QString::fromStdString(userMessage));
+
+    return true;
+}
 
 void MainWindow::on_actionGame_from_FEN_triggered() {
     newFenGame(false);
@@ -255,22 +295,6 @@ void MainWindow::on_actionNew_bot_game_from_FEN_triggered() {
 }
 
 
-bool MainWindow::checkIfMate() {
-    bool isMate = gameHandler->isMate();
-    if (isMate) {
-        std::string winner = ((gameHandler->getCurrentPlayerColor() == Color::WHITE) ? "Black" : "White");
-        winner += " is the winner!";
-        QMessageBox::warning(
-                this,
-                tr("Game Over"),
-                QString::fromStdString(winner));
-        ui->statusbar->showMessage("Checkmate!");
-    }
-
-    return isMate;
-}
-
-
 void MainWindow::on_actionCopy_FEN_to_clipboard_triggered() {
     QClipboard *clipboard = QApplication::clipboard();
     QString text = QString::fromStdString(gameHandler->getGameFen());
@@ -285,30 +309,17 @@ void MainWindow::on_actionCopy_FEN_to_clipboard_triggered() {
 #endif
 }
 
-bool MainWindow::checkIfStalemate() {
-    bool isStalemate = gameHandler->isStalemate();
-    if (isStalemate) {
-        QMessageBox::warning(
-                this,
-                tr("Game Over"),
-                tr("Stalemate!"));
-        ui->statusbar->showMessage("Stalemate!");
-    }
 
-    return isStalemate;
-}
-
-
-void MainWindow::on_actionUndo_move_triggered()
-{
+void MainWindow::on_actionUndo_move_triggered() {
     gameHandler->undo();
     updateBoardDisplay();
 }
 
 
-void MainWindow::on_actionRedo_move_triggered()
-{
+void MainWindow::on_actionRedo_move_triggered() {
     gameHandler->redo();
     updateBoardDisplay();
 }
+
+
 
