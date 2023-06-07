@@ -134,6 +134,7 @@ private slots:
 
     void on_actionCopy_FEN_to_clipboard_triggered();
 
+    void on_actionUndo_move_triggered();
 private:
     Ui::MainWindow *ui;
 };
