@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "GameState.h"
+
 
 class Board;
 class Move;
@@ -14,18 +16,11 @@ class Position;
 class King;
 class Pawn;
 class Move;
+class HistoryManager;
 enum class Color;
 enum class GameOver;
 
-struct GameState {
-    bool canWhiteKingsideCastle;
-    bool canWhiteQueensideCastle;
-    bool canBlackKingsideCastle;
-    bool canBlackQueensideCastle;
-    Position *enPassantTargetPosition;
-    int halfmoveClock;
-    int fullmoveNumber;
-};
+
 
 class Game {
 private:
@@ -33,10 +28,9 @@ private:
     Player *whitePlayer;
     Player *blackPlayer;
     Player *currentPlayer;
-    std::vector<Move> moveHistory;
     std::map<std::string, int> positionCount;
-    int movesIntoThePast;
     GameState gameState;
+    HistoryManager *history;
 
 
     void refreshEnPassant();
@@ -100,8 +94,6 @@ public:
 
     Player *getCurrentPlayer();
 
-    std::vector<Move> &getMoveHistory();
-
     Player *getWhitePlayer() const;
 
     Player *getBlackPlayer() const;
@@ -110,7 +102,7 @@ public:
 
     Position *getEnPassantTargetPosition() const;
 
-    void makeMove(Move move);
+    void makeMove(Move move, bool updateHistory = true);
     void undoMove();
     void redoMove();
 
@@ -170,6 +162,8 @@ public:
     std::map<std::string, int> getPositionCount() const;
 
     void setPositionCount(std::map<std::string, int> count);
+
+    void switchCurrentPlayer();
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

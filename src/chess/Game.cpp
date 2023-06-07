@@ -10,6 +10,7 @@
 #include "pieces/PieceType.h"
 #include "GameOver.h"
 #include "FENParser.h"
+#include "HistoryManager.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
@@ -17,7 +18,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->whitePlayer = new Player(whiteName, Color::WHITE);
     this->blackPlayer = new Player(blackName, Color::BLACK);
     this->currentPlayer = whitePlayer;
-    this->moveHistory = {};
+    this->history = new HistoryManager();
 
     this->gameState.canWhiteKingsideCastle = true;
     this->gameState.canWhiteQueensideCastle = true;
@@ -27,7 +28,6 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->gameState.halfmoveClock = 0;
     this->gameState.fullmoveNumber = 1;
     this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
-    this->movesIntoThePast = 0;
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -42,6 +42,7 @@ Game::~Game() {
     delete board;
     delete whitePlayer;
     delete blackPlayer;
+    delete history;
 }
 
 Board *Game::getBoard() const {
@@ -52,10 +53,6 @@ Player *Game::getCurrentPlayer() {
     return currentPlayer;
 }
 
-std::vector<Move> &Game::getMoveHistory() {
-    return moveHistory;
-}
-
 bool Game::isMate() const {
     return (isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
 }
@@ -64,14 +61,14 @@ bool Game::isStalemate() const {
     return (!isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
 }
 
-void Game::makeMove(Move move) {
+void Game::makeMove(Move move, bool updateHistory) {
     if (this->getCurrentPlayer()->getColor() != move.getPiece()->getColor()) {
         throw IllegalMoveException("Player can only move his own piece");
     }
-    // todo: this needs to be done somewhere else.
-    moveHistory.erase(moveHistory.end() - movesIntoThePast, moveHistory.end());
-    movesIntoThePast = 0;
 
+    if (updateHistory) {
+        history->update(move, gameState);
+    }
 
     if (this->currentPlayer->getColor() == Color::BLACK) {
         this->gameState.fullmoveNumber++;
@@ -107,13 +104,10 @@ void Game::makeMove(Move move) {
                 removePiece(captured);
     }
 
-    this->moveHistory.push_back(move); // todo: what about this?
-    this->movesIntoThePast = 0;
-
     auto fenOfCurrentBoard = FENParser::boardToString(*(this->board)); // todo: what about this?
     positionCount[fenOfCurrentBoard] = (positionCount.find(fenOfCurrentBoard) == positionCount.end()) ? 1 :
                                        positionCount[fenOfCurrentBoard] + 1;
-    this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
+    this->switchCurrentPlayer();
 }
 
 Player *Game::getWhitePlayer() const {
@@ -150,7 +144,6 @@ Game::Game(
         whitePlayer(whitePlayer),
         blackPlayer(blackPlayer),
         currentPlayer(currentPlayer),
-        movesIntoThePast(0),
         positionCount({}) {
             this->gameState.canWhiteKingsideCastle = canWhiteKingsideCastle;
             this->gameState.canWhiteQueensideCastle = canWhiteQueensideCastle;
@@ -159,6 +152,7 @@ Game::Game(
             this->gameState.enPassantTargetPosition = enPassantTarget;
             this->gameState.halfmoveClock = halfmoveClock;
             this->gameState.fullmoveNumber = fullmoveNumber;
+            this->history = new HistoryManager();
 }
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
@@ -491,10 +485,8 @@ int Game::getFullmoveNumber() const {
 Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
-    copy.gameState.halfmoveClock = this->gameState.halfmoveClock;
-    //todo: probably need to copy more params, not really important as of now
-    copy.movesIntoThePast = this->movesIntoThePast;
-    copy.moveHistory = std::vector<Move>(this->moveHistory);
+    copy.gameState = this->gameState;
+    copy.history = new HistoryManager(*this->history);  // TODO: Are there more params to copy?
     return copy;
 }
 
@@ -511,12 +503,14 @@ bool Game::isDrawByFiftyMoveRule() const {
 }
 
 void Game::undoMove() {
-    if (movesIntoThePast == moveHistory.size())
+    if (!history->canUndoMove()) {
         return;
-    this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
+    }
+
+    this->switchCurrentPlayer();
     auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
     positionCount[fenOfCurrentBoard]--;
-    auto moveToReverse = moveHistory[moveHistory.size() - 1 - movesIntoThePast];
+    auto moveToReverse = history->getMoveToUndo();
     //todo: halfmoveClock, enPassantPosition, all castling flags need to be loaded from some handler
     if (moveToReverse.isCapture()) {
         auto captured = moveToReverse.getCapturedPiece();
@@ -535,21 +529,19 @@ void Game::undoMove() {
         currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
     }
     board->reverseMove(moveToReverse);
-    movesIntoThePast++;
     // for castling flags probably will just keep a vector of flag strings to parse from
 
 }
 
-void Game::redoMove() {
-    if (movesIntoThePast == 0)
-        return;
+void Game::switchCurrentPlayer() { currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer; }
 
-    auto moveToReverse = moveHistory[moveHistory.size() - movesIntoThePast];
-    int temp = --movesIntoThePast;  // since making a moves sets it to 0, keep it here
-    auto temp2 = moveHistory;
-    makeMove(moveToReverse);
-    movesIntoThePast = temp;
-    moveHistory = temp2;
+void Game::redoMove() {
+    if (!history->canRedoMove()) {
+        return;
+    }
+
+    auto moveToReverse = history->getMoveToRedo();
+    this->makeMove(moveToReverse, false);
 }
 
 
