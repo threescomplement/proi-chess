@@ -25,3 +25,46 @@ void GameState::updateEnPassantTarget(const Move &move, Pawn *oldEnPassantTarget
     }
 }
 
+void GameState::updateCastling(const Move &move) {
+    if (move.getPiece()->getType() == PieceType::KING) {
+        if (move.getPiece()->getColor() == Color::WHITE) {
+            this->canWhiteKingsideCastle = false;
+            this->canWhiteQueensideCastle = false;
+        } else {
+            this->canBlackKingsideCastle = false;
+            this->canBlackQueensideCastle = false;
+        }
+
+    } else if (move.getPiece()->getType() == PieceType::ROOK) {
+        if (move.getPiece()->getColor() == Color::WHITE) {
+            if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 1) {
+                this->canWhiteQueensideCastle = false;
+            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8) {
+                this->canWhiteKingsideCastle = false;
+            }
+        } else {
+            if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 1) {
+                this->canBlackQueensideCastle = false;
+            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8) {
+                this->canBlackKingsideCastle = false;
+            }
+        }
+    }
+    if (move.isCapture() && move.getCapturedPiece()->getType() == PieceType::ROOK) {
+        this->updateCastlingAfterRookCapture(move.getCapturedPiece());
+    }
+}
+
+void GameState::updateCastlingAfterRookCapture(const Piece *capturedRook) {
+    if (capturedRook->getPosition() == Position(1, 1)) {
+        this->canWhiteQueensideCastle = false;
+    } else if (capturedRook->getPosition() == Position(1, 8)) {
+        this->canWhiteKingsideCastle = false;
+    }
+    if (capturedRook->getPosition() == Position(8, 1)) {
+        this->canBlackQueensideCastle = false;
+    } else if (capturedRook->getPosition() == Position(8, 8)) {
+        this->canBlackKingsideCastle = false;
+    }
+}
+

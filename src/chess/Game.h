@@ -32,18 +32,7 @@ private:
     HistoryManager *history;
 
 
-    void refreshEnPassant();
-
     bool isCastlingObscuredByOpponent(Move &move) const;
-
-    /**
-     * If king move, disable castling in both directions for moving player. If rook move, disable castling
-     * in its direction. If move is a rook capture and the rook has not moved yet, disable possibility of castling
-     * in its direction.
-     **/
-    void refreshCastlingPossibilites(const Move &move);
-
-    void refreshCastlingAfterRookCapture(const Piece *takenRook);
 
     /**
      * Utilites for checking whether the current player can castle - whether the flags are true and

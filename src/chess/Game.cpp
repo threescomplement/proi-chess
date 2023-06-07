@@ -73,9 +73,7 @@ void Game::makeMove(const Move& move, bool updateHistory) {
     gameState.updateFullmoveNumber(move);
     gameState.updateHalfmoveClock(move);
     gameState.updateEnPassantTarget(move, this->getEnPassantTargetPiece());
-
-
-    this->refreshCastlingPossibilites(move);
+    gameState.updateCastling(move);
 
     this->board->makeMove(move);
     if (move.getPromoteTo() != PieceType::NONE) {
@@ -221,48 +219,6 @@ Pawn *Game::getEnPassantTargetPiece() const {
 }
 
 
-void Game::refreshCastlingPossibilites(const Move &move) {
-    if (move.getPiece()->getType() == PieceType::KING) {
-        if (move.getPiece()->getColor() == Color::WHITE) {
-            gameState.canWhiteKingsideCastle = false;
-            gameState.canWhiteQueensideCastle = false;
-        } else {
-            gameState.canBlackKingsideCastle = false;
-            gameState.canBlackQueensideCastle = false;
-        }
-
-    } else if (move.getPiece()->getType() == PieceType::ROOK) {
-        if (move.getPiece()->getColor() == Color::WHITE) {
-            if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 1) {
-                gameState.canWhiteQueensideCastle = false;
-            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8) {
-                gameState.canWhiteKingsideCastle = false;
-            }
-        } else {
-            if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 1) {
-                gameState.canBlackQueensideCastle = false;
-            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8) {
-                gameState.canBlackKingsideCastle = false;
-            }
-        }
-    }
-    if (move.isCapture() && move.getCapturedPiece()->getType() == PieceType::ROOK) {
-        refreshCastlingAfterRookCapture(move.getCapturedPiece());
-    }
-}
-
-void Game::refreshCastlingAfterRookCapture(const Piece *takenRook) {
-    if (takenRook->getPosition() == Position(1, 1)) {
-        gameState.canWhiteQueensideCastle = false;
-    } else if (takenRook->getPosition() == Position(1, 8)) {
-        gameState.canWhiteKingsideCastle = false;
-    }
-    if (takenRook->getPosition() == Position(8, 1)) {
-        gameState.canBlackQueensideCastle = false;
-    } else if (takenRook->getPosition() == Position(8, 8)) {
-        gameState.canBlackKingsideCastle = false;
-    }
-}
 
 bool Game::possibleKingsideCastlingThisRound() const {
     if (getCurrentPlayer()->getColor() == Color::WHITE && !gameState.canWhiteKingsideCastle ||
