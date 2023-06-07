@@ -4,7 +4,7 @@
 #include "Move.h"
 #include "pieces/Pawn.h"
 
-void GameState::updateFullmoveNumber(const Move &move) {
+void GameState::updateFullmoveNumber() {
     if (this->currentPlayer->getColor() == Color::BLACK) {
         this->fullmoveNumber++;
     }
@@ -17,7 +17,7 @@ void GameState::updateHalfmoveClock(const Move &move) {
     }
 }
 
-void GameState::updateEnPassantTarget(const Move &move, Pawn *oldEnPassantTarget) {
+void GameState::updateEnPassantTarget(Pawn *oldEnPassantTarget) {
     if (this->enPassantTargetPosition != nullptr) {
         oldEnPassantTarget->setIsEnPassantTarget(false);
         delete this->enPassantTargetPosition;
@@ -69,9 +69,9 @@ void GameState::updateCastlingAfterRookCapture(const Piece *capturedRook) {
 }
 
 void GameState::update(const Move &move, Pawn *oldEnPassantTarget) {
-    this->updateFullmoveNumber(move);
+    this->updateFullmoveNumber();
     this->updateHalfmoveClock(move);
-    this->updateEnPassantTarget(move, oldEnPassantTarget);
+    this->updateEnPassantTarget(oldEnPassantTarget);
     this->updateCastling(move);
 }
 

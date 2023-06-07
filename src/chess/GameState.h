@@ -10,7 +10,7 @@ class Piece;
 
 struct GameState {
 private:
-    void updateFullmoveNumber(const Move &move);
+    void updateFullmoveNumber();
 
     void updateHalfmoveClock(const Move &move);
 
@@ -23,7 +23,7 @@ private:
 
     void updateCastlingAfterRookCapture(const Piece *capturedRook);
 
-    void updateEnPassantTarget(const Move &move, Pawn *oldEnPassantTarget);
+    void updateEnPassantTarget(Pawn *oldEnPassantTarget);
 
 public:
     Player *currentPlayer;
