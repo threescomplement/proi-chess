@@ -131,7 +131,8 @@
   </action>
   <action name="actionUndo_move">
    <property name="icon">
-    <iconset theme="media-skip-backward"/>
+    <iconset theme="media-skip-backward">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Undo move</string>
