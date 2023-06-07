@@ -68,3 +68,10 @@ void GameState::updateCastlingAfterRookCapture(const Piece *capturedRook) {
     }
 }
 
+void GameState::update(const Move &move, Pawn *oldEnPassantTarget) {
+    this->updateFullmoveNumber(move);
+    this->updateHalfmoveClock(move);
+    this->updateEnPassantTarget(move, oldEnPassantTarget);
+    this->updateCastling(move);
+}
+

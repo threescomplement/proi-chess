@@ -9,15 +9,7 @@ class Pawn;
 class Piece;
 
 struct GameState {
-    Player *currentPlayer;
-    bool canWhiteKingsideCastle;
-    bool canWhiteQueensideCastle;
-    bool canBlackKingsideCastle;
-    bool canBlackQueensideCastle;
-    Position *enPassantTargetPosition;
-    int halfmoveClock;
-    int fullmoveNumber;
-
+private:
     void updateFullmoveNumber(const Move &move);
 
     void updateHalfmoveClock(const Move &move);
@@ -32,6 +24,19 @@ struct GameState {
     void updateCastlingAfterRookCapture(const Piece *capturedRook);
 
     void updateEnPassantTarget(const Move &move, Pawn *oldEnPassantTarget);
+
+public:
+    Player *currentPlayer;
+    bool canWhiteKingsideCastle;
+    bool canWhiteQueensideCastle;
+    bool canBlackKingsideCastle;
+    bool canBlackQueensideCastle;
+    Position *enPassantTargetPosition;
+    int halfmoveClock;
+    int fullmoveNumber;
+
+
+    void update(const Move &move, Pawn *oldEnPassantTarget);
 
 };
 

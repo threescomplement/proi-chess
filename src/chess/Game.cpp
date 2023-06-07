@@ -61,7 +61,7 @@ bool Game::isStalemate() const {
     return (!isCheck(gameState.currentPlayer->getColor()) && getLegalMovesForPlayer(gameState.currentPlayer).empty());
 }
 
-void Game::makeMove(const Move& move, bool updateHistory) {
+void Game::makeMove(const Move &move, bool updateHistory) {
     if (this->getCurrentPlayer()->getColor() != move.getPiece()->getColor()) {
         throw IllegalMoveException("Player can only move his own piece");
     }
@@ -70,10 +70,7 @@ void Game::makeMove(const Move& move, bool updateHistory) {
         history->update(move, gameState);
     }
 
-    gameState.updateFullmoveNumber(move);
-    gameState.updateHalfmoveClock(move);
-    gameState.updateEnPassantTarget(move, this->getEnPassantTargetPiece());
-    gameState.updateCastling(move);
+    gameState.update(move, this->getEnPassantTargetPiece());
 
     this->board->makeMove(move);
     if (move.getPromoteTo() != PieceType::NONE) {
@@ -131,15 +128,15 @@ Game::Game(
         whitePlayer(whitePlayer),
         blackPlayer(blackPlayer),
         positionCount({}) {
-            this->gameState.canWhiteKingsideCastle = canWhiteKingsideCastle;
-            this->gameState.canWhiteQueensideCastle = canWhiteQueensideCastle;
-            this->gameState.canBlackKingsideCastle = canBlackKingsideCastle;
-            this->gameState.canBlackQueensideCastle = canBlackQueensideCastle;
-            this->gameState.enPassantTargetPosition = enPassantTarget;
-            this->gameState.halfmoveClock = halfmoveClock;
-            this->gameState.fullmoveNumber = fullmoveNumber;
-            this->gameState.currentPlayer = currentPlayer;
-            this->history = new HistoryManager();
+    this->gameState.canWhiteKingsideCastle = canWhiteKingsideCastle;
+    this->gameState.canWhiteQueensideCastle = canWhiteQueensideCastle;
+    this->gameState.canBlackKingsideCastle = canBlackKingsideCastle;
+    this->gameState.canBlackQueensideCastle = canBlackQueensideCastle;
+    this->gameState.enPassantTargetPosition = enPassantTarget;
+    this->gameState.halfmoveClock = halfmoveClock;
+    this->gameState.fullmoveNumber = fullmoveNumber;
+    this->gameState.currentPlayer = currentPlayer;
+    this->history = new HistoryManager();
 }
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
@@ -217,7 +214,6 @@ Pawn *Game::getEnPassantTargetPiece() const {
         throw std::bad_cast();
     return ePTargetPiece;
 }
-
 
 
 bool Game::possibleKingsideCastlingThisRound() const {
