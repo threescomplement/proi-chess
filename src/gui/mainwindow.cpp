@@ -298,3 +298,15 @@ bool MainWindow::checkIfStalemate() {
     return isStalemate;
 }
 
+
+void MainWindow::on_actionUndo_move_triggered()
+{
+    gameHandler->undo();
+}
+
+
+void MainWindow::on_actionRedo_move_triggered()
+{
+    gameHandler->redo();
+}
+

@@ -2,13 +2,13 @@
 #include "GameHandler.h"
 #include <vector>
 #include "Player.h"
+#include "FENParser.h"
 
 GameHandler::GameHandler()
         : botGame(false), botColor(Color::BLACK), stockfishBot(nullptr) {
     game = new Game();
 
 }
-
 
 GameHandler::GameHandler(Game *game, bool BotGame, Color botColor)
         : game(game), botGame(BotGame), botColor(botColor) {
@@ -45,7 +45,7 @@ void GameHandler::makeMove(Move const *move) {
 void GameHandler::newGame(bool botGame, Color bot_color, std::string const &fenNotation) {
     Game *newGame = nullptr;
     try {
-        newGame = new Game(Game::fromFEN(fenNotation));
+        newGame = new Game(FENParser::parseGame(fenNotation));
     } catch (FenException &e) {
         delete newGame;
         throw FenException("Incorrect Fen");
@@ -76,7 +76,7 @@ void GameHandler::handleBotMove() {
 }
 
 std::string GameHandler::getGameFen() {
-    return game->toFEN();
+    return FENParser::gameToString(*game);
 }
 
 bool GameHandler::isStalemate() {
@@ -127,6 +127,12 @@ bool GameHandler::fieldBelongsToCurrent(Position position) {
     return piece->getColor() == player->getColor(); // check if the piece belongs to the player
 }
 
+void GameHandler::undo() {
+    game->undoMove();
+}
 
+void GameHandler::redo() {
+    game->redoMove();
+}
 
 

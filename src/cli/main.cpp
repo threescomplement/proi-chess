@@ -10,6 +10,7 @@
 #include "CLIExceptions.h"
 #include "StockfishBot.h"
 #include "pieces/Pawn.h"
+#include "FENParser.h"
 
 
 bool handleIfSpecialCommand(const std::string &playerInput) {
@@ -114,7 +115,7 @@ void playPlayerVersusComputer(Game &game) {
 Game initiateGame(int argc, char *argv[]) {
     if (argc == 2) {
         std::string fen = argv[1];
-        return Game::fromFEN(fen);
+        return FENParser::parseGame(fen);
     }
     return {};
 }
