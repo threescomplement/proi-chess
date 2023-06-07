@@ -127,6 +127,10 @@ bool GameHandler::fieldBelongsToCurrent(Position position) {
     return piece->getColor() == player->getColor(); // check if the piece belongs to the player
 }
 
+void GameHandler::undo() {
+    game->undoMove();
+}
+
 
 
 

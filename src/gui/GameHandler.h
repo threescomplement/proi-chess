@@ -63,6 +63,8 @@ public:
 
     void handleBotMove();
 
+    void undo();
+
     std::string getGameFen();
 
     bool isStalemate();
