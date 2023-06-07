@@ -25,8 +25,8 @@ private:
     Player *currentPlayer;
     std::vector<Move> moveHistory;
     std::map<std::string, int> positionCount;
+    int movesIntoThePast;
 
-    int movesWithoutCaptureOrPawnMove;
     bool canWhiteKingsideCastle;
     bool canWhiteQueensideCastle;
     bool canBlackKingsideCastle;
@@ -34,6 +34,7 @@ private:
     Position *enPassantTargetPosition;
     int halfmoveClock;
     int fullmoveNumber;
+
 
     void refreshEnPassant();
 
@@ -74,7 +75,7 @@ private:
     bool isDrawByFiftyMoveRule() const;
 
     /**
-     * Create a deep copy of the game. Child game inherits positionCount from parent.
+     * Create a deep copy of the game. Inherits all of the properties.
      * */
     Game deepCopy() const;
 
@@ -107,6 +108,7 @@ public:
     Position *getEnPassantTargetPosition() const;
 
     void makeMove(Move move);
+    void undoMove();
 
     /**
      * Creates a deep copy of the board and makes a given move on it.

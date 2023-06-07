@@ -26,8 +26,8 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->enPassantTargetPosition = nullptr;
     this->halfmoveClock = 0;
     this->fullmoveNumber = 1;
-    this->movesWithoutCaptureOrPawnMove = 0;
     this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
+    this->movesIntoThePast = 0;
 
     for (Piece *piece: board->getAllPieces()) {
         if (piece->getColor() == Color::WHITE) {
@@ -103,11 +103,10 @@ void Game::makeMove(Move move) {
         player->removePiece(captured);
     }
 
-    movesWithoutCaptureOrPawnMove = (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) ? 0 :
-                                    movesWithoutCaptureOrPawnMove + 1;
+    this->moveHistory.push_back(move); // todo: what about this?
+    this->movesIntoThePast = 0;
 
-    this->moveHistory.push_back(move);
-    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
+    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board)); // todo: what about this?
     positionCount[fenOfCurrentBoard] = (positionCount.find(fenOfCurrentBoard) == positionCount.end()) ? 1 :
                                        positionCount[fenOfCurrentBoard] + 1;
     this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
@@ -154,7 +153,7 @@ Game::Game(
         enPassantTargetPosition(enPassantTarget),
         halfmoveClock(halfmoveClock),
         fullmoveNumber(fullmoveNumber),
-        movesWithoutCaptureOrPawnMove(0),
+        movesIntoThePast(0),
         positionCount({}) {}
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
@@ -487,6 +486,9 @@ int Game::getFullmoveNumber() const {
 Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
+    copy.halfmoveClock = this->halfmoveClock;
+    //todo: probably need to copy more params, not really important as of now
+    copy.movesIntoThePast = this->movesIntoThePast;
     return copy;
 }
 
@@ -499,7 +501,39 @@ void Game::setPositionCount(std::map<std::string, int> count) {
 }
 
 bool Game::isDrawByFiftyMoveRule() const {
-    return movesWithoutCaptureOrPawnMove >= 100;
+    return halfmoveClock >= 100;
+}
+
+void Game::undoMove() {
+    if (movesIntoThePast == moveHistory.size() - 1)
+        return;
+    this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
+    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
+    positionCount[fenOfCurrentBoard]--;
+    this->movesIntoThePast++;
+    auto moveToReverse = moveHistory[moveHistory.size() - 1];
+    //todo: halfmoveClock - possibly using a stack?
+    //todo: en passant, castling, promotion
+    //todo: overall game parameters, all flags etc - removing them is simple, how to restore them?
+    if (moveToReverse.isCapture()) {
+        auto captured = moveToReverse.getCapturedPiece();
+        auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
+        player->getPieces().push_back(captured);
+    }
+    if (moveToReverse.isDoublePawnMove()) {
+        auto row = (moveToReverse.getFrom().getRow() + moveToReverse.getTo().getRow()) / 2;
+        auto col = moveToReverse.getTo().getCol();
+        this->enPassantTargetPosition = nullptr;
+        auto movedPawn = dynamic_cast<Pawn *>(moveToReverse.getPiece());
+        movedPawn->setIsEnPassantTarget(false);
+    }
+    if (moveToReverse.getPromoteTo() != PieceType::NONE) {
+        currentPlayer->getPieces().push_back(moveToReverse.getPiece());
+        currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
+    }
+    board->reverseMove(moveToReverse);
+    // for castling flags probably will just keep a vector of flag strings to parse from
+
 }
 
 

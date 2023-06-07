@@ -1,4 +1,5 @@
 #include <sstream>
+#include <algorithm>
 #include "Board.h"
 #include "Color.h"
 #include "Player.h"
@@ -193,6 +194,30 @@ void Board::setBlackKing(Piece *blackKing) {
 
 void Board::setWhiteKing(Piece *whiteKing) {
     Board::whiteKing = whiteKing;
+}
+
+void Board::reverseMove(const Move &move) {
+    auto targetField = this->getField(move.getTo());
+    auto sourceField = this->getField(move.getFrom());
+    auto pieceOnTargetField = targetField->getPiece();
+    auto sourcePiece = sourceField->getPiece();
+    auto capturedPiece = move.getCapturedPiece();
+
+    sourcePiece->setField(sourceField);
+    sourceField->setPiece(sourcePiece);
+
+    if (move.getPromoteTo() == PieceType::NONE) {
+        targetField->setPiece(nullptr);
+        //todo - move.iscastlingcomplement
+    } else {
+        auto promotedPiece = targetField->getPiece();
+        allPieces.erase(std::remove(allPieces.begin(), allPieces.end(), promotedPiece));
+        targetField->setPiece(nullptr);
+        promotedPiece->takeOffField();
+        delete promotedPiece;
+    }
+
+
 }
 
 

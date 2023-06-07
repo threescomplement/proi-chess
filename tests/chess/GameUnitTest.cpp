@@ -680,10 +680,10 @@ namespace GameUnitTest {
         game.makeMove(nf3);
         game.makeMove(nc6);
         auto expectedPositionCount = std::map<std::string, int>{
-                {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1},
-                {"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", 1},
-                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR", 1},
-                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/5N2/PPPP1PPP/RNBQKB1R", 1},
+                {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR",         1},
+                {"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR",       1},
+                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR",     1},
+                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/5N2/PPPP1PPP/RNBQKB1R",   1},
                 {"r1bqkbnr/ppp1pppp/2n5/3p4/4P3/5N2/PPPP1PPP/RNBQKB1R", 1},
         };
         ASSERT_EQ(game.getPositionCount(), expectedPositionCount);
@@ -716,8 +716,7 @@ namespace GameUnitTest {
         ASSERT_EQ(game.isOver(), GameOver::THREEFOLD_REPETITION);
     }
 
-    TEST(Game, twoOccurencesOfAPosition)
-    {
+    TEST(Game, twoOccurencesOfAPosition) {
         auto game = Game();
         auto nc3 = Move(pos("b1"), pos("c3"), game.getPiece(pos("b1")));
         auto nf6 = Move(pos("g8"), pos("f6"), game.getPiece(pos("g8")));

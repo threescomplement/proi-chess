@@ -89,6 +89,8 @@ public:
 
     bool resultsInPromotion() const;
 
+    bool isCastlingComplement(); //todo
+
     void setPromotion(PieceType promoteTo);
 };
 
