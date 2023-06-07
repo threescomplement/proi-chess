@@ -516,9 +516,7 @@ void Game::undoMove() {
     auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
     positionCount[fenOfCurrentBoard]--;
     auto moveToReverse = moveHistory[moveHistory.size() - 1 - movesIntoThePast];
-    //todo: halfmoveClock - possibly using a stack?
-    //todo: en passant, castling, promotion
-    //todo: overall game parameters, all flags etc - removing them is simple, how to restore them?
+    //todo: halfmoveClock, enPassantPosition, all castling flags need to be loaded from some handler
     if (moveToReverse.isCapture()) {
         auto captured = moveToReverse.getCapturedPiece();
         auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
