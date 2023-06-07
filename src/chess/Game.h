@@ -27,7 +27,6 @@ private:
     Board *board;
     Player *whitePlayer;
     Player *blackPlayer;
-    Player *currentPlayer;
     std::map<std::string, int> positionCount;
     GameState gameState;
     HistoryManager *history;
@@ -102,7 +101,7 @@ public:
 
     Position *getEnPassantTargetPosition() const;
 
-    void makeMove(Move move, bool updateHistory = true);
+    void makeMove(const Move& move, bool updateHistory = true);
     void undoMove();
     void redoMove();
 

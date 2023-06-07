@@ -13,7 +13,7 @@ set(CHESS_LIBRARY_SOURCES
         pieces/Knight.cpp
         pieces/King.cpp
         pieces/Queen.cpp
-        pieces/Bishop.cpp GameOver.h)
+        pieces/Bishop.cpp GameOver.h GameState.cpp)
 
 
 add_library(chess STATIC ${CHESS_LIBRARY_SOURCES})

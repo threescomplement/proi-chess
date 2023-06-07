@@ -17,7 +17,7 @@ Game::Game(std::string whiteName, std::string blackName) {
     this->board = Board::startingBoard();
     this->whitePlayer = new Player(whiteName, Color::WHITE);
     this->blackPlayer = new Player(blackName, Color::BLACK);
-    this->currentPlayer = whitePlayer;
+    this->gameState.currentPlayer = whitePlayer;
     this->history = new HistoryManager();
 
     this->gameState.canWhiteKingsideCastle = true;
@@ -50,18 +50,18 @@ Board *Game::getBoard() const {
 }
 
 Player *Game::getCurrentPlayer() {
-    return currentPlayer;
+    return gameState.currentPlayer;
 }
 
 bool Game::isMate() const {
-    return (isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
+    return (isCheck(gameState.currentPlayer->getColor()) && getLegalMovesForPlayer(gameState.currentPlayer).empty());
 }
 
 bool Game::isStalemate() const {
-    return (!isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
+    return (!isCheck(gameState.currentPlayer->getColor()) && getLegalMovesForPlayer(gameState.currentPlayer).empty());
 }
 
-void Game::makeMove(Move move, bool updateHistory) {
+void Game::makeMove(const Move& move, bool updateHistory) {
     if (this->getCurrentPlayer()->getColor() != move.getPiece()->getColor()) {
         throw IllegalMoveException("Player can only move his own piece");
     }
@@ -70,24 +70,17 @@ void Game::makeMove(Move move, bool updateHistory) {
         history->update(move, gameState);
     }
 
-    if (this->currentPlayer->getColor() == Color::BLACK) {
-        this->gameState.fullmoveNumber++;
-    }
+    gameState.updateFullmoveNumber(move);
+    gameState.updateHalfmoveClock(move);
+    gameState.updateEnPassantTarget(move, this->getEnPassantTargetPiece());
 
-    this->gameState.halfmoveClock++;
-    if (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) {
-        this->gameState.halfmoveClock = 0;
-    }
 
-    if (this->gameState.enPassantTargetPosition != nullptr) {
-        refreshEnPassant();
-    };
     this->refreshCastlingPossibilites(move);
 
     this->board->makeMove(move);
     if (move.getPromoteTo() != PieceType::NONE) {
-        currentPlayer->removePiece(move.getPiece());
-        currentPlayer->getPieces().push_back(getPiece(move.getTo()));
+        gameState.currentPlayer->removePiece(move.getPiece());
+        gameState.currentPlayer->getPieces().push_back(getPiece(move.getTo()));
     }
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
@@ -118,10 +111,6 @@ Player *Game::getBlackPlayer() const {
     return blackPlayer;
 }
 
-Player *Game::getCurrentPlayer() const {
-    return currentPlayer;
-}
-
 
 Piece *Game::getPiece(Position position) const {
     return this->getBoard()->getField(position)->getPiece();
@@ -143,7 +132,6 @@ Game::Game(
         board(board),
         whitePlayer(whitePlayer),
         blackPlayer(blackPlayer),
-        currentPlayer(currentPlayer),
         positionCount({}) {
             this->gameState.canWhiteKingsideCastle = canWhiteKingsideCastle;
             this->gameState.canWhiteQueensideCastle = canWhiteQueensideCastle;
@@ -152,6 +140,7 @@ Game::Game(
             this->gameState.enPassantTargetPosition = enPassantTarget;
             this->gameState.halfmoveClock = halfmoveClock;
             this->gameState.fullmoveNumber = fullmoveNumber;
+            this->gameState.currentPlayer = currentPlayer;
             this->history = new HistoryManager();
 }
 
@@ -183,7 +172,7 @@ std::vector<Move> Game::getAllMovesForPlayer(Player *player) const {
 
 std::vector<Move> Game::getLegalMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
-    if (piece == nullptr || piece->getColor() != currentPlayer->getColor())
+    if (piece == nullptr || piece->getColor() != gameState.currentPlayer->getColor())
         return {};
 
     auto pieceColor = piece->getColor();
@@ -222,7 +211,7 @@ Pawn *Game::getEnPassantTargetPiece() const {
 
     int targetRow = gameState.enPassantTargetPosition->getRow();
     int targetCol = gameState.enPassantTargetPosition->getCol();
-    int rowOffsetFromEPPosition = (currentPlayer == whitePlayer) ? -1 : 1;
+    int rowOffsetFromEPPosition = (gameState.currentPlayer == whitePlayer) ? -1 : 1;
 
     auto positionOfTargetPiece = Position(targetRow + rowOffsetFromEPPosition, targetCol);
     auto ePTargetPiece = dynamic_cast<Pawn *>(getPiece(positionOfTargetPiece));
@@ -231,12 +220,6 @@ Pawn *Game::getEnPassantTargetPiece() const {
     return ePTargetPiece;
 }
 
-void Game::refreshEnPassant() {
-    auto oldEnPassantTarget = this->getEnPassantTargetPiece();
-    oldEnPassantTarget->setIsEnPassantTarget(false);
-    delete this->gameState.enPassantTargetPosition;
-    this->gameState.enPassantTargetPosition = nullptr;
-}
 
 void Game::refreshCastlingPossibilites(const Move &move) {
     if (move.getPiece()->getType() == PieceType::KING) {
@@ -324,14 +307,14 @@ bool Game::noPiecesBetweenKingAndRook(const Piece *king, const Piece *rook) cons
 }
 
 Move Game::generateKingSideCastle() const {
-    int castlingRank = (currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
+    int castlingRank = (gameState.currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
     auto fromPosition = Position(castlingRank, 5);
     auto toPosition = Position(castlingRank, 7);
     return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
 }
 
 Move Game::generateQueenSideCastle() const {
-    int castlingRank = (currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
+    int castlingRank = (gameState.currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
     auto fromPosition = Position(castlingRank, 5);
     auto toPosition = Position(castlingRank, 3);
     return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
@@ -525,15 +508,17 @@ void Game::undoMove() {
         movedPawn->setIsEnPassantTarget(false);
     }
     if (moveToReverse.getPromoteTo() != PieceType::NONE) {
-        currentPlayer->getPieces().push_back(moveToReverse.getPiece());
-        currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
+        gameState.currentPlayer->getPieces().push_back(moveToReverse.getPiece());
+        gameState.currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
     }
     board->reverseMove(moveToReverse);
     // for castling flags probably will just keep a vector of flag strings to parse from
 
 }
 
-void Game::switchCurrentPlayer() { currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer; }
+void Game::switchCurrentPlayer() {
+    gameState.currentPlayer = (gameState.currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+}
 
 void Game::redoMove() {
     if (!history->canRedoMove()) {
@@ -542,6 +527,10 @@ void Game::redoMove() {
 
     auto moveToReverse = history->getMoveToRedo();
     this->makeMove(moveToReverse, false);
+}
+
+Player *Game::getCurrentPlayer() const {
+    return gameState.currentPlayer;
 }
 
 
