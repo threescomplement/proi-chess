@@ -211,13 +211,13 @@ void Board::reverseMove(const Move &move) {
         delete pieceOnSourceField;
     }
 
-    // set the moved piece to the target field (the move.getfrom() field) and update the pointer on the
-    // source field
+    // set the moved piece to move.getFrom() and update the pointer of move.getTo()
     movedPiece->setField(targetField);
     targetField->setPiece(movedPiece);
     sourceField->setPiece(nullptr);
 
     if (move.isCastling()) {
+        // reverse castling complement accordingly
         auto rookCol = (move.isLongCastle()) ? 4 : 6;
         auto row = (move.getTo().getRow());
         auto castledRook = getField(Position(row, rookCol))->getPiece();
@@ -226,6 +226,7 @@ void Board::reverseMove(const Move &move) {
 
 
     if (capturedPiece != nullptr) {
+        // restore captured piece
         capturedPiece->setField(sourceField);
         sourceField->setPiece(capturedPiece);
     }

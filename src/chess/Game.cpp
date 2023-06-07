@@ -523,8 +523,6 @@ void Game::undoMove() {
         player->getPieces().push_back(captured);
     }
     if (moveToReverse.isDoublePawnMove()) {
-        auto row = (moveToReverse.getFrom().getRow() + moveToReverse.getTo().getRow()) / 2;
-        auto col = moveToReverse.getTo().getCol();
         this->enPassantTargetPosition = nullptr;
         auto movedPawn = dynamic_cast<Pawn *>(moveToReverse.getPiece());
         movedPawn->setIsEnPassantTarget(false);
@@ -535,8 +533,7 @@ void Game::undoMove() {
     }
     board->reverseMove(moveToReverse);
     movesIntoThePast++;
-    // for castling flags probably will just keep a vector of flag strings to parse from
-
+    fullmoveNumber = (currentPlayer->getColor() == Color::WHITE) ? fullmoveNumber : fullmoveNumber - 1;
 }
 
 void Game::redoMove() {
@@ -544,11 +541,11 @@ void Game::redoMove() {
         return;
 
     auto moveToReverse = moveHistory[moveHistory.size() - movesIntoThePast];
-    int temp = --movesIntoThePast;  // since making a moves sets it to 0, keep it here
-    auto temp2 = moveHistory;
+    auto temporaryMITP = --movesIntoThePast;  // since making a moves sets it to 0, keep it here
+    auto temporaryMH = moveHistory;
     makeMove(moveToReverse);
-    movesIntoThePast = temp;
-    moveHistory = temp2;
+    movesIntoThePast = temporaryMITP;
+    moveHistory = temporaryMH;
 }
 
 
