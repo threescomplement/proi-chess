@@ -96,10 +96,15 @@ bool Move::isCastling() const {
     return false;
 }
 
-Move Move::generateCastlingComplement(Piece *castlingRook) {
-    int toCol = (castlingRook->getPosition().getCol() == 1) ? 4 : 6;
+Move Move::generateCastlingComplement(Piece *castlingRook, bool forReversal = false) {
     int row = castlingRook->getPosition().getRow();
-    return Move(castlingRook->getPosition(), Position(row, toCol), castlingRook, nullptr);
+    if (forReversal) {
+        int fromCol = (castlingRook->getPosition().getCol() == 4) ? 1 : 8;
+        return Move(Position(row, fromCol), castlingRook->getPosition(), castlingRook, nullptr);
+    } else {
+        int toCol = (castlingRook->getPosition().getCol() == 1) ? 4 : 6;
+        return Move(castlingRook->getPosition(), Position(row, toCol), castlingRook, nullptr);
+    }
 }
 
 bool Move::isLongCastle() const {
