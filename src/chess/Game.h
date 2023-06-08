@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "GameState.h"
+
 
 class Board;
 class Move;
@@ -14,40 +16,23 @@ class Position;
 class King;
 class Pawn;
 class Move;
+class HistoryManager;
 enum class Color;
 enum class GameOver;
+
+
 
 class Game {
 private:
     Board *board;
     Player *whitePlayer;
     Player *blackPlayer;
-    Player *currentPlayer;
-    std::vector<Move> moveHistory;
     std::map<std::string, int> positionCount;
-    int movesIntoThePast;
+    GameState gameState;
+    HistoryManager *history;
 
-    bool canWhiteKingsideCastle;
-    bool canWhiteQueensideCastle;
-    bool canBlackKingsideCastle;
-    bool canBlackQueensideCastle;
-    Position *enPassantTargetPosition;
-    int halfmoveClock;
-    int fullmoveNumber;
-
-
-    void refreshEnPassant();
 
     bool isCastlingObscuredByOpponent(Move &move) const;
-
-    /**
-     * If king move, disable castling in both directions for moving player. If rook move, disable castling
-     * in its direction. If move is a rook capture and the rook has not moved yet, disable possibility of castling
-     * in its direction.
-     **/
-    void refreshCastlingPossibilites(const Move &move);
-
-    void refreshCastlingAfterRookCapture(const Piece *takenRook);
 
     /**
      * Utilites for checking whether the current player can castle - whether the flags are true and
@@ -97,8 +82,6 @@ public:
 
     Player *getCurrentPlayer();
 
-    std::vector<Move> &getMoveHistory();
-
     Player *getWhitePlayer() const;
 
     Player *getBlackPlayer() const;
@@ -107,7 +90,7 @@ public:
 
     Position *getEnPassantTargetPosition() const;
 
-    void makeMove(Move move);
+    void makeMove(const Move& move, bool updateHistory = true);
     void undoMove();
     void redoMove();
 
@@ -167,6 +150,8 @@ public:
     std::map<std::string, int> getPositionCount() const;
 
     void setPositionCount(std::map<std::string, int> count);
+
+    void switchCurrentPlayer();
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);
