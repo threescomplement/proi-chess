@@ -454,8 +454,6 @@ void Game::undoMove() {
         player->getPieces().push_back(captured);
     }
     if (moveToReverse.isDoublePawnMove()) {
-        auto row = (moveToReverse.getFrom().getRow() + moveToReverse.getTo().getRow()) / 2;
-        auto col = moveToReverse.getTo().getCol();
         this->gameState.enPassantTargetPosition = nullptr;
         auto movedPawn = dynamic_cast<Pawn *>(moveToReverse.getPiece());
         movedPawn->setIsEnPassantTarget(false);
@@ -465,8 +463,6 @@ void Game::undoMove() {
         gameState.currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
     }
     board->reverseMove(moveToReverse);
-    // for castling flags probably will just keep a vector of flag strings to parse from
-
 }
 
 void Game::switchCurrentPlayer() {
