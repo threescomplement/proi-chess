@@ -7,6 +7,7 @@ class Move;
 class Player;
 class Pawn;
 class Piece;
+class Game;
 
 struct GameState {
 private:
@@ -35,8 +36,15 @@ public:
     int halfmoveClock;
     int fullmoveNumber;
 
+    GameState();
+
+    GameState(Player *currentPlayer, bool canWhiteKingsideCastle, bool canWhiteQueensideCastle,
+              bool canBlackKingsideCastle, bool canBlackQueensideCastle, Position *enPassantTargetPosition,
+              int halfmoveClock, int fullmoveNumber);
 
     void update(const Move &move, Pawn *oldEnPassantTarget);
+
+    GameState copy(const Game &original, const Game &copied) const;
 
 };
 

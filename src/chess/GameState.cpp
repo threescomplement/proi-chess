@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Color.h"
 #include "Move.h"
+#include "Game.h"
 #include "pieces/Pawn.h"
 
 void GameState::updateFullmoveNumber() {
@@ -74,4 +75,30 @@ void GameState::update(const Move &move, Pawn *oldEnPassantTarget) {
     this->updateEnPassantTarget(oldEnPassantTarget);
     this->updateCastling(move);
 }
+
+GameState GameState::copy(const Game &original, const Game &copied) const {
+    return {
+            (original.getCurrentPlayer()->getColor() == Color::WHITE) ? copied.getWhitePlayer() : copied.getBlackPlayer(),
+            canWhiteKingsideCastle,
+            canWhiteQueensideCastle,
+            canBlackKingsideCastle,
+            canBlackQueensideCastle,
+            (enPassantTargetPosition != nullptr) ? Position::copy(*enPassantTargetPosition) : nullptr,
+            halfmoveClock,
+            fullmoveNumber
+    };
+}
+
+GameState::GameState(Player *currentPlayer, bool canWhiteKingsideCastle, bool canWhiteQueensideCastle,
+                     bool canBlackKingsideCastle, bool canBlackQueensideCastle, Position *enPassantTargetPosition,
+                     int halfmoveClock, int fullmoveNumber) : currentPlayer(currentPlayer),
+                                                              canWhiteKingsideCastle(canWhiteKingsideCastle),
+                                                              canWhiteQueensideCastle(canWhiteQueensideCastle),
+                                                              canBlackKingsideCastle(canBlackKingsideCastle),
+                                                              canBlackQueensideCastle(canBlackQueensideCastle),
+                                                              enPassantTargetPosition(enPassantTargetPosition),
+                                                              halfmoveClock(halfmoveClock),
+                                                              fullmoveNumber(fullmoveNumber) {}
+
+GameState::GameState() {}
 

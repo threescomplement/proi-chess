@@ -317,8 +317,9 @@ Game Game::afterMove(const Move &move) const {
     auto copy = this->deepCopy();
     auto sourcePiece = copy.getPiece(move.getFrom());
 
-    Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : copy.getPiece(
-            move.getCapturedPiece()->getPosition());
+    Piece *takenPiece = (move.getCapturedPiece() == nullptr)
+            ? nullptr
+            : copy.getPiece(move.getCapturedPiece()->getPosition());
     auto moveEquivalentForDeepCopy = Move(move.getFrom(), move.getTo(), sourcePiece, takenPiece);
     copy.makeMove(moveEquivalentForDeepCopy);
     return copy;
@@ -420,7 +421,7 @@ int Game::getFullmoveNumber() const {
 Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
-    copy.gameState = this->gameState;
+    copy.gameState = this->gameState.copy(*this, copy);
     copy.history = new HistoryManager(*this->history);  // TODO: Are there more params to copy?
     return copy;
 }
