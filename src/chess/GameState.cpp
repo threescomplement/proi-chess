@@ -101,9 +101,3 @@ GameState::GameState(Player *currentPlayer, bool canWhiteKingsideCastle, bool ca
                                                               fullmoveNumber(fullmoveNumber) {}
 
 GameState::GameState() {}
-
-GameState::~GameState() {
-    // Game handles deleting players
-    delete enPassantTargetPosition;
-}
-
