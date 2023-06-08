@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2023.
+ * Maksym Bieńkowski
+ * Mikołaj Garbowski
+ * Michał Łuszczek
+ */
+
 #include "Piece.h"
 #include "../Field.h"
 #include "../ChessExceptions.h"

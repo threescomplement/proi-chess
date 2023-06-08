@@ -1,3 +1,10 @@
+<!--
+  ~ Copyright (c) 2023.
+  ~ Maksym Bieńkowski
+  ~ Mikołaj Garbowski
+  ~ Michał Łuszczek
+  -->
+
 <RCC>
     <qresource prefix="/">
         <file>resources/Empty_Board.jpg</file>

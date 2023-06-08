@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2023.
+ * Maksym Bieńkowski
+ * Mikołaj Garbowski
+ * Michał Łuszczek
+ */
+
 #ifndef CHESS_CHESSBOT_H
 #define CHESS_CHESSBOT_H
 

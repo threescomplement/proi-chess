@@ -1,4 +1,11 @@
 
+/*
+ * Copyright (c) 2023.
+ * Maksym Bieńkowski
+ * Mikołaj Garbowski
+ * Michał Łuszczek
+ */
+
 #include "ClickableLabel.h"
 #include <QMouseEvent>
 

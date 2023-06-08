@@ -1,4 +1,11 @@
 
+/*
+ * Copyright (c) 2023.
+ * Maksym Bieńkowski
+ * Mikołaj Garbowski
+ * Michał Łuszczek
+ */
+
 #ifndef CHESS_PAWN_H
 #define CHESS_PAWN_H
 
