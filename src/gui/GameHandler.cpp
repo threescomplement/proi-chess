@@ -128,11 +128,24 @@ bool GameHandler::fieldBelongsToCurrent(Position position) {
 }
 
 void GameHandler::undo() {
+
     game->undoMove();
+    if (botGame){
+        game->undoMove();
+    }
+    handleBotMove();
 }
 
 void GameHandler::redo() {
     game->redoMove();
+    if (botGame){
+        game->redoMove();
+    }
+    handleBotMove();
+}
+
+GameOver GameHandler::isTerminalState() {
+    return game->isOver();
 }
 
 
