@@ -221,7 +221,7 @@ void MainWindow::newFenGame(bool isBotGame, Color bot_color) {
 }
 
 bool MainWindow::checkGameOver() {
-    GameOver state = gameHandler->getGameState();
+    GameOver state = gameHandler->isTerminalState();
     std::string title = "Game Over";
     std::string userMessage;
     switch (state) {

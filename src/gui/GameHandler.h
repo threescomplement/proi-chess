@@ -68,7 +68,7 @@ public:
 
     void redo();
 
-    GameOver getGameState();
+    GameOver isTerminalState();
 
     std::string getGameFen();
 
