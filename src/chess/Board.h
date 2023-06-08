@@ -28,7 +28,7 @@ public:
 
     void makeMove(const Move &move);
 
-    void reverseMove(const Move &move);
+    void reverseMove(const Move &move, bool isEnPassant=false);
 
     void executePromotion(const Move &move);
 

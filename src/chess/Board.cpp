@@ -196,7 +196,7 @@ void Board::setWhiteKing(Piece *whiteKing) {
     Board::whiteKing = whiteKing;
 }
 
-void Board::reverseMove(const Move &move) {
+void Board::reverseMove(const Move &move, bool isEnPassant) {
     auto sourceField = this->getField(move.getTo());
     auto targetField = this->getField(move.getFrom());
     auto pieceOnSourceField = sourceField->getPiece();
@@ -221,18 +221,18 @@ void Board::reverseMove(const Move &move) {
         auto rookCol = (move.isLongCastle()) ? 4 : 6;
         auto row = (move.getTo().getRow());
         auto castledRook = getField(Position(row, rookCol))->getPiece();
-        reverseMove(Move::generateCastlingComplement(castledRook, true));
+        reverseMove(Move::generateCastlingComplement(castledRook, true), false);
     }
 
 
     if (capturedPiece != nullptr) {
+        if (isEnPassant)
+            sourceField = getField(Position(move.getFrom().getRow(), move.getTo().getCol()));
+
         // restore captured piece
         capturedPiece->setField(sourceField);
         sourceField->setPiece(capturedPiece);
     }
-
-    //todo - en passant
-
 }
 
 

@@ -88,8 +88,7 @@ void Game::makeMove(const Move &move, bool updateHistory) {
     if (move.isCapture()) {
         auto captured = move.getCapturedPiece();
         auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
-        player->
-                removePiece(captured);
+        player->removePiece(captured);
     }
 
     auto fenOfCurrentBoard = FENParser::boardToString(*(this->board)); // todo: what about this?
@@ -318,8 +317,8 @@ Game Game::afterMove(const Move &move) const {
     auto sourcePiece = copy.getPiece(move.getFrom());
 
     Piece *takenPiece = (move.getCapturedPiece() == nullptr)
-            ? nullptr
-            : copy.getPiece(move.getCapturedPiece()->getPosition());
+                        ? nullptr
+                        : copy.getPiece(move.getCapturedPiece()->getPosition());
     auto moveEquivalentForDeepCopy = Move(move.getFrom(), move.getTo(), sourcePiece, takenPiece);
     copy.makeMove(moveEquivalentForDeepCopy);
     return copy;
@@ -462,8 +461,13 @@ void Game::undoMove() {
         gameState.currentPlayer->getPieces().push_back(moveToReverse.getPiece());
         gameState.currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
     }
-    board->reverseMove(moveToReverse);
+    bool isEnPassant = (getEnPassantTargetPosition() == nullptr ||
+                        moveToReverse.getTo() != *(getEnPassantTargetPosition())) ? false : true;
 
+
+    board->reverseMove(moveToReverse, isEnPassant);
+    if (getEnPassantTargetPiece() != nullptr)
+        getEnPassantTargetPiece()->setIsEnPassantTarget(true);
 }
 
 void Game::switchCurrentPlayer() {
