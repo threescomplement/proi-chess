@@ -154,6 +154,8 @@ public:
     void setPositionCount(std::map<std::string, int> count);
 
     void switchCurrentPlayer();
+
+    void loadPreviousGamestate();
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

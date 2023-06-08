@@ -447,7 +447,7 @@ void Game::undoMove() {
     auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
     positionCount[fenOfCurrentBoard]--;
     auto moveToReverse = history->getMoveToUndo();
-    //todo: halfmoveClock, enPassantPosition, all castling flags need to be loaded from some handler
+    loadPreviousGamestate();
     if (moveToReverse.isCapture()) {
         auto captured = moveToReverse.getCapturedPiece();
         auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
@@ -463,6 +463,7 @@ void Game::undoMove() {
         gameState.currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
     }
     board->reverseMove(moveToReverse);
+
 }
 
 void Game::switchCurrentPlayer() {
@@ -484,6 +485,11 @@ Player *Game::getCurrentPlayer() const {
 
 int Game::getMovesIntoThePast() const {
     return history->getMovesIntoThePast();
+}
+
+void Game::loadPreviousGamestate() {
+    auto state = this->history->getHistory()[this->history->getHistory().size() - getMovesIntoThePast()].state;
+    this->gameState = state.copy(*this, *this);
 }
 
 
