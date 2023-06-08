@@ -21,7 +21,6 @@ void GameState::updateHalfmoveClock(const Move &move) {
 void GameState::updateEnPassantTarget(Pawn *oldEnPassantTarget) {
     if (this->enPassantTargetPosition != nullptr) {
         oldEnPassantTarget->setIsEnPassantTarget(false);
-        delete this->enPassantTargetPosition;
         this->enPassantTargetPosition = nullptr;
     }
 }
