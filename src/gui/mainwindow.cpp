@@ -152,11 +152,6 @@ void MainWindow::makeMove(Move *move) {
 
 void MainWindow::changePickedField(GameField *const new_picked) {
 
-    if (pickedField != nullptr) {
-        // mark the previously picked field as not marked anymore
-        emit updateFieldMark(pickedField->getX(), pickedField->getY(), false);
-
-    }
     if (new_picked != nullptr) { // if the new picked is a field
 
         gameHandler->loadMovesFromPosition(Position(new_picked->getY(), new_picked->getX()));
@@ -310,13 +305,13 @@ void MainWindow::on_actionCopy_FEN_to_clipboard_triggered() {
 
 void MainWindow::on_actionUndo_move_triggered() {
     gameHandler->undo();
-    updateBoardDisplay();
+    changePickedField(nullptr);
 }
 
 
 void MainWindow::on_actionRedo_move_triggered() {
     gameHandler->redo();
-    updateBoardDisplay();
+    changePickedField(nullptr);
 }
 
 
