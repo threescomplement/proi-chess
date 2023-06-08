@@ -38,6 +38,8 @@ public:
 
     GameState();
 
+    ~GameState();
+
     GameState(Player *currentPlayer, bool canWhiteKingsideCastle, bool canWhiteQueensideCastle,
               bool canBlackKingsideCastle, bool canBlackQueensideCastle, Position *enPassantTargetPosition,
               int halfmoveClock, int fullmoveNumber);

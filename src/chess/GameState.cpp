@@ -102,3 +102,8 @@ GameState::GameState(Player *currentPlayer, bool canWhiteKingsideCastle, bool ca
 
 GameState::GameState() {}
 
+GameState::~GameState() {
+    // Game handles deleting players
+    delete enPassantTargetPosition;
+}
+
