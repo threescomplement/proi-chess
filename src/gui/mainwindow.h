@@ -18,6 +18,12 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+static int BOARD_SIDE_LENGTH = 800;
+#define BOARD_ROWS 8
+#define BOARD_COLUMNS BOARD_ROWS
+//#define BOARD_SIDE_LENGTH 400
+#define WINDOW_HEIGHT (BOARD_SIDE_LENGTH+45)
+#define WINDOW_WIDTH BOARD_SIDE_LENGTH
 
 /**
  * @class MainWindow

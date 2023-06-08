@@ -16,11 +16,9 @@
 #include "GameHandler.h"
 #include "FENParser.h"
 
-#define BOARD_ROWS 8
-#define BOARD_COLUMNS 8
-#define BOARD_SIDE_LENGTH 400
-#define WINDOW_HEIGHT (BOARD_SIDE_LENGTH+45)
-#define WINDOW_WIDTH BOARD_SIDE_LENGTH
+
+
+
 
 
 MainWindow::MainWindow(Game *game, QWidget *parent)
