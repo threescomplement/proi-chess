@@ -482,6 +482,10 @@ Player *Game::getCurrentPlayer() const {
     return gameState.currentPlayer;
 }
 
+int Game::getMovesIntoThePast() const {
+    return history->getMovesIntoThePast();
+}
+
 
 std::vector<std::string> split(const std::string &txt, char ch) {
     std::vector<std::string> strings;

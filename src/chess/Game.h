@@ -90,6 +90,8 @@ public:
 
     Position *getEnPassantTargetPosition() const;
 
+    int getMovesIntoThePast() const;
+
     void makeMove(const Move& move, bool updateHistory = true);
     void undoMove();
     void redoMove();
