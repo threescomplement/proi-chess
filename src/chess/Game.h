@@ -74,19 +74,17 @@ public:
 
     ~Game();
 
-    GameOver isOver() const;
+    GameOver isOver();
 
     Board *getBoard() const;
 
     Piece *getPiece(Position position) const;
 
-    Player *getCurrentPlayer();
+    Player *getCurrentPlayer() const;
 
     Player *getWhitePlayer() const;
 
     Player *getBlackPlayer() const;
-
-    Player *getCurrentPlayer() const;
 
     Position *getEnPassantTargetPosition() const;
 
@@ -116,16 +114,16 @@ public:
     /**
      * All legal moves from a field. Takes checks, pins and turns into consideration.
      * */
-    std::vector<Move> getLegalMovesFrom(Position position) const;
+    std::vector<Move> getLegalMovesFrom(Position position);
 
     /**
      * All possible moves for a player. getLegalMovesFrom for all of the fields controlled by his pieces combined.
      * */
-    std::vector<Move> getLegalMovesForPlayer(Player *player) const;
+    std::vector<Move> getLegalMovesForPlayer(Player *player);
 
-    bool isMate() const;
+    bool isMate();
 
-    bool isStalemate() const;
+    bool isStalemate();
 
     bool isCheck(Color colorOfCheckedKing) const;
 

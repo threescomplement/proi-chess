@@ -1,5 +1,6 @@
 #include <map>
 #include <algorithm>
+#include <utility>
 #include "Game.h"
 #include "Board.h"
 #include "Color.h"
@@ -7,7 +8,6 @@
 #include "pieces/PieceType.h"
 #include "ChessExceptions.h"
 #include "pieces/Pawn.h"
-#include "pieces/PieceType.h"
 #include "GameOver.h"
 #include "FENParser.h"
 #include "HistoryManager.h"
@@ -15,8 +15,8 @@
 
 Game::Game(std::string whiteName, std::string blackName) {
     this->board = Board::startingBoard();
-    this->whitePlayer = new Player(whiteName, Color::WHITE);
-    this->blackPlayer = new Player(blackName, Color::BLACK);
+    this->whitePlayer = new Player(std::move(whiteName), Color::WHITE);
+    this->blackPlayer = new Player(std::move(blackName), Color::BLACK);
     this->gameState.currentPlayer = whitePlayer;
     this->history = new HistoryManager();
 
@@ -49,15 +49,15 @@ Board *Game::getBoard() const {
     return board;
 }
 
-Player *Game::getCurrentPlayer() {
+Player *Game::getCurrentPlayer() const {
     return gameState.currentPlayer;
 }
 
-bool Game::isMate() const {
+bool Game::isMate() {
     return (isCheck(gameState.currentPlayer->getColor()) && getLegalMovesForPlayer(gameState.currentPlayer).empty());
 }
 
-bool Game::isStalemate() const {
+bool Game::isStalemate() {
     return (!isCheck(gameState.currentPlayer->getColor()) && getLegalMovesForPlayer(gameState.currentPlayer).empty());
 }
 
@@ -164,7 +164,7 @@ std::vector<Move> Game::getAllMovesForPlayer(Player *player) const {
     return moves;
 }
 
-std::vector<Move> Game::getLegalMovesFrom(Position position) const {
+std::vector<Move> Game::getLegalMovesFrom(Position position) {
     auto piece = this->getPiece(position);
     if (piece == nullptr || piece->getColor() != gameState.currentPlayer->getColor())
         return {};
@@ -172,9 +172,11 @@ std::vector<Move> Game::getLegalMovesFrom(Position position) const {
     auto pieceColor = piece->getColor();
     auto movesForPiece = getMovesFrom(position);
     movesForPiece.erase(
-            std::remove_if(movesForPiece.begin(), movesForPiece.end(), [pieceColor, this](Move m) {
-                auto deepCopy = this->afterMove(m);
-                return deepCopy.isCheck(pieceColor);
+            std::remove_if(movesForPiece.begin(), movesForPiece.end(), [pieceColor, this](const Move &m) {
+                this->makeMove(m);
+                bool illegal = (this->isCheck(pieceColor));
+                this->undoMove();
+                return illegal;
             }),
             movesForPiece.end());
 
@@ -190,7 +192,7 @@ std::vector<Move> Game::getLegalMovesFrom(Position position) const {
     return movesForPiece;
 }
 
-std::vector<Move> Game::getLegalMovesForPlayer(Player *player) const {
+std::vector<Move> Game::getLegalMovesForPlayer(Player *player) {
     std::vector<Move> moves = {};
     for (auto piece: player->getPieces()) {
         auto pieceMoves = getLegalMovesFrom(piece->getPosition());
@@ -339,7 +341,7 @@ bool Game::isCastlingObscuredByOpponent(Move &move) const {
     return false;
 }
 
-GameOver Game::isOver() const {
+GameOver Game::isOver() {
     if (isMate())
         return GameOver::MATE;
     else if (isStalemate())
@@ -481,10 +483,6 @@ void Game::redoMove() {
 
     auto moveToReverse = history->getMoveToRedo();
     this->makeMove(moveToReverse, false);
-}
-
-Player *Game::getCurrentPlayer() const {
-    return gameState.currentPlayer;
 }
 
 int Game::getMovesIntoThePast() const {
