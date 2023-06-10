@@ -16,7 +16,7 @@
 #include <QColor>
 
 
-static int fieldSize = 50;
+static int fieldSize = BOARD_SIDE_LENGTH/8;
 
 
 GameField::GameField(const QString &text, int x, int y, QWidget *parent, Qt::WindowFlags f) :

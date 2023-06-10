@@ -16,6 +16,7 @@
 #include "Color.h"
 #include "GameOver.h"
 #include "pieces/PieceType.h"
+#include "FENParser.h"
 
 using namespace ChessUnitTestCommon;
 
@@ -30,8 +31,6 @@ namespace GameUnitTest {
         ASSERT_EQ(16, game.getBlackPlayer()->getPieces().size());
         ASSERT_TRUE(in(game.getWhitePlayer()->getPieces(), game.getBoard()->getWhiteKing()));
         ASSERT_TRUE(in(game.getBlackPlayer()->getPieces(), game.getBoard()->getBlackKing()));
-
-        ASSERT_EQ(0, game.getMoveHistory().size());
     }
 
     TEST(Game, makeMoveNoCapture) {
@@ -687,10 +686,10 @@ namespace GameUnitTest {
         game.makeMove(nf3);
         game.makeMove(nc6);
         auto expectedPositionCount = std::map<std::string, int>{
-                {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1},
-                {"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", 1},
-                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR", 1},
-                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/5N2/PPPP1PPP/RNBQKB1R", 1},
+                {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR",         1},
+                {"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR",       1},
+                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR",     1},
+                {"rnbqkbnr/ppp1pppp/8/3p4/4P3/5N2/PPPP1PPP/RNBQKB1R",   1},
                 {"r1bqkbnr/ppp1pppp/2n5/3p4/4P3/5N2/PPPP1PPP/RNBQKB1R", 1},
         };
         ASSERT_EQ(game.getPositionCount(), expectedPositionCount);
@@ -723,8 +722,7 @@ namespace GameUnitTest {
         ASSERT_EQ(game.isOver(), GameOver::THREEFOLD_REPETITION);
     }
 
-    TEST(Game, twoOccurencesOfAPosition)
-    {
+    TEST(Game, twoOccurencesOfAPosition) {
         auto game = Game();
         auto nc3 = Move(pos("b1"), pos("c3"), game.getPiece(pos("b1")));
         auto nf6 = Move(pos("g8"), pos("f6"), game.getPiece(pos("g8")));
@@ -739,5 +737,116 @@ namespace GameUnitTest {
         game.makeMove(nb1);
         auto over = game.isOver();
         ASSERT_EQ(game.isOver(), GameOver::NOT_OVER);
+    }
+
+    TEST(Game, undoDoublePawnMove) {
+        auto game = Game();
+        auto e4 = Move(pos("e2"), pos("e4"), game.getPiece(pos("e2")));
+        game.makeMove(e4);
+        game.undoMove();
+        ASSERT_EQ(FENParser::boardToString(*(game.getBoard())), "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        ASSERT_TRUE(game.getCanWhiteKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackQueensideCastle());
+        ASSERT_TRUE(game.getCanWhiteQueensideCastle());
+        ASSERT_TRUE(game.getCurrentPlayer()->getColor() == Color::WHITE);
+        ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
+        ASSERT_EQ(game.getEnPassantTargetPosition(), nullptr);
+        ASSERT_EQ(game.getHalfmoveClock(), 0);
+        ASSERT_EQ(game.getFullmoveNumber(), 1);
+        ASSERT_EQ(game.getMovesIntoThePast(), 1);
+    }
+
+    TEST(Game, undoCastling) {
+        auto game = Game();
+        auto e4 = Move(pos("e2"), pos("e4"), game.getPiece(pos("e2")));
+        auto e5 = Move(pos("e7"), pos("e5"), game.getPiece(pos("e7")));
+        auto nf3 = Move(pos("g1"), pos("f3"), game.getPiece(pos("g1")));
+        auto nc6 = Move(pos("b8"), pos("c6"), game.getPiece(pos("b8")));
+        auto bd3 = Move(pos("f1"), pos("d3"), game.getPiece(pos("f1")));
+        auto bd6 = Move(pos("f8"), pos("d6"), game.getPiece(pos("f8")));
+        auto castling = Move(pos("e1"), pos("g1"), game.getPiece(pos("e1")));
+
+        game.makeMove(e4);
+        game.makeMove(e5);
+        game.makeMove(nf3);
+        game.makeMove(nc6);
+        game.makeMove(bd3);
+        game.makeMove(bd6);
+        game.makeMove(castling);
+        game.undoMove();
+
+        ASSERT_EQ(FENParser::boardToString(*(game.getBoard())), "r1bqk1nr/pppp1ppp/2nb4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R");
+        ASSERT_TRUE(game.getCanWhiteKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackQueensideCastle());
+        ASSERT_TRUE(game.getCanWhiteQueensideCastle());
+        ASSERT_TRUE(game.getCurrentPlayer()->getColor() == Color::WHITE);
+        ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
+        ASSERT_EQ(game.getEnPassantTargetPosition(), nullptr);
+        ASSERT_EQ(game.getHalfmoveClock(), 4);
+        ASSERT_EQ(game.getFullmoveNumber(), 4);
+        ASSERT_EQ(game.getMovesIntoThePast(), 1);
+    }
+
+    TEST(Game, undoCapture) {
+        auto game = Game();
+        auto e4 = Move(pos("e2"), pos("e4"), game.getPiece(pos("e2")));
+        auto d5 = Move(pos("d7"), pos("d5"), game.getPiece(pos("d7")));
+        game.makeMove(e4);
+        game.makeMove(d5);
+        auto exd5 = Move(pos("e4"), pos("d5"), game.getPiece(pos("e4")), game.getPiece(pos("d5")));
+        game.makeMove(exd5);
+        game.undoMove();
+
+        ASSERT_EQ(FENParser::boardToString(*(game.getBoard())), "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR");
+        ASSERT_TRUE(game.getCanWhiteKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackQueensideCastle());
+        ASSERT_TRUE(game.getCanWhiteQueensideCastle());
+        ASSERT_TRUE(game.getCurrentPlayer()->getColor() == Color::WHITE);
+        ASSERT_EQ(game.getEnPassantTargetPiece(), game.getPiece(pos("d5")));
+        ASSERT_EQ(*(game.getEnPassantTargetPosition()), Position(6, 4));
+        ASSERT_EQ(game.getHalfmoveClock(), 0);
+        ASSERT_EQ(game.getFullmoveNumber(), 2);
+        ASSERT_EQ(game.getMovesIntoThePast(), 1);
+        ASSERT_TRUE(game.getPiece(pos("d5"))->getColor() == Color::BLACK);
+    }
+
+    TEST(Game, undoPromotionWithCapture) {
+        auto game = fenGame("rnbqkbnr/pppppppP/8/8/8/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1");
+        auto promotion = Move(pos("h7"), pos("g8"), game.getPiece(pos("h7")), game.getPiece(pos("g8")), PieceType::QUEEN);
+        game.makeMove(promotion);
+        game.undoMove();
+        ASSERT_EQ(FENParser::boardToString(*(game.getBoard())), "rnbqkbnr/pppppppP/8/8/8/8/PPPPPPP1/RNBQKBNR");
+        ASSERT_TRUE(game.getCanWhiteKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackQueensideCastle());
+        ASSERT_TRUE(game.getCanWhiteQueensideCastle());
+        ASSERT_EQ(game.getEnPassantTargetPiece(), nullptr);
+        ASSERT_EQ(game.getEnPassantTargetPosition(), nullptr);
+        ASSERT_EQ(game.getHalfmoveClock(), 0);
+        ASSERT_EQ(game.getFullmoveNumber(), 1);
+        ASSERT_EQ(game.getMovesIntoThePast(), 1);
+        ASSERT_TRUE(game.getPiece(pos("g8"))->getColor() == Color::BLACK);
+    }
+
+    TEST(Game, undoEnPassant) {
+        auto game = fenGame("rnbqkbnr/ppppppp1/7p/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2");
+        auto d5 = Move(pos("d7"), pos("d5"), game.getPiece(pos("d7")));
+        game.makeMove(d5);
+        auto enPassant = Move(pos("e5"), pos("d6"), game.getPiece(pos("e5")), game.getPiece(pos("d5")));
+        game.makeMove(enPassant);
+        game.undoMove();
+        ASSERT_EQ(FENParser::boardToString(*(game.getBoard())), "rnbqkbnr/ppp1ppp1/7p/3pP3/8/8/PPPP1PPP/RNBQKBNR");
+        ASSERT_TRUE(game.getCanWhiteKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackKingsideCastle());
+        ASSERT_TRUE(game.getCanBlackQueensideCastle());
+        ASSERT_TRUE(game.getCanWhiteQueensideCastle());
+        ASSERT_EQ(*(game.getEnPassantTargetPosition()), pos("d6"));
+        ASSERT_EQ(game.getEnPassantTargetPiece(), game.getPiece(pos("d5")));
+        ASSERT_EQ(game.getHalfmoveClock(), 0);
+        ASSERT_EQ(game.getFullmoveNumber(), 3);
+        ASSERT_EQ(game.getMovesIntoThePast(), 1);
     }
 }

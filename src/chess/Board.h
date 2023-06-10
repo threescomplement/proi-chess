@@ -35,11 +35,9 @@ public:
 
     void makeMove(const Move &move);
 
+    void reverseMove(const Move &move, bool isEnPassant=false);
+
     void executePromotion(const Move &move);
-
-    Board afterMove(Move move) const;  // Deep copy
-
-    std::string toStandardNotation() const;
 
     Field *getField(Position position) const;
 

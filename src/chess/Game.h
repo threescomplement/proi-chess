@@ -12,6 +12,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "GameState.h"
+
 
 class Board;
 class Move;
@@ -21,39 +23,23 @@ class Position;
 class King;
 class Pawn;
 class Move;
+class HistoryManager;
 enum class Color;
 enum class GameOver;
+
+
 
 class Game {
 private:
     Board *board;
     Player *whitePlayer;
     Player *blackPlayer;
-    Player *currentPlayer;
-    std::vector<Move> moveHistory;
     std::map<std::string, int> positionCount;
+    GameState gameState;
+    HistoryManager *history;
 
-    int movesWithoutCaptureOrPawnMove;
-    bool canWhiteKingsideCastle;
-    bool canWhiteQueensideCastle;
-    bool canBlackKingsideCastle;
-    bool canBlackQueensideCastle;
-    Position *enPassantTargetPosition;
-    int halfmoveClock;
-    int fullmoveNumber;
-
-    void refreshEnPassant();
 
     bool isCastlingObscuredByOpponent(Move &move) const;
-
-    /**
-     * If king move, disable castling in both directions for moving player. If rook move, disable castling
-     * in its direction. If move is a rook capture and the rook has not moved yet, disable possibility of castling
-     * in its direction.
-     **/
-    void refreshCastlingPossibilites(const Move &move);
-
-    void refreshCastlingAfterRookCapture(const Piece *takenRook);
 
     /**
      * Utilites for checking whether the current player can castle - whether the flags are true and
@@ -81,7 +67,7 @@ private:
     bool isDrawByFiftyMoveRule() const;
 
     /**
-     * Create a deep copy of the game. Child game inherits positionCount from parent.
+     * Create a deep copy of the game. Inherits all of the properties.
      * */
     Game deepCopy() const;
 
@@ -95,25 +81,25 @@ public:
 
     ~Game();
 
-    GameOver isOver() const;
+    GameOver isOver();
 
     Board *getBoard() const;
 
     Piece *getPiece(Position position) const;
 
-    Player *getCurrentPlayer();
-
-    std::vector<Move> &getMoveHistory();
+    Player *getCurrentPlayer() const;
 
     Player *getWhitePlayer() const;
 
     Player *getBlackPlayer() const;
 
-    Player *getCurrentPlayer() const;
-
     Position *getEnPassantTargetPosition() const;
 
-    void makeMove(Move move);
+    int getMovesIntoThePast() const;
+
+    void makeMove(const Move& move, bool updateHistory = true);
+    void undoMove();
+    void redoMove();
 
     /**
      * Creates a deep copy of the board and makes a given move on it.
@@ -135,16 +121,16 @@ public:
     /**
      * All legal moves from a field. Takes checks, pins and turns into consideration.
      * */
-    std::vector<Move> getLegalMovesFrom(Position position) const;
+    std::vector<Move> getLegalMovesFrom(Position position);
 
     /**
      * All possible moves for a player. getLegalMovesFrom for all of the fields controlled by his pieces combined.
      * */
-    std::vector<Move> getLegalMovesForPlayer(Player *player) const;
+    std::vector<Move> getLegalMovesForPlayer(Player *player);
 
-    bool isMate() const;
+    bool isMate();
 
-    bool isStalemate() const;
+    bool isStalemate();
 
     bool isCheck(Color colorOfCheckedKing) const;
 
@@ -171,6 +157,10 @@ public:
     std::map<std::string, int> getPositionCount() const;
 
     void setPositionCount(std::map<std::string, int> count);
+
+    void switchCurrentPlayer();
+
+    void loadPreviousGamestate();
 };
 
 std::vector<std::string> split(const std::string &txt, char ch);

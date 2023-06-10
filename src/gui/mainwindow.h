@@ -25,6 +25,11 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+static int BOARD_SIDE_LENGTH = 800;
+#define BOARD_ROWS 8
+#define BOARD_COLUMNS BOARD_ROWS
+#define WINDOW_HEIGHT (BOARD_SIDE_LENGTH+45)
+#define WINDOW_WIDTH BOARD_SIDE_LENGTH
 
 /**
  * @class MainWindow
@@ -82,9 +87,7 @@ private:
     **/
     void createBoard(Color side = Color::WHITE);
 
-    bool checkIfMate();
-
-    bool checkIfStalemate();
+    bool checkGameOver();
 
 public:
 
@@ -140,6 +143,10 @@ private slots:
     void on_actionNew_bot_game_from_FEN_triggered();
 
     void on_actionCopy_FEN_to_clipboard_triggered();
+
+    void on_actionUndo_move_triggered();
+
+    void on_actionRedo_move_triggered();
 
 private:
     Ui::MainWindow *ui;

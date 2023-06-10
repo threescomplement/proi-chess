@@ -7,6 +7,7 @@
 
 #include <map>
 #include <algorithm>
+#include <utility>
 #include "Game.h"
 #include "Board.h"
 #include "Color.h"
@@ -14,26 +15,25 @@
 #include "pieces/PieceType.h"
 #include "ChessExceptions.h"
 #include "pieces/Pawn.h"
-#include "pieces/PieceType.h"
 #include "GameOver.h"
 #include "FENParser.h"
+#include "HistoryManager.h"
 
 
 Game::Game(std::string whiteName, std::string blackName) {
     this->board = Board::startingBoard();
-    this->whitePlayer = new Player(whiteName, Color::WHITE);
-    this->blackPlayer = new Player(blackName, Color::BLACK);
-    this->currentPlayer = whitePlayer;
-    this->moveHistory = {};
+    this->whitePlayer = new Player(std::move(whiteName), Color::WHITE);
+    this->blackPlayer = new Player(std::move(blackName), Color::BLACK);
+    this->gameState.currentPlayer = whitePlayer;
+    this->history = new HistoryManager();
 
-    this->canWhiteKingsideCastle = true;
-    this->canWhiteQueensideCastle = true;
-    this->canBlackKingsideCastle = true;
-    this->canBlackQueensideCastle = true;
-    this->enPassantTargetPosition = nullptr;
-    this->halfmoveClock = 0;
-    this->fullmoveNumber = 1;
-    this->movesWithoutCaptureOrPawnMove = 0;
+    this->gameState.canWhiteKingsideCastle = true;
+    this->gameState.canWhiteQueensideCastle = true;
+    this->gameState.canBlackKingsideCastle = true;
+    this->gameState.canBlackQueensideCastle = true;
+    this->gameState.enPassantTargetPosition = nullptr;
+    this->gameState.halfmoveClock = 0;
+    this->gameState.fullmoveNumber = 1;
     this->positionCount = {{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 1}};
 
     for (Piece *piece: board->getAllPieces()) {
@@ -49,57 +49,45 @@ Game::~Game() {
     delete board;
     delete whitePlayer;
     delete blackPlayer;
+    delete history;
 }
 
 Board *Game::getBoard() const {
     return board;
 }
 
-Player *Game::getCurrentPlayer() {
-    return currentPlayer;
+Player *Game::getCurrentPlayer() const {
+    return gameState.currentPlayer;
 }
 
-std::vector<Move> &Game::getMoveHistory() {
-    return moveHistory;
+bool Game::isMate() {
+    return (isCheck(gameState.currentPlayer->getColor()) && getLegalMovesForPlayer(gameState.currentPlayer).empty());
 }
 
-bool Game::isMate() const {
-    return (isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
+bool Game::isStalemate() {
+    return (!isCheck(gameState.currentPlayer->getColor()) && getLegalMovesForPlayer(gameState.currentPlayer).empty());
 }
 
-bool Game::isStalemate() const {
-    return (!isCheck(currentPlayer->getColor()) && getLegalMovesForPlayer(currentPlayer).empty());
-}
-
-void Game::makeMove(Move move) {
+void Game::makeMove(const Move &move, bool updateHistory) {
     if (this->getCurrentPlayer()->getColor() != move.getPiece()->getColor()) {
         throw IllegalMoveException("Player can only move his own piece");
     }
 
-    if (this->currentPlayer->getColor() == Color::BLACK) {
-        this->fullmoveNumber++;
+    if (updateHistory) {
+        history->update(move, gameState);
     }
 
-    this->halfmoveClock++;
-    if (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) {
-        this->halfmoveClock = 0;
-    }
-
-    if (this->enPassantTargetPosition != nullptr) {
-        refreshEnPassant();
-    };
-    this->refreshCastlingPossibilites(move);
+    gameState.update(move, this->getEnPassantTargetPiece());
 
     this->board->makeMove(move);
     if (move.getPromoteTo() != PieceType::NONE) {
-        currentPlayer->removePiece(move.getPiece());
-        currentPlayer->getPieces().push_back(getPiece(move.getTo()));
+        gameState.currentPlayer->removePiece(move.getPiece());
+        gameState.currentPlayer->getPieces().push_back(getPiece(move.getTo()));
     }
-
     if (move.isDoublePawnMove()) {
         auto row = (move.getFrom().getRow() + move.getTo().getRow()) / 2;
         auto col = move.getTo().getCol();
-        this->enPassantTargetPosition = new Position(row, col);
+        this->gameState.enPassantTargetPosition = new Position(row, col);
         auto movedPawn = dynamic_cast<Pawn *>(move.getPiece());
         movedPawn->setIsEnPassantTarget(true);
     }
@@ -110,14 +98,10 @@ void Game::makeMove(Move move) {
         player->removePiece(captured);
     }
 
-    movesWithoutCaptureOrPawnMove = (move.isCapture() || move.getPiece()->getType() == PieceType::PAWN) ? 0 :
-                                    movesWithoutCaptureOrPawnMove + 1;
-
-    this->moveHistory.push_back(move);
-    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
+    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board)); // todo: what about this?
     positionCount[fenOfCurrentBoard] = (positionCount.find(fenOfCurrentBoard) == positionCount.end()) ? 1 :
                                        positionCount[fenOfCurrentBoard] + 1;
-    this->currentPlayer = (this->currentPlayer == this->whitePlayer) ? blackPlayer : whitePlayer;
+    this->switchCurrentPlayer();
 }
 
 Player *Game::getWhitePlayer() const {
@@ -126,10 +110,6 @@ Player *Game::getWhitePlayer() const {
 
 Player *Game::getBlackPlayer() const {
     return blackPlayer;
-}
-
-Player *Game::getCurrentPlayer() const {
-    return currentPlayer;
 }
 
 
@@ -153,16 +133,17 @@ Game::Game(
         board(board),
         whitePlayer(whitePlayer),
         blackPlayer(blackPlayer),
-        currentPlayer(currentPlayer),
-        canWhiteKingsideCastle(canWhiteKingsideCastle),
-        canWhiteQueensideCastle(canWhiteQueensideCastle),
-        canBlackKingsideCastle(canBlackKingsideCastle),
-        canBlackQueensideCastle(canBlackQueensideCastle),
-        enPassantTargetPosition(enPassantTarget),
-        halfmoveClock(halfmoveClock),
-        fullmoveNumber(fullmoveNumber),
-        movesWithoutCaptureOrPawnMove(0),
-        positionCount({}) {}
+        positionCount({}) {
+    this->gameState.canWhiteKingsideCastle = canWhiteKingsideCastle;
+    this->gameState.canWhiteQueensideCastle = canWhiteQueensideCastle;
+    this->gameState.canBlackKingsideCastle = canBlackKingsideCastle;
+    this->gameState.canBlackQueensideCastle = canBlackQueensideCastle;
+    this->gameState.enPassantTargetPosition = enPassantTarget;
+    this->gameState.halfmoveClock = halfmoveClock;
+    this->gameState.fullmoveNumber = fullmoveNumber;
+    this->gameState.currentPlayer = currentPlayer;
+    this->history = new HistoryManager();
+}
 
 std::vector<Move> Game::getMovesFrom(Position position) const {
     auto piece = this->getPiece(position);
@@ -190,17 +171,19 @@ std::vector<Move> Game::getAllMovesForPlayer(Player *player) const {
     return moves;
 }
 
-std::vector<Move> Game::getLegalMovesFrom(Position position) const {
+std::vector<Move> Game::getLegalMovesFrom(Position position) {
     auto piece = this->getPiece(position);
-    if (piece == nullptr || piece->getColor() != currentPlayer->getColor())
+    if (piece == nullptr || piece->getColor() != gameState.currentPlayer->getColor())
         return {};
 
     auto pieceColor = piece->getColor();
     auto movesForPiece = getMovesFrom(position);
     movesForPiece.erase(
-            std::remove_if(movesForPiece.begin(), movesForPiece.end(), [pieceColor, this](Move m) {
-                auto deepCopy = this->afterMove(m);
-                return deepCopy.isCheck(pieceColor);
+            std::remove_if(movesForPiece.begin(), movesForPiece.end(), [pieceColor, this](const Move &m) {
+                this->makeMove(m);
+                bool illegal = (this->isCheck(pieceColor));
+                this->undoMove();
+                return illegal;
             }),
             movesForPiece.end());
 
@@ -216,7 +199,7 @@ std::vector<Move> Game::getLegalMovesFrom(Position position) const {
     return movesForPiece;
 }
 
-std::vector<Move> Game::getLegalMovesForPlayer(Player *player) const {
+std::vector<Move> Game::getLegalMovesForPlayer(Player *player) {
     std::vector<Move> moves = {};
     for (auto piece: player->getPieces()) {
         auto pieceMoves = getLegalMovesFrom(piece->getPosition());
@@ -226,12 +209,12 @@ std::vector<Move> Game::getLegalMovesForPlayer(Player *player) const {
 }
 
 Pawn *Game::getEnPassantTargetPiece() const {
-    if (enPassantTargetPosition == nullptr)
+    if (gameState.enPassantTargetPosition == nullptr)
         return nullptr;
 
-    int targetRow = enPassantTargetPosition->getRow();
-    int targetCol = enPassantTargetPosition->getCol();
-    int rowOffsetFromEPPosition = (currentPlayer == whitePlayer) ? -1 : 1;
+    int targetRow = gameState.enPassantTargetPosition->getRow();
+    int targetCol = gameState.enPassantTargetPosition->getCol();
+    int rowOffsetFromEPPosition = (gameState.currentPlayer == whitePlayer) ? -1 : 1;
 
     auto positionOfTargetPiece = Position(targetRow + rowOffsetFromEPPosition, targetCol);
     auto ePTargetPiece = dynamic_cast<Pawn *>(getPiece(positionOfTargetPiece));
@@ -240,59 +223,10 @@ Pawn *Game::getEnPassantTargetPiece() const {
     return ePTargetPiece;
 }
 
-void Game::refreshEnPassant() {
-    auto oldEnPassantTarget = this->getEnPassantTargetPiece();
-    oldEnPassantTarget->setIsEnPassantTarget(false);
-    delete this->enPassantTargetPosition;
-    this->enPassantTargetPosition = nullptr;
-}
-
-void Game::refreshCastlingPossibilites(const Move &move) {
-    if (move.getPiece()->getType() == PieceType::KING) {
-        if (move.getPiece()->getColor() == Color::WHITE) {
-            canWhiteKingsideCastle = false;
-            canWhiteQueensideCastle = false;
-        } else {
-            canBlackKingsideCastle = false;
-            canBlackQueensideCastle = false;
-        }
-
-    } else if (move.getPiece()->getType() == PieceType::ROOK) {
-        if (move.getPiece()->getColor() == Color::WHITE) {
-            if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 1) {
-                canWhiteQueensideCastle = false;
-            } else if (move.getFrom().getRow() == 1 && move.getFrom().getCol() == 8) {
-                canWhiteKingsideCastle = false;
-            }
-        } else {
-            if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 1) {
-                canBlackQueensideCastle = false;
-            } else if (move.getFrom().getRow() == 8 && move.getFrom().getCol() == 8) {
-                canBlackKingsideCastle = false;
-            }
-        }
-    }
-    if (move.isCapture() && move.getCapturedPiece()->getType() == PieceType::ROOK) {
-        refreshCastlingAfterRookCapture(move.getCapturedPiece());
-    }
-}
-
-void Game::refreshCastlingAfterRookCapture(const Piece *takenRook) {
-    if (takenRook->getPosition() == Position(1, 1)) {
-        canWhiteQueensideCastle = false;
-    } else if (takenRook->getPosition() == Position(1, 8)) {
-        canWhiteKingsideCastle = false;
-    }
-    if (takenRook->getPosition() == Position(8, 1)) {
-        canBlackQueensideCastle = false;
-    } else if (takenRook->getPosition() == Position(8, 8)) {
-        canBlackKingsideCastle = false;
-    }
-}
 
 bool Game::possibleKingsideCastlingThisRound() const {
-    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteKingsideCastle ||
-        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackKingsideCastle) {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !gameState.canWhiteKingsideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !gameState.canBlackKingsideCastle) {
         return false;
     }
     int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
@@ -304,8 +238,8 @@ bool Game::possibleKingsideCastlingThisRound() const {
 }
 
 bool Game::possibleQueensideCastlingThisRound() const {
-    if (getCurrentPlayer()->getColor() == Color::WHITE && !canWhiteQueensideCastle ||
-        getCurrentPlayer()->getColor() == Color::BLACK && !canBlackQueensideCastle) {
+    if (getCurrentPlayer()->getColor() == Color::WHITE && !gameState.canWhiteQueensideCastle ||
+        getCurrentPlayer()->getColor() == Color::BLACK && !gameState.canBlackQueensideCastle) {
         return false;
     }
     int currentPlayerBackRank = (getCurrentPlayer()->getColor() == Color::WHITE) ? 1 : 8;
@@ -333,14 +267,14 @@ bool Game::noPiecesBetweenKingAndRook(const Piece *king, const Piece *rook) cons
 }
 
 Move Game::generateKingSideCastle() const {
-    int castlingRank = (currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
+    int castlingRank = (gameState.currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
     auto fromPosition = Position(castlingRank, 5);
     auto toPosition = Position(castlingRank, 7);
     return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
 }
 
 Move Game::generateQueenSideCastle() const {
-    int castlingRank = (currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
+    int castlingRank = (gameState.currentPlayer->getColor() == Color::WHITE) ? 1 : 8;
     auto fromPosition = Position(castlingRank, 5);
     auto toPosition = Position(castlingRank, 3);
     return Move(fromPosition, toPosition, getPiece(fromPosition), nullptr);
@@ -391,8 +325,9 @@ Game Game::afterMove(const Move &move) const {
     auto copy = this->deepCopy();
     auto sourcePiece = copy.getPiece(move.getFrom());
 
-    Piece *takenPiece = (move.getCapturedPiece() == nullptr) ? nullptr : copy.getPiece(
-            move.getCapturedPiece()->getPosition());
+    Piece *takenPiece = (move.getCapturedPiece() == nullptr)
+                        ? nullptr
+                        : copy.getPiece(move.getCapturedPiece()->getPosition());
     auto moveEquivalentForDeepCopy = Move(move.getFrom(), move.getTo(), sourcePiece, takenPiece);
     copy.makeMove(moveEquivalentForDeepCopy);
     return copy;
@@ -413,7 +348,7 @@ bool Game::isCastlingObscuredByOpponent(Move &move) const {
     return false;
 }
 
-GameOver Game::isOver() const {
+GameOver Game::isOver() {
     if (isMate())
         return GameOver::MATE;
     else if (isStalemate())
@@ -464,36 +399,38 @@ bool Game::isDrawByRepetition() const {
 }
 
 Position *Game::getEnPassantTargetPosition() const {
-    return enPassantTargetPosition;
+    return gameState.enPassantTargetPosition;
 }
 
 bool Game::getCanWhiteKingsideCastle() const {
-    return canWhiteKingsideCastle;
+    return gameState.canWhiteKingsideCastle;
 }
 
 bool Game::getCanWhiteQueensideCastle() const {
-    return canWhiteQueensideCastle;
+    return gameState.canWhiteQueensideCastle;
 }
 
 bool Game::getCanBlackKingsideCastle() const {
-    return canBlackKingsideCastle;
+    return gameState.canBlackKingsideCastle;
 }
 
 bool Game::getCanBlackQueensideCastle() const {
-    return canBlackQueensideCastle;
+    return gameState.canBlackQueensideCastle;
 }
 
 int Game::getHalfmoveClock() const {
-    return halfmoveClock;
+    return gameState.halfmoveClock;
 }
 
 int Game::getFullmoveNumber() const {
-    return fullmoveNumber;
+    return gameState.fullmoveNumber;
 }
 
 Game Game::deepCopy() const {
     auto copy = FENParser::parseGame(FENParser::gameToString(*this));
     copy.setPositionCount(std::map<std::string, int>(this->getPositionCount()));
+    copy.gameState = this->gameState.copy(*this, copy);
+    copy.history = new HistoryManager(*this->history);  // TODO: Are there more params to copy?
     return copy;
 }
 
@@ -506,7 +443,62 @@ void Game::setPositionCount(std::map<std::string, int> count) {
 }
 
 bool Game::isDrawByFiftyMoveRule() const {
-    return movesWithoutCaptureOrPawnMove >= 100;
+    return gameState.halfmoveClock >= 100;
+}
+
+void Game::undoMove() {
+    if (!history->canUndoMove()) {
+        return;
+    }
+
+    this->switchCurrentPlayer();
+    auto fenOfCurrentBoard = FENParser::boardToString(*(this->board));
+    positionCount[fenOfCurrentBoard]--;
+    auto moveToReverse = history->getMoveToUndo();
+    loadPreviousGamestate();
+    if (moveToReverse.isCapture()) {
+        auto captured = moveToReverse.getCapturedPiece();
+        auto player = (captured->getColor() == Color::WHITE) ? whitePlayer : blackPlayer;
+        player->getPieces().push_back(captured);
+    }
+    if (moveToReverse.isDoublePawnMove()) {
+        this->gameState.enPassantTargetPosition = nullptr;
+        auto movedPawn = dynamic_cast<Pawn *>(moveToReverse.getPiece());
+        movedPawn->setIsEnPassantTarget(false);
+    }
+    if (moveToReverse.getPromoteTo() != PieceType::NONE) {
+        gameState.currentPlayer->getPieces().push_back(moveToReverse.getPiece());
+        gameState.currentPlayer->removePiece(getPiece(moveToReverse.getTo()));
+    }
+    bool isEnPassant = (getEnPassantTargetPosition() == nullptr ||
+                        moveToReverse.getTo() != *(getEnPassantTargetPosition())) ? false : true;
+
+
+    board->reverseMove(moveToReverse, isEnPassant);
+    if (getEnPassantTargetPiece() != nullptr)
+        getEnPassantTargetPiece()->setIsEnPassantTarget(true);
+}
+
+void Game::switchCurrentPlayer() {
+    gameState.currentPlayer = (gameState.currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+}
+
+void Game::redoMove() {
+    if (!history->canRedoMove()) {
+        return;
+    }
+
+    auto moveToReverse = history->getMoveToRedo();
+    this->makeMove(moveToReverse, false);
+}
+
+int Game::getMovesIntoThePast() const {
+    return history->getMovesIntoThePast();
+}
+
+void Game::loadPreviousGamestate() {
+    auto state = this->history->getHistory()[this->history->getHistory().size() - getMovesIntoThePast()].state;
+    this->gameState = state.copy(*this, *this);
 }
 
 

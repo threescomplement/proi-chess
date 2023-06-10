@@ -6,6 +6,7 @@
  */
 
 #include <sstream>
+#include <algorithm>
 #include "Board.h"
 #include "Color.h"
 #include "Player.h"
@@ -145,7 +146,7 @@ void Board::makeMove(const Move &move) {
             auto rookCol = (move.isLongCastle()) ? 1 : 8;
             auto row = (move.getTo().getRow());
             auto castledRook = getField(Position(row, rookCol))->getPiece();
-            makeMove(Move::generateCastlingComplement(castledRook));
+            makeMove(Move::generateCastlingComplement(castledRook, false));
         }
     } else
         this->executePromotion(move);
@@ -200,6 +201,45 @@ void Board::setBlackKing(Piece *blackKing) {
 
 void Board::setWhiteKing(Piece *whiteKing) {
     Board::whiteKing = whiteKing;
+}
+
+void Board::reverseMove(const Move &move, bool isEnPassant) {
+    auto sourceField = this->getField(move.getTo());
+    auto targetField = this->getField(move.getFrom());
+    auto pieceOnSourceField = sourceField->getPiece();
+    auto capturedPiece = move.getCapturedPiece();
+    auto movedPiece = move.getPiece();
+
+
+    if (move.getPromoteTo() != PieceType::NONE) {
+        // if the move was a promotion, remove the promoted piece from the board and deallocate the memory
+        allPieces.erase(std::remove(allPieces.begin(), allPieces.end(), pieceOnSourceField));
+        pieceOnSourceField->takeOffField();
+        delete pieceOnSourceField;
+    }
+
+    // set the moved piece to move.getFrom() and update the pointer of move.getTo()
+    movedPiece->setField(targetField);
+    targetField->setPiece(movedPiece);
+    sourceField->setPiece(nullptr);
+
+    if (move.isCastling()) {
+        // reverse castling complement accordingly
+        auto rookCol = (move.isLongCastle()) ? 4 : 6;
+        auto row = (move.getTo().getRow());
+        auto castledRook = getField(Position(row, rookCol))->getPiece();
+        reverseMove(Move::generateCastlingComplement(castledRook, true), false);
+    }
+
+
+    if (capturedPiece != nullptr) {
+        if (isEnPassant)
+            sourceField = getField(Position(move.getFrom().getRow(), move.getTo().getCol()));
+
+        // restore captured piece
+        capturedPiece->setField(sourceField);
+        sourceField->setPiece(capturedPiece);
+    }
 }
 
 

@@ -84,9 +84,10 @@ public:
 
     /**
      * Generates a rook move to complement the internal move representation of castling which only directly moves
-     * the king.
+     * the king. If forReversal is true, it will look for a rook in a place indicating that castling
+     * has already been performed and will generate a move to reverse it.
      **/
-    static Move generateCastlingComplement(Piece *CastlingRook);
+    static Move generateCastlingComplement(Piece *CastlingRook, bool forReversal);
 
     static Move parseSmithNotation(const std::string &moveStr, const Game &game);
 

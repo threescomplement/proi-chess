@@ -88,7 +88,15 @@
     <addaction name="menu_Bot_game"/>
     <addaction name="actionCopy_FEN_to_clipboard"/>
    </widget>
+   <widget class="QMenu" name="menuMoves">
+    <property name="title">
+     <string>Moves</string>
+    </property>
+    <addaction name="actionUndo_move"/>
+    <addaction name="actionRedo_move"/>
+   </widget>
    <addaction name="menupogg"/>
+   <addaction name="menuMoves"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionnynyny">
@@ -119,6 +127,26 @@
   <action name="actionCopy_FEN_to_clipboard">
    <property name="text">
     <string>Copy FEN to clipboard</string>
+   </property>
+  </action>
+  <action name="actionUndo_move">
+   <property name="icon">
+    <iconset theme="media-skip-backward">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Undo move</string>
+   </property>
+   <property name="shortcut">
+    <string>Left</string>
+   </property>
+  </action>
+  <action name="actionRedo_move">
+   <property name="text">
+    <string>Redo move</string>
+   </property>
+   <property name="shortcut">
+    <string>Right</string>
    </property>
   </action>
  </widget>
