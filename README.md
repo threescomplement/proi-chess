@@ -12,6 +12,7 @@ Projekt semestralny z [Programowania Obiektowego](https://usosweb.usos.pw.edu.pl
 Projekt umożliwia grę w szachy z drugą osobą lub z botem za pośrednictwem interfejsu graficznego lub tekstowego, wspiera import i eksport stanu gry w formacie [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation).
 
 ### Projekt wykorzystuje 
+* CMake do budowania projektu
 * bibliotekę Qt do interfejsu graficznego i zarządzania komunikacją międzyprocesową
 * framework GoogleTest do testów jednostkowych
 * silnik szachowy Stockfish jako backend dla jednej z implementacji bota szachowego
