@@ -78,10 +78,25 @@ Tekstowy interfejs użytkownika umożliwiający grę w 2 osoby lub grę z botem.
 
 Jako opcjonalny pierwszy argument pozycyjny przyjmuje początkowy stan gry zapisany w notacji FEN (wspierany przez popularne serwisy jak https://chess.com)
 
+```
+8  ♜  ♞  ♝  ♛  ♚  ♝  ♞  ♜  
+7  ♟  ♟  ♟  ♟  ♟  ♟  ♟  ♟ 
+6                       
+5
+4              
+3
+2  ♙  ♙  ♙  ♙  ♙  ♙  ♙  ♙
+1  ♖  ♘  ♗  ♕  ♔  ♗  ♘  ♖
+   A  B  C  D  E  F  G  H
+   
+White move >
+```
 ### Aplikacja `gui`
 Graficzny interfejs użytkownika umożliwiający grę w 2 osoby lub grę z botem. Zależy od bibliotek `chess` i `bot` oraz Qt.
 
 Wspiera import i eksport stanu gry do notacji FEN, a także cofanie i odcofywanie ruchów klawiszami strzałek lub z poziomu paska menu.
+
+![Zrzut ekranu](./docs/gui-screenshot.png)
 
 ### Testy jednostkowe `all-unit-tests`
 Testy wykorzystują framework [GoogleTest](https://google.github.io/googletest/)
